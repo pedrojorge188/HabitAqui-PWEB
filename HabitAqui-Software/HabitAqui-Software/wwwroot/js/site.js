@@ -19,3 +19,22 @@ toggleButton.addEventListener('click', () => {
 
     isSidebarVisible = !isSidebarVisible;
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const toggleFilterButton = document.getElementById("toggleFilter");
+    const filterForm = document.getElementById("filterForm");
+
+    toggleFilterButton.addEventListener("click", function () {
+
+        if (filterForm.classList.contains("show-filter")) {
+            filterForm.classList.remove("show-filter");
+            toggleFilterButton.textContent = "Filtrar";
+        } else {
+            filterForm.classList.add("show-filter");
+            toggleFilterButton.textContent = "Ocultar";
+        }
+
+    });
+
+});

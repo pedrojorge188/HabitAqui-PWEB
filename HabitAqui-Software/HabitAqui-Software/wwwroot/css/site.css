@@ -114,3 +114,13 @@ nav {
 .table-hover tbody tr:hover {
     background-color: rgba(255, 255, 255, 0.2);
 }
+
+/* Inicialmente, oculta o formulário */
+#filterForm {
+    display: none;
+}
+
+    /* Quando a classe show-filter é aplicada, mostra o formulário */
+    #filterForm.show-filter {
+        display: block;
+    }
