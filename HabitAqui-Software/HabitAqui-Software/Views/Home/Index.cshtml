@@ -1,0 +1,88 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h2 class="display-4">Habitações</h2>
+    <br />
+    <hr />
+
+    <button id="toggleFilter" class="btn btn-primary tb-btn">Filtrar</button>
+    <br />
+    <br />
+
+     <form action="#" method="post" id="filterForm">
+
+        <div class="form-group">
+            <label for="localizacao">Localização:</label>
+            <input type="text" class="form-control" id="localizacao" name="localizacao" placeholder="Digite a localização">
+        </div>
+        <div class="form-group">
+            <label for="tipo">Tipo de Habitação:</label>
+            <select class="form-control" id="tipo" name="tipo">
+                <option value="todos">Todos os Tipos</option>
+                <option value="tipo1">Tipo 1</option>
+                <option value="tipo2">Tipo 2</option>
+      
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="dataInicio">Data de Início:</label>
+            <input type="date" class="form-control" id="dataInicio" name="dataInicio">
+        </div>
+        <div class="form-group">
+            <label for="dataFim">Data de Fim:</label>
+            <input type="date" class="form-control" id="dataFim" name="dataFim">
+        </div>
+        <div class="form-group">
+            <label for="periodoMinimo">Período Mínimo de Aluguer (dias):</label>
+            <input type="number" class="form-control" id="periodoMinimo" name="periodoMinimo">
+        </div>
+        <div class="form-group">
+            <label for="categoria">Categoria de Habitação:</label>
+            <select class="form-control" id="categoria" name="categoria">
+                <option value="todas">Todas as Categorias</option>
+                <option value="categoria1">Categoria 1</option>
+                <option value="categoria2">Categoria 2</option>
+ 
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="locador">Locador</label>
+            <input type="text" class="form-control" id="locador" name="locador" placeholder="Digite o Locador">
+        </div>
+    <br />
+    <br />
+        <button type="submit" class="btn btn-primary tb-btn" >Pesquisar</button>
+    </form>
+
+    <br />
+    <br />
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Localização</th>
+                    <th>Locador</th>
+                    <th>Aluguer</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Casa do Pedro</td>
+                    <td>Louriceira,Alcanena,Santarém</td>
+                    <td>Remax</td>
+                    <td>900€ / mês</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary tb-btn"> <i class="fa-sharp fa-solid fa-plus" style="color: #ffffff; margin-right: 5px"></i>Informação</button>
+                    </td>
+                </tr>
+                <!-- Mais linhas da tabela aqui -->
+            </tbody>
+        </table>
+       </div>
+
+</div>

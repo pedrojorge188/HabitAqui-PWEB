@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - HabitAqui_Software</title>
+    <link rel="stylesheet" href="~/lib/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/HabitAqui_Software.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+
+            <!-- Barra de Navegação Vertical à Esquerda -->
+            <button id="toggleSidebar" class="btn btn-dark d-md-none">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav class="col-md-2 col-lg-auto d-md-block bg-dark sidebar">
+                <div class="position-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item maintext">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                                HabitAqui
+                            </a>
+                        </li>
+                        <hr />
+                        <br />
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="fa-sharp fa-solid fa-building" style="color: #ffffff; margin-right:7px"></i> Habitações
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="fa-solid fa-user" style="color: #ffffff; margin-right:7px"></i>
+                                Conta
+                            </a>
+                        </li>
+                        <li class="nav-item bottom-settings">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Credits">
+                                <i class="fa-sharp fa-solid fa-gear" style="color: #ffffff;  margin-right:7px"></i> Creditos
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="col-md-10 ms-sm-auto col-lg-10 px-md-4">
+                <div class="container">
+                    @RenderBody()
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Restante do corpo e scripts -->
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
