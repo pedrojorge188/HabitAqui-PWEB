@@ -32,7 +32,7 @@ nav {
 .nav-link:hover {
     background-color: #343a40;
     font-size: 25px;
-    transition: font-size 0.7s ease; /* Add a smooth transition effect */
+    transition: font-size 0.7s ease; 
 }
 
 
@@ -68,7 +68,7 @@ nav {
 
 @media (max-width: 768px) {
     .sidebar {
-        display: none; /* Oculta a barra lateral em telas menores */
+        display: none;
     }
 
     #toggleSidebar {
@@ -76,10 +76,29 @@ nav {
     }
 
     .sidebar-show .sidebar {
-        display: block !important; /* Mostra a barra lateral quando a classe .sidebar-show é aplicada */
+        display: block !important; 
+    }
+
+    .btn-minus{
+        display: none;
     }
 }
 
+.btn-minus {
+    position: fixed;
+    border-radius: 100%;
+    font-size: 15px;
+    border: solid 1px white;
+    bottom:25px;
+    cursor: pointer;
+    right: 40px;
+    padding: 10px 15px;
+    z-index: 9999;
+}
+
+.btn-minus:hover {
+    color: #343a40
+}
 
 .btn.tb-btn {
     background-color: #343a40;
@@ -94,7 +113,7 @@ nav {
 .table {
     background-color: white;
     color: #343a40;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8); /* Adiciona uma sombra interna */
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8); 
 }
 
     .table th,
@@ -115,12 +134,11 @@ nav {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Inicialmente, oculta o formulário */
+
 #filterForm {
     display: none;
 }
 
-    /* Quando a classe show-filter é aplicada, mostra o formulário */
     #filterForm.show-filter {
         display: block;
     }
