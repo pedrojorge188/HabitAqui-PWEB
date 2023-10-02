@@ -8,7 +8,8 @@ h1{
 }
 .maintext{
     text-align:center;
-    font-size: 30px
+    font-size: 30px;
+    font-family: monospace;
 }
 
 .sidebar {
@@ -18,6 +19,7 @@ h1{
     width: 250px;
     transition: width 0.3s; 
     border-right: solid 1px white;
+    position: fixed;
 }
 
 nav {
@@ -26,6 +28,13 @@ nav {
     height: 100vh;
     padding: 20px;
 }
+
+.nav-link:hover {
+    background-color: #343a40;
+    font-size: 30px;
+    transition: font-size 0.5s ease; /* Add a smooth transition effect */
+}
+
 
 .nav-item a {
     text-decoration: none;
@@ -46,11 +55,18 @@ nav {
 }
 
 #toggleSidebar {
-    display: block;
+    display: none;
 }
 
-@media (max-width: 768px) {
+.bottom-settings {
+    position: fixed; 
+    bottom: 0;
+    margin-bottom: 20px
+}
 
+
+
+@media (max-width: 768px) {
     .sidebar {
         display: none; /* Oculta a barra lateral em telas menores */
     }

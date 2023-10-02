@@ -6,7 +6,6 @@
 const toggleButton = document.getElementById('toggleSidebar');
 const sidebar = document.querySelector('.sidebar');
 
-
 let isSidebarVisible = true;
 
 toggleButton.addEventListener('click', () => {
