@@ -1,15 +1,20 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Habitações";
 }
 
 <div class="text-center">
-    <h2 class="display-4">Habitações</h2>
-    <br />
-    <button id="toggleFilter" class="btn btn-primary tb-btn">Filtrar</button>
-    <br />
-    <br />
+    <h2 class="display-4"><i class="fa-solid fa-building" style="color: #ffffff;"></i>&ensp; Habitações</h2>
+    <br />    <br />
 
-    <form action="#" method="post" id="filterForm" class="rounded p-4 shadow bg-dark">
+    <div class="d-flex align-items-left">
+        <button id="toggleFilter" class="btn btn-primary tb-btn"  style="margin-left: 3px">Filtrar</button>
+        <button type="button" class="btn tb-btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            Ordenar por
+        </button>
+    </div>
+
+    <br />
+    <form action="#" method="post" id="filterForm" class="rounded p-4 mb-5 shadow bg-dark">
         <h2 class="text-center mb-4">Filtros de Pesquisa</h2>
         <div class="row">
             <div class="col-md-6">
@@ -56,10 +61,8 @@
         <div class="text-center mt-4">
             <button type="submit" class="btn btn-primary tb-btn">Pesquisar</button>
         </div>
-    </form>
 
-    <br />
-    <br />
+    </form>
 
     <div class="table-responsive">
         <table class="table table-striped table-hover">
