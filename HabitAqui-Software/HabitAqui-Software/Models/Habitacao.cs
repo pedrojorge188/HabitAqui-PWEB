@@ -26,10 +26,13 @@ namespace HabitAqui_Software.Models
         public int minimumRentalPeriod { get; set; }
 
         [Display(Name = "Maximum Rental Period", Prompt = "Choose Maximum Rental Period ...")]
-                public int maximumRentalPeriod { get; set; }
+        public int maximumRentalPeriod { get; set; }
 
         [Display(Name = "avaliable")]
         public Boolean available { get; set; }
+
+        [Display(Name = "grade")]
+        public int grade { get; set; }
 
         public Locador locador { get; set; }
 
