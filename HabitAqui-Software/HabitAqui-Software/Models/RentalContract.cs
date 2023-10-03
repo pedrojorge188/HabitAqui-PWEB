@@ -5,19 +5,23 @@ namespace HabitAqui_Software.Models
 {
     public class RentalContract
     {
-        [Key]
         public int Id { get; set; }
 
-        [Required]
-        public DateTime StartDate { get; set; }
+        [Display(Name = "Start Date")]
+        public DateTime startDate { get; set; }
 
-        [Required]
-        public DateTime EndDate { get; set; }
+        [Display(Name = "End Date")]
+        public DateTime endDate { get; set; }
 
-        [ForeignKey("Habitacao")]
-        public int HabitacaoId { get; set; }
+        [Display(Name = "Habitacao to rent")]
+        public Habitacao? habitacao { get; set; }
 
-        [ForeignKey("User")]
-        public int ClientId { get; set; }
+        [Display(Name = "Delivery habitacao from a client")]
+        public DeliveryStatus? receiveStatus { get; set; }
+
+        [Display(Name = "Delivery habitacao to a client")]
+        public ReceiveStatus? deliveryStatus { get; set; }
+
+        public Boolean isConfirmed { get; set; }
     }
 }

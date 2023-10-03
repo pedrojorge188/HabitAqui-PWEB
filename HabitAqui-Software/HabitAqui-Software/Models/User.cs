@@ -1,22 +1,23 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace HabitAqui_Software.Models
 {
-    public class User
+    public class User : IdentityUser
     {
-        [Key]
-        public int Id { get; set; }
 
-        [Required]
-        public string Name { get; set; }
+        [Display(Name = "Username", Prompt = "Insert your username...")]
+        public string username { get; set; }
 
-        [Required]
-        public string Password { get; set; }
+        [Display(Name = "Password", Prompt = "Insert your password...")]
+        public string password { get; set; }
 
-        [Required]
-        public string Email { get; set; }
+        [Display(Name = "Email", Prompt = "Insert your email...")]
+        public string email { get; set; }
 
-        public UserProfile Profile { get; set; }
+        public Locador? locador { get; set; }
+
+        public ICollection<RentalContract>? contracts { get; set; }  
 
     }
 }

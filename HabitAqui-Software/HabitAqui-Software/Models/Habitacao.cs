@@ -5,33 +5,33 @@ namespace HabitAqui_Software.Models
 {
     public class Habitacao
     {
-        [Key]
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        [Display(Name = "Location", Prompt = "Insert location...")]
+        public string location { get; set; }
 
-        [Required]
-        public string Location { get; set; }
+        [Display(Name = "Model", Prompt = "Insert vehicle model...")]
+        public Category? category { get; set; }
 
-        public TypesHabitacao Type { get; set; }
+        [Display(Name = "RentalCost", Prompt = "Insert rental cost...")]
+        public decimal rentalCost { get; set; }
 
-        [Required]
-        public decimal RentalCost { get; set; }
+        [Display(Name = "Start Date", Prompt = "Choose startDateAvailability ...")]
+        public DateTime startDateAvailability { get; set; }
 
-        [Required]
-        public DateTime StartDateAvailability { get; set; }
+        [Display(Name = "End Date", Prompt = "Choose startDateAvailability ...")]
+        public DateTime endDateAvailability { get; set; }
 
-        [Required]
-        public DateTime EndDateAvailability { get; set; }
+        [Display(Name = "Minium Rental Period", Prompt = "Choose Minium Rental Period ...")]
+        public int minimumRentalPeriod { get; set; }
 
-        [Required]
-        public int MinimumRentalPeriod { get; set; }
+        [Display(Name = "Maximum Rental Period", Prompt = "Choose Maximum Rental Period ...")]
+                public int maximumRentalPeriod { get; set; }
 
-        [Required]
-        public int MaximumRentalPeriod { get; set; }
+        [Display(Name = "avaliable")]
+        public Boolean available { get; set; }
 
-        [ForeignKey("Locador")]
-        public int LocadorId { get; set; }
+        public Locador locador { get; set; }
 
     }
 }
