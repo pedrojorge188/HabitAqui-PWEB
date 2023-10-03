@@ -18,8 +18,8 @@ namespace HabitAqui_Software.Models
         [Display(Name = "Email", Prompt = "Insert Locador email...")]
         public string email { get; set; }
 
-        [Display(Name = "", Prompt = "Choose Enrollment state...")]
-        public Enrollment? state { get; set; }
+        [Display(Name = "Enrollment", Prompt = "Choose Enrollment state...")]
+        public Enrollment? enrollmentState { get; set; }
 
     }
 }

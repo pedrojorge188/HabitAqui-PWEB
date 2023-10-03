@@ -7,7 +7,7 @@ namespace HabitAqui_Software.Models
         public int Id { get; set; }
 
         [Display(Name = "Name of Enrollment")]
-        public string Name { get; set; }
+        public string name { get; set; }
 
         [Display(Name = "desc of Enrollment")]
         public string desc { get; set; }
