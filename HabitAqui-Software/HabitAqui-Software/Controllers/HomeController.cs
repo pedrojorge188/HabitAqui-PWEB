@@ -1,21 +1,40 @@
-﻿using HabitAqui_Software.Models;
+﻿using HabitAqui_Software.Data;
+using HabitAqui_Software.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace HabitAqui_Software.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ApplicationDbContext _context;
+
+        public HomeController(ApplicationDbContext context)
         {
-            _logger = logger;
+            
+            _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int? page)
         {
-            return View();
+            int pageSize = 5;
+            int pageNumber = page ?? 1;
+
+            var habitacoesComLocador = _context.habitacaos.Include(h => h.locador).ToList();
+            var habitacoesComCategoria = _context.habitacaos.Include(h => h.category).ToList();
+
+            IQueryable<Habitacao> habitacaos = _context.habitacaos.Where(data => data.available == true);
+
+            var model = habitacoesComLocador.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+    
+            ViewBag.CurrentPage = pageNumber;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)habitacoesComLocador.Count() / pageSize);
+
+            return View(model);
         }
 
         public IActionResult Credits()
