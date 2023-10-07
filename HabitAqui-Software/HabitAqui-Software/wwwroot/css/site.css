@@ -13,6 +13,7 @@ h1 {
 }
 
 .sidebar {
+    z-index: 999;
     background-color: #343a40;
     color: white;
     height: 100vh;
@@ -63,7 +64,7 @@ nav {
 
 
 
-@media (max-width: 768px) {
+@media (max-width: 800px) {
     .sidebar {
         display: none;
     }
@@ -73,10 +74,10 @@ nav {
     }
 
     .sidebar-show .sidebar {
-        display: block !important; 
+        display: block !important;
     }
 
-    .btn-minus{
+    .btn-minus {
         display: none;
     }
 }
@@ -94,7 +95,7 @@ nav {
 }
 
 .btn-minus:hover {
-    color: #343a40
+    color: #343a40;
 }
 
 .btn.tb-btn {
@@ -116,6 +117,7 @@ nav {
     .table th,
     .table td {
         border: 1px solid white;
+        
     }
 
     .table th {
