@@ -1,6 +1,7 @@
 ﻿using HabitAqui_Software.Data;
 using HabitAqui_Software.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
@@ -11,34 +12,77 @@ namespace HabitAqui_Software.Controllers
 
         private readonly ApplicationDbContext _context;
 
-
         public HomeController(ApplicationDbContext context)
         {
             _context = context;
         }
         
-        public IActionResult Index(int? page)
+        public async Task<IActionResult> Index()
         {
+            ViewBag.Category = _context.Categories.ToList();
 
-            int pageSize = 8;
-            int pageNumber = page ?? 1;
+            IQueryable<Habitacao> query = _context.habitacaos
+                           .Include(h => h.locador)
+                           .Include(h => h.category);
 
-            var habitacoesComLocador = _context.habitacaos.Include(h => h.locador).ToList();
+            var results = await query.ToListAsync();
 
-            var habitacoesComCategoria = _context.habitacaos.Include(h => h.category).ToList();
+            return View(results);
 
-            IQueryable<Habitacao> habitacaos = _context.habitacaos.Where(data => data.available == true);
-
-            var model = habitacoesComLocador.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-
-    
-            ViewBag.CurrentPage = pageNumber;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)habitacoesComLocador.Count() / pageSize);
-
-            return View(model);
         }
 
-        public async Task<IActionResult> Details(int? id)
+    public IActionResult Search()
+    {
+        ViewBag.Category = _context.Categories.ToList();
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Search(string location, int? category, int? minimumRentalPeriod, string locador, DateTime? startDateAvailability, DateTime? endDateAvailability)
+    {
+        ViewBag.Category = await _context.Categories.ToListAsync();
+
+        IQueryable<Habitacao> query = _context.habitacaos
+            .Include(h => h.locador)
+            .Include(h => h.category)
+            .Where(data => data.available == true);
+
+        if (!string.IsNullOrEmpty(location))
+        {
+            query = query.Where(item => item.location.Contains(location));
+        }
+
+        if (category.HasValue && category.Value != 0)
+        {
+            query = query.Where(item => item.category.Id == category.Value);
+        }
+
+        if (minimumRentalPeriod.HasValue && minimumRentalPeriod.Value > 0)
+        {
+            query = query.Where(item => item.minimumRentalPeriod >= minimumRentalPeriod.Value);
+        }
+
+        if (!string.IsNullOrEmpty(locador))
+        {
+            query = query.Where(item => item.locador.name.Contains(locador));
+        }
+
+        if (startDateAvailability.HasValue)
+        {
+            query = query.Where(item => item.startDateAvailability >= startDateAvailability.Value);
+        }
+
+        if (endDateAvailability.HasValue)
+        {
+            query = query.Where(item => item.endDateAvailability <= endDateAvailability.Value);
+        }
+
+        var results = await query.ToListAsync();
+
+        return View("Index", results);
+    }
+    
+    public async Task<IActionResult> Details(int? id)
         {
 
             if (id == null || _context.habitacaos == null)
