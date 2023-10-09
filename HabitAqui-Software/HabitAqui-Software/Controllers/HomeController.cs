@@ -30,7 +30,8 @@ namespace HabitAqui_Software.Controllers
             return View(results);
 
         }
-
+    
+    //Initialize bag values using get (http protocol)
     public IActionResult Search()
     {
         ViewBag.Category = _context.Categories.ToList();
