@@ -37,4 +37,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     });
 
+    const toggleOrderButton = document.getElementById("toggleOrder");
+    const orderForm = document.getElementById("orderForm");
+
+    toggleOrderButton.addEventListener("click", function () {
+
+        if (orderForm.classList.contains("show-filter")) {
+            orderForm.classList.remove("show-filter");
+        } else {
+            orderForm.classList.add("show-filter");
+        }
+
+    });
+
 });

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.IO.Pipelines;
 
 namespace HabitAqui_Software.Controllers
 {
@@ -39,10 +40,10 @@ namespace HabitAqui_Software.Controllers
     }
 
     [HttpPost]
-    public async Task<IActionResult> Search(string location, int? category, int? minimumRentalPeriod, string locador, DateTime? startDateAvailability, DateTime? endDateAvailability)
+    public async Task<IActionResult> Search(string? location, int? category, int? minimumRentalPeriod, string locador, DateTime? startDateAvailability, DateTime? endDateAvailability, string? price, string? grade)
     {
         ViewBag.Category = await _context.Categories.ToListAsync();
-
+           
         IQueryable<Habitacao> query = _context.habitacaos
             .Include(h => h.locador)
             .Include(h => h.category)
@@ -78,10 +79,92 @@ namespace HabitAqui_Software.Controllers
             query = query.Where(item => item.endDateAvailability <= endDateAvailability.Value);
         }
 
-        var results = await query.ToListAsync();
+            switch (grade)
+            {
+                case "defaultGrade":
+                    break;
+                case "lowClassification":
+                    query = query.OrderBy(item => item.grade);
+                    break;
+                case "highClassification":
+                    query = query.OrderByDescending(item => item.grade);
+                    break;
+                default:
+                    // Ordenação padrão, se nenhum critério for especificado.
+                    break;
+            }
+
+            switch (price)
+            {
+                case "defaultPrice":
+                    break;
+                case "lowPrice":
+                    query = query.OrderBy(item => item.rentalCost);
+                    break;
+                case "highPrice":
+                    query = query.OrderByDescending(item => item.rentalCost);
+                    break;
+                default:
+                    // Ordenação padrão, se nenhum critério for especificado.
+                    break;
+            }
+
+            var results = await query.ToListAsync();
 
         return View("Index", results);
     }
+
+     public IActionResult Order()
+    {
+        ViewBag.Category = _context.Categories.ToList();
+        return View();
+    }
+
+    [HttpPost]
+
+    public async Task<IActionResult> Order(string? price, string? grade)
+    {
+            ViewBag.Category = await _context.Categories.ToListAsync();
+
+            IQueryable<Habitacao> query = _context.habitacaos.Include(h => h.locador).Include(h => h.category).Where(data => data.available == true);
+           
+            switch (grade)
+            {
+                case "defaultGrade":
+                    break;
+                case "lowClassification":
+                    query = query.OrderBy(item => item.grade);
+                    break;
+                case "highClassification":
+                    query = query.OrderByDescending(item => item.grade);
+                    break;
+                default:
+                    // Ordenação padrão, se nenhum critério for especificado.
+                    break;
+            }
+
+            switch (price)
+            {
+                case "defaultPrice":
+                    break;
+                case "lowPrice":
+                    query = query.OrderBy(item => item.rentalCost);
+                    break;
+                case "highPrice":
+                    query = query.OrderByDescending(item => item.rentalCost);
+                    break;
+                default:
+                    // Ordenação padrão, se nenhum critério for especificado.
+                    break;
+            }
+
+            
+
+            var results = await query.ToListAsync();
+
+            return View("Index", results);
+        }
+
     
     public async Task<IActionResult> Details(int? id)
         {

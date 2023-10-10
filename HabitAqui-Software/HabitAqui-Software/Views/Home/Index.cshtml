@@ -9,10 +9,6 @@
 
     <div class="d-flex align-items-left  btn-group">
         <button id="toggleFilter" class="btn btn-primary tb-btn"  style="margin-left: 3px">Filtrar</button>
-        &ensp;
-        <button type="button" class="btn tb-btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-            Ordenar por
-        </button>
     </div>
 
     <br />
@@ -45,6 +41,7 @@
                     <label for="locador">Locador:</label>
                     <input name="locador" class="form-control" placeholder="Digite o Locador">
                 </div>
+
             </div>
             <div class="col-md-6">
                 <div class="form-group">
@@ -55,12 +52,36 @@
                     <label for="endDateAvailability">Data de Fim:</label>
                     <input type="date"  name=" endDateAvailability" class="form-control">
                 </div>
+                <br>
+
+                <button id="toggleOrder" type="button" class="btn tb-btn btn-primary dropdown-toggle align-items-left " data-bs-toggle="dropdown" aria-expanded="false">
+                    Ordenar por
+                </button>
+                <div class="form-group" id="orderForm">
+                    <label for="price">Ordenar por Preço:</label>
+                    <select name="price" class="form-control ">
+                        <option value="defaultPrice">Nenhum</option>
+                        <option value="lowPrice">Preço mais baixo</option>
+                        <option value="highPrice">Preço mais alto</option>
+                    </select>
+                    <label for="grade">Ordenar por Classificação:</label>
+                    <select name="grade" class="form-control ">
+                        <option value="defaultGrade">Nenhum</option>
+                        <option value="lowClassification">Classificação mais baixa</option>
+                        <option value="highClassification">Classificação mais alta</option>
+                    </select>
+                </div>
+
             </div>
         </div>
-        <div class="text-center mt-4">
-            <button type="submit" value="Search" class="btn btn-primary tb-btn">Pesquisar</button>
+        <div class=" mt-5">
+  
+            <button type="submit" value="Search" class="btn btn-primary btn-lg tb-btn">Pesquisar</button>
         </div>
     }
+
+  
+
 
 
     <div class="table-responsive">
