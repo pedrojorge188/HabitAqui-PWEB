@@ -141,3 +141,12 @@ nav {
     #filterForm.show-filter {
         display: block;
     }
+
+
+#orderForm {
+    display: none;
+}
+
+    #orderForm.show-filter {
+        display: block;
+    }

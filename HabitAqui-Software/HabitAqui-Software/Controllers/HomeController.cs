@@ -1,8 +1,10 @@
 ﻿using HabitAqui_Software.Data;
 using HabitAqui_Software.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.IO.Pipelines;
 
 namespace HabitAqui_Software.Controllers
 {
@@ -11,50 +13,13 @@ namespace HabitAqui_Software.Controllers
 
         private readonly ApplicationDbContext _context;
 
-
         public HomeController(ApplicationDbContext context)
         {
             _context = context;
         }
-        
-        public IActionResult Index(int? page)
+        public IActionResult Index()
         {
-
-            int pageSize = 8;
-            int pageNumber = page ?? 1;
-
-            var habitacoesComLocador = _context.habitacaos.Include(h => h.locador).ToList();
-
-            var habitacoesComCategoria = _context.habitacaos.Include(h => h.category).ToList();
-
-            IQueryable<Habitacao> habitacaos = _context.habitacaos.Where(data => data.available == true);
-
-            var model = habitacoesComLocador.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-
-    
-            ViewBag.CurrentPage = pageNumber;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)habitacoesComLocador.Count() / pageSize);
-
-            return View(model);
-        }
-
-        public async Task<IActionResult> Details(int? id)
-        {
-
-            if (id == null || _context.habitacaos == null)
-            {
-                return NotFound();
-            }
-
-
-            var information = await _context.habitacaos.Include(h => h.locador).FirstOrDefaultAsync(m => m.Id == id);
-
-            if (information == null)
-            {
-                return NotFound();
-            }
-
-            return View(information);
+            return View();
         }
 
         public IActionResult Credits()
