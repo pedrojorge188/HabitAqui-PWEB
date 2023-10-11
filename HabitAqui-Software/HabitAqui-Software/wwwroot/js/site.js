@@ -5,8 +5,27 @@
 
 const toggleButton = document.getElementById('toggleSidebar');
 const sidebar = document.querySelector('.sidebar');
-
+const toggleThemeButton = document.getElementById('toggleThemeButton');
+const toggleButton = document.getElementById('toggleSidebar');
 let isSidebarVisible = true;
+let darkMode = true;
+
+
+toggleThemeButton.addEventListener('click', () => {
+    var body = document.body;
+
+    if (!darkMode) {
+        body.style.backgroundColor = "#343a40";
+        body.style.color = "#ffffff";
+        darkMode = true;
+
+    } else {
+        body.style.backgroundColor = "white";
+        body.style.color = "#000000";
+        darkMode = false;
+
+    }
+});
 
 toggleButton.addEventListener('click', () => {
 
