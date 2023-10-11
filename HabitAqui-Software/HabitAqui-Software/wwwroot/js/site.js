@@ -6,10 +6,8 @@
 const toggleButton = document.getElementById('toggleSidebar');
 const sidebar = document.querySelector('.sidebar');
 const toggleThemeButton = document.getElementById('toggleThemeButton');
-const toggleButton = document.getElementById('toggleSidebar');
 let isSidebarVisible = true;
 let darkMode = true;
-
 
 toggleThemeButton.addEventListener('click', () => {
     var body = document.body;
