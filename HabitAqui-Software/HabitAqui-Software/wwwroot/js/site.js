@@ -12,7 +12,7 @@ let darkMode = true;
 setTimeout(function () {
     document.querySelector('.preloader').style.display = 'none';
     preloader.classList.add('hidden');
-}, 2000); 
+}, 700); 
 
 toggleThemeButton.addEventListener('click', () => {
     var body = document.body;
