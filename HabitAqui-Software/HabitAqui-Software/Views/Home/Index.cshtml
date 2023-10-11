@@ -1,11 +1,95 @@
 ﻿@model IEnumerable<HabitAqui_Software.Models.Habitacao>
 @{
-    ViewData["Title"] = "Habitações";
-}
+    ViewData["Title"] = "Home";
+}    
 
 <div class="text-center">
     <h2 class="display-4">HabitAqui</h2>
-    <br />    <br />
-    
-    
+    <hr />
+    <br /><br />
+    <div class="d-flex flex-wrap justify-content-around m-2 p-4">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card bg-dark text-white">
+                    <img src="img/habitacoes.jpg" class="card-img-top img-fluid" alt="Habitações">
+                    <div class="card-body">
+                        <h3 class="card-title">Habitações</h3>
+                        <a asp-action="Index" asp-controller="Habitacoes" class="btn btn-primary tb-btn">Ver página</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card bg-dark text-white m-2">
+                    <img src="img/historico.jpg" class="card-img-top img-fluid" alt="Histórico de Alugueres">
+                    <div class="card-body">
+                        <h3 class="card-title">Histórico de Alugueres</h3>
+                        <button type="button" class="btn btn-primary tb-btn">Ver página</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card bg-dark text-white m-2">
+                    <img src="img/alugueres.jpg" class="card-img-top img-fluid"  alt="Gerir alugueres do locador">
+                    <div class="card-body">
+                        <h3 class="card-title">Gerir alugueres do locador</h3>
+                        <button type="button" class="btn btn-primary tb-btn">Ver página</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card bg-dark text-white m-2">
+                    <img src="img/parqueHabit.jpg" class="card-img-top img-fluid"  alt="Gerir parque de habitações do locador">
+                    <div class="card-body">
+                        <h3 class="card-title">Gerir habitações do locador</h3>
+                        <button type="button" class="btn btn-primary tb-btn">Ver página</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card bg-dark text-white m-2">
+                    <img src="img/funcionarios.jpg" class="card-img-top img-fluid" alt="Gestão de Funcionários">
+                    <div class="card-body">
+                        <h3 class="card-title">Gestão de Funcionários</h3>
+                        <button type="button" class="btn btn-primary tb-btn">Ver página</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card bg-dark text-white m-2">
+                    <img src="img/locadores.jpg" class="card-img-top img-fluid" alt="Gestão de locadores">
+                    <div class="card-body">
+                        <h3 class="card-title">Gestão de locadores</h3>
+                        <button type="button" class="btn btn-primary tb-btn">Ver página</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card bg-dark text-white m-2">
+                    <img src="img/categorias.jpg" class="card-img-top img-fluid" alt="Gestão de categorias">
+                    <div class="card-body">
+                        <h3 class="card-title">Gestão de categorias</h3>
+                        <button type="button" class="btn btn-primary tb-btn">Ver página</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card bg-dark text-white m-2">
+                    <img src="img/users.jpg" class="card-img-top img-fluid" alt="Gestão de utilizadores">
+                    <div class="card-body">
+                        <h3 class="card-title">Gestão de utilizadores</h3>
+                        <button type="button" class="btn btn-primary tb-btn">Ver página</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
+
