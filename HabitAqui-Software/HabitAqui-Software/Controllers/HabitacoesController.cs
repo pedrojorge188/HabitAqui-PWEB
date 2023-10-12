@@ -133,11 +133,6 @@ namespace HabitAqui_Software.Controllers
             return View(information);
         }
 
-        public IActionResult Credits()
-        {
-            return View();
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
