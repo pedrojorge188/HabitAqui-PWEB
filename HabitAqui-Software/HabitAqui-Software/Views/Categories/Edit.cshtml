@@ -1,0 +1,40 @@
+﻿@model HabitAqui_Software.Models.Category
+
+@{
+    ViewData["Title"] = "Editar Categorias";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+
+}<div class="container">
+    <h1>Editar categoria</h1>
+
+    <hr />
+    <br />
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="name" class="control-label"></label>
+                    <input asp-for="name" class="form-control" />
+                    <span asp-validation-for="name" class="text-danger"></span>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label asp-for="description" class="control-label"></label>
+                    <input asp-for="description" class="form-control" />
+                    <span asp-validation-for="description" class="text-danger"></span>
+                </div>
+                <br />
+                <div class="form-group">
+                    <a asp-action="Index" class="btn btn-outline-danger">Back to List</a>
+                    <button type="submit" class="btn btn-primary tb-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+    </div>
+</div>

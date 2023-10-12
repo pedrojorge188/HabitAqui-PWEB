@@ -33,6 +33,7 @@ namespace HabitAqui_Software.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Search(string? location,
             int? category,
             int? minimumRentalPeriod,
@@ -130,11 +131,6 @@ namespace HabitAqui_Software.Controllers
 
 
             return View(information);
-        }
-
-        public IActionResult Credits()
-        {
-            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

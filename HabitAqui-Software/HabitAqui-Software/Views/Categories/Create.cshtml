@@ -1,0 +1,37 @@
+﻿@model HabitAqui_Software.Models.Category
+
+@{
+    ViewData["Title"] = "Nova categoria";
+}
+
+<div class="container">
+    <h1>Nova categoria</h1>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="name" class="control-label"></label>
+                    <input asp-for="name" class="form-control" />
+                    <span asp-validation-for="name" class="text-danger"></span>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label asp-for="description" class="control-label"></label>
+                    <input asp-for="description" class="form-control" />
+                    <span asp-validation-for="description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <br />
+                    <a asp-action="Index" class="btn btn-outline-danger">Back to List</a>
+                    <input type="submit" value="Create" class="btn btn-primary tb-btn" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <br />
+
+</div>
