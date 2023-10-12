@@ -60,10 +60,13 @@ namespace HabitAqui_Software.Controllers
         {
             if (ModelState.IsValid)
             {
+                ViewBag.SuccessMessage = "Categoria adicionada com sucesso";
                 _context.Add(category);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View("index", await _context.Categories.ToListAsync());
             }
+
+            ViewBag.ErrorMessage = "ERRO: Categoria não foi removida";
             return View(category);
         }
 
@@ -99,13 +102,14 @@ namespace HabitAqui_Software.Controllers
             {
                 try
                 {
+                    ViewBag.SuccessMessage = "Categoria editada com sucesso";
                     _context.Update(category);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CategoryExists(category.Id))
-                    {
+                    if (!CategoryExists(category.Id)) { 
+                        ViewBag.ErrorMessage = "ERRO: Categoria não existe";
                         return NotFound();
                     }
                     else
@@ -113,7 +117,7 @@ namespace HabitAqui_Software.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return View("Index", await _context.Categories.ToListAsync());
             }
             return View(category);
         }
@@ -136,24 +140,36 @@ namespace HabitAqui_Software.Controllers
             return View(category);
         }
 
-        // POST: Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Categories == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.Categories'  is null.");
-            }
-            var category = await _context.Categories.FindAsync(id);
-            if (category != null)
-            {
-                _context.Categories.Remove(category);
+                ViewBag.ErrorMessage = "Entity set 'ApplicationDbContext.Categories' is null.";
+                return View(await _context.Categories.FindAsync(id));
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var isForeignKeyInUse = _context.habitacaos.Any(h => h.category.Id == id);
+
+            if (isForeignKeyInUse)
+            {
+                ViewBag.ErrorMessage = "ERRO: Categoria associada a uma habitação";
+                return View(await _context.Categories.FindAsync(id));
+            }
+
+            var category = await _context.Categories.FindAsync(id);
+
+            if (category != null)
+            {
+                ViewBag.SuccessMessage = "Categoria removida com sucesso";
+                _context.Categories.Remove(category);
+                await _context.SaveChangesAsync();
+            }
+
+            return View("Index", await _context.Categories.ToListAsync());
         }
+
 
         private bool CategoryExists(int id)
         {

@@ -11,6 +11,7 @@
 </head>
 <body>
 
+
     <div class="container-fluid">
         <div class="row">
 
@@ -20,6 +21,20 @@
                 </div>
             </div>
 
+            @if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+            {   
+                <div class="alert alert-success text-center" role="alert" style="z-index: 999">
+                    @ViewBag.SuccessMessage
+                </div>
+
+            }
+            @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+            {
+                <div class="alert alert-danger text-center" role="alert" style="z-index: 999">
+                    @ViewBag.ErrorMessage
+                </div>
+
+            }
             <button id="toggleSidebar" class="btn btn-dark d-md-none">
                 <i class="fas fa-bars"></i>
             </button>
