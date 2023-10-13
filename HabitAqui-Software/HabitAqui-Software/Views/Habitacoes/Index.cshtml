@@ -101,19 +101,19 @@
                     {
                         <tr>
                             <td>
-                                @Html.DisplayFor(modelItem => item.location)
+                                @item.location
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.locador.name)
+                                @item.locador.name
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.category.name)
+                                @item.category.name
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.rentalCost) €
+                                @item.rentalCost €
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.grade) <i class="fa-solid fa-star"></i>
+                                @item.grade <i class="fa-solid fa-star"></i>
                             </td>
                             <td style="padding:10px">
                                 <a asp-action="Details" class="btn btn-sm btn-primary tb-btn" asp-route-id="@item.Id"> <i class="fa-sharp fa-solid fa-plus" style="color: #ffffff; margin-right: 5px"></i>Informação</a>
