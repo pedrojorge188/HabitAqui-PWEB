@@ -24,7 +24,8 @@ namespace HabitAqui_Software.Controllers
 
             IQueryable<Habitacao> query = _context.habitacaos
                            .Include(h => h.locador)
-                           .Include(h => h.category);
+                           .Include(h => h.category)
+                            ;
 
             var results = await query.ToListAsync();
 

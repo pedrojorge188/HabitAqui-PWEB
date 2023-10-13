@@ -11,5 +11,7 @@ namespace HabitAqui_Software.Models
 
         [Display(Name = "Description", Prompt = "Insert description for the category...")]
         public string description { get; set; }
+
+        public ICollection<Habitacao>? habitacoes { get; set; }
     }
 }
