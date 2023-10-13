@@ -14,6 +14,15 @@ setTimeout(function () {
     preloader.classList.add('hidden');
 }, 350); 
 
+
+setTimeout(function () {
+        $(".alert-danger").slideUp(500);
+    }, 5000); // 10 segundos
+
+    setTimeout(function () {
+        $(".alert-success").slideUp(500);
+    }, 5000); // 10 segundos
+
 toggleThemeButton.addEventListener('click', () => {
     var body = document.body;
 
