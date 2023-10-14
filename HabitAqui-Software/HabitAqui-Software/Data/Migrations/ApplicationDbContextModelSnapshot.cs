@@ -427,11 +427,11 @@ namespace HabitAqui_Software.Data.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
+                    b.Property<bool>("available")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("bornDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<bool>("confirmed")
-                        .HasColumnType("bit");
 
                     b.Property<string>("firstName")
                         .IsRequired()
@@ -496,7 +496,7 @@ namespace HabitAqui_Software.Data.Migrations
                         .HasForeignKey("receiveStatusId");
 
                     b.HasOne("HabitAqui_Software.Models.User", "user")
-                        .WithMany("contracts")
+                        .WithMany("rentalContracts")
                         .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -577,7 +577,7 @@ namespace HabitAqui_Software.Data.Migrations
 
             modelBuilder.Entity("HabitAqui_Software.Models.User", b =>
                 {
-                    b.Navigation("contracts");
+                    b.Navigation("rentalContracts");
                 });
 #pragma warning restore 612, 618
         }
