@@ -14,7 +14,7 @@ namespace HabitAqui_Software.Models
         public Category? category { get; set; }
 
         [Display(Name = "RentalCost", Prompt = "Insert rental cost...")]
-        public decimal rentalCost { get; set; }
+        public float rentalCost { get; set; }
 
         [Display(Name = "Start Date", Prompt = "Choose startDateAvailability ...")]
         public DateTime startDateAvailability { get; set; }

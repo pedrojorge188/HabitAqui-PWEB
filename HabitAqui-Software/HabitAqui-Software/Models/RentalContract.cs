@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace HabitAqui_Software.Models
 {
@@ -21,6 +22,12 @@ namespace HabitAqui_Software.Models
         [Display(Name = "Delivery habitacao to a client")]
         public ReceiveStatus? deliveryStatus { get; set; }
 
+        public string userId { get; set; }
+
+        [Display(Name = "User that did the reservation")]
+        public  User? user { get; set; }
+
+        [DefaultValue(false)]
         public Boolean isConfirmed { get; set; }
     }
 }
