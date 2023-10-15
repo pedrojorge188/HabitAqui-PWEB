@@ -13,12 +13,10 @@ namespace HabitAqui_Software.Controllers
     {
 
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<User> _userManager;
 
-        public HabitacoesController(ApplicationDbContext context, UserManager<User> userManager)
+        public HabitacoesController(ApplicationDbContext context)
         {
             this._context = context;
-            this._userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
