@@ -17,11 +17,11 @@ namespace HabitAqui_Software.Models
         public int nif {  get; set; }
         public Locador? locador { get; set; }
 
-        [Display(Name = "Confirmed")]
-        public bool confirmed { get; set; }
         public DateTime? registerDate { get; set; }
 
-        public ICollection<RentalContract>? contracts { get; set; }  
+        [Display(Name = "available")]
+        public Boolean available { get; set; }
+        public ICollection<RentalContract>? rentalContracts { get; set; }  
 
     }
 }

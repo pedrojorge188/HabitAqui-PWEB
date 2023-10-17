@@ -1,5 +1,6 @@
 ﻿using HabitAqui_Software.Data;
 using HabitAqui_Software.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,7 @@ namespace HabitAqui_Software.Controllers
 
         public HabitacoesController(ApplicationDbContext context)
         {
-            _context = context;
+            this._context = context;
         }
 
         public async Task<IActionResult> Index()
