@@ -1,0 +1,61 @@
+﻿@model HabitAqui_Software.Models.Locador
+
+@{
+    ViewData["Title"] = "Editar locador";
+}
+
+<div class="container">
+    <h1>Editar Locador</h1>
+
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="name" class="control-label"></label>
+                    <input asp-for="name" class="form-control" />
+                    <span asp-validation-for="name" class="text-danger"></span>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label asp-for="company" class="control-label"></label>
+                    <input asp-for="company" class="form-control" />
+                    <span asp-validation-for="company" class="text-danger"></span>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label asp-for="address" class="control-label"></label>
+                    <input asp-for="address" class="form-control" />
+                    <span asp-validation-for="address" class="text-danger"></span>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label asp-for="email" class="control-label"></label>
+                    <input asp-for="email" class="form-control" />
+                    <span asp-validation-for="email" class="text-danger"></span>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label asp-for="enrollmentState" class="control-label"></label>
+                    <select asp-for="enrollmentState" class="form-control">
+                        <option value="*">Atual (@ViewBag.CurrentEnroll)</option>
+                        @foreach (var enrol in ViewData["Enrollments"] as List<Enrollment>)
+                        {
+                            <option value="@enrol">@enrol.name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="enrollmentState" class="text-danger"></span>
+                </div>
+
+                <br />
+                <div class="form-group">
+                    <a asp-action="Index" class="btn btn-outline-danger">Voltar</a>
+                    <button type="submit" class="btn btn-primary tb-btn">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>

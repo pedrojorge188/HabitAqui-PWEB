@@ -1,0 +1,61 @@
+﻿@model IEnumerable<HabitAqui_Software.Models.Locador>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Locadores</h1>
+<hr />
+<br />
+<p>
+    <a asp-action="Create" class="btn btn-primary tb-btn">Adicionar locador</a>
+</p>
+<table class="table table-responsive table text-center">
+    <thead>
+        <tr>
+            <th>
+              nome
+            </th>
+            <th>
+               empresa
+            </th>
+            <th>
+              Morada/localização
+            </th>
+            <th>
+              email
+            </th>
+            <th>
+                Estado de subscrição
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.company)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.email)
+            </td>
+            <td>
+
+            @Html.DisplayFor(modelItem => item.enrollmentState.name)
+            </td>
+            <td>
+                    <a asp-action="Edit" class="btn btn-outline-dark rounded-circle" asp-route-id="@item.Id"> <i class="fa-solid fa-pencil"></i></a> 
+                    <a asp-action="Delete" class="btn btn-outline-dark rounded-circle" asp-route-id="@item.Id"><i class="fa-sharp fa-solid fa-trash"></i></a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
