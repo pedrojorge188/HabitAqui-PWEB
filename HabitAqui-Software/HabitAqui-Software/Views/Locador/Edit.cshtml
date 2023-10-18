@@ -1,4 +1,5 @@
-﻿@model HabitAqui_Software.Models.Locador
+﻿@using HabitAqui_Software.Models;
+@model HabitAqui_Software.Models.Locador
 
 @{
     ViewData["Title"] = "Editar locador";
@@ -39,13 +40,7 @@
                 <br />
                 <div class="form-group">
                     <label asp-for="enrollmentState" class="control-label"></label>
-                    <select asp-for="enrollmentState" class="form-control">
-                        <option value="*">Atual (@ViewBag.CurrentEnroll)</option>
-                        @foreach (var enrol in ViewData["Enrollments"] as List<Enrollment>)
-                        {
-                            <option value="@enrol">@enrol.name</option>
-                        }
-                    </select>
+                    <select asp-for="enrollmentState" asp-items="ViewBag.Enrollments" class="form-control"></select>
                     <span asp-validation-for="enrollmentState" class="text-danger"></span>
                 </div>
 

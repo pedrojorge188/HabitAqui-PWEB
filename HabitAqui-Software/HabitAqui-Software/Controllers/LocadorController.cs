@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using HabitAqui_Software.Data;
 using HabitAqui_Software.Models;
 using Microsoft.AspNetCore.Identity;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace HabitAqui_Software.Controllers
 {
@@ -23,10 +24,41 @@ namespace HabitAqui_Software.Controllers
         // GET: Locador
         public async Task<IActionResult> Index()
         {
-            ViewData["Enrollments"] = _context.enrollments.ToList();
+            var enrollments = _context.enrollments.ToList();
+            ViewBag.StatusInfo = enrollments;
+            ViewBag.Enrollments = new SelectList(enrollments, "Id", "name");
             return _context.locador != null ?
                         View(await _context.locador.Include(h => h.enrollmentState).ToListAsync()) :
                         Problem("Entity set 'ApplicationDbContext.locador'  is null.");
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Search(string? name, int? enrollmentState, bool? sortByAlphabet)
+        {
+            IQueryable<Locador> allLocadores = _context.locador.Include(l => l.enrollmentState);
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                allLocadores = allLocadores.Where(locador => locador.name.Contains(name));
+            }
+
+            if (sortByAlphabet.HasValue && sortByAlphabet.Value)
+            {
+                allLocadores = allLocadores.OrderBy(locador => locador.name);
+            }
+
+            if (enrollmentState.HasValue && enrollmentState.Value != 0)
+            {
+                allLocadores = allLocadores.Where(locador => locador.enrollmentState.Id == enrollmentState);
+            }
+
+            var result = await allLocadores.ToListAsync();
+
+            var enrollments = _context.enrollments.ToList();
+            ViewBag.StatusInfo = enrollments;
+            ViewBag.Enrollments = new SelectList(enrollments, "Id", "name");
+
+            return View("Index", result);
         }
 
         // GET: Locador/Details/5
@@ -81,16 +113,8 @@ namespace HabitAqui_Software.Controllers
 
             var locador = await _context.locador.FindAsync(id);
 
-            ViewData["Enrollments"] = _context.enrollments.ToList();
-
-            try
-            {
-                ViewBag.CurrentEnroll = locador.enrollmentState.name;
-
-            }catch(Exception ex)
-            {
-                ViewBag.CurrentEnroll = "Não tem!";
-            }
+            var enrollments = _context.enrollments.ToList();
+            ViewBag.Enrollments = new SelectList(enrollments, "Id", "name");
 
             if (locador == null)
             {
@@ -129,6 +153,10 @@ namespace HabitAqui_Software.Controllers
                         throw;
                     }
                 }
+
+                var enrollments = _context.enrollments.ToList();
+                ViewBag.Enrollments = new SelectList(enrollments, "Id", "name");
+
                 return RedirectToAction(nameof(Index));
             }
             return View(locador);
@@ -179,7 +207,9 @@ namespace HabitAqui_Software.Controllers
                 _context.locador.Remove(locador);
             }
 
-
+            var enrollments = _context.enrollments.ToList();
+            ViewBag.StatusInfo = enrollments;
+            ViewBag.Enrollments = new SelectList(enrollments, "Id", "name");
 
             await _context.SaveChangesAsync();
             return View("Index", await _context.locador.Include(it=>it.enrollmentState).ToListAsync());
