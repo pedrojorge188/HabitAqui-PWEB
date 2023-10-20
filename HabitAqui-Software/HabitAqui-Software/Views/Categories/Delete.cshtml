@@ -24,8 +24,8 @@
             </dd>
         </dl>
         <br />
-        <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteModal">Delete</button> 
-        <a asp-action="Index" class="btn btn-primary tb-btn">Back to List</a>
+        <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteModal">Eliminar</button> 
+        <a asp-action="Index" class="btn btn-primary tb-btn">Voltar</a>
     </div>
 </div>
 
@@ -47,9 +47,9 @@
             <div class="modal-footer">
                 <form asp-action="Delete">
                     <input type="hidden" asp-for="Id" />
-                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                    <button type="submit" class="btn btn-danger">Sim, Eliminar</button>
                 </form>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Não</button>
             </div>
         </div>
     </div>
