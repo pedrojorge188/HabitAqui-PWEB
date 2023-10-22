@@ -107,7 +107,8 @@
                                 @item.locador.name
                             </td>
                             <td>
-                                @item.category.name
+                                @if(item.category != null)
+                                    @item.category.name
                             </td>
                             <td>
                                 @item.rentalCost €

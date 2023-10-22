@@ -1,0 +1,153 @@
+﻿@model IEnumerable<HabitAqui_Software.Models.Habitacao>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Parque de habitações do locador - @ViewBag.locadorName</h1>
+
+<hr />
+<br />
+
+@using (Html.BeginForm("Search", "ParqueHabitacoes", FormMethod.Post, new { @class = "rounded p-4 mb-5 shadow bg-dark" }))
+{
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="price">Tipos de habitação</label>
+                <select name="category" class="form-control">
+                    <option value="0">Todos os Tipos</option>
+                    @foreach (var h in ViewBag.cat)
+                    {
+                        <option value="@h.Id">@h.name</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+                <label for="price">Ordenar por Preço:</label>
+                <select name="price" class="form-control">
+                    <option value="defaultPrice">Nenhum</option>
+                    <option value="lowPrice">Preço mais baixo</option>
+                    <option value="highPrice">Preço mais alto</option>
+                </select>
+            <br>
+        </div>
+        <div class="col-md-3">
+            <label for="grade">Ordenar por Classificação:</label>
+            <select name="grade" class="form-control ">
+                <option value="defaultGrade">Nenhum</option>
+                <option value="lowClassification">Classificação mais baixa</option>
+                <option value="highClassification">Classificação mais alta</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-check">
+            <input type="checkbox" name="disp" class="form-check-input" id=" sortByAlphabet">
+            <label class="form-check-label" for="disp">Disponivel</label>
+        </div>
+
+    </div>
+    <div class=" mt-2">
+        <button type="submit" value="Search" class="btn btn-primary btn-sm tb-btn">Pesquisar</button>
+    </div>
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-primary tb-btn">Criar habitação</a>
+</p>
+
+<div class="table-responsive">
+    <table class="table table-striped text-center p-4">
+        <thead>
+            <tr>
+                <th>
+                   Localização
+                </th>
+                <th>
+                   Custo (renda)
+                </th>
+                <th>
+                    Data Miníma da renda
+                </th>
+                <th>
+                    Data Máxima da renda
+                </th>
+                <th>
+                    Período Minímo da renda (Dias)
+                </th>
+                <th>
+                    Período Máximo da renda 
+                </th>
+                <th>
+                    Disponibilidade
+                </th>
+                <th>
+                    Categoria
+                </th>
+                <th>
+                   Avaliação 
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+           @if (Model.Any())
+            {
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.location)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.rentalCost) €
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.startDateAvailability)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.endDateAvailability)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.minimumRentalPeriod)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.maximumRentalPeriod)
+                        </td>
+                        <td>
+                            @if (item.available == true)
+                            {
+                                <p>Sim</p>
+                            }
+                            else
+                            {
+                                <p>Não</p>
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.category.name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.grade) <i class="fa-solid fa-star"></i>
+                        </td>
+                        <td>
+                            <a asp-action="Edit" class="btn btn-outline-dark rounded-circle" asp-route-id="@item.Id"> <i class="fa-solid fa-pencil"></i></a>
+                            <a asp-action="Details" class="btn btn-outline-dark rounded-circle" asp-route-id="@item.Id"><i class="fa-solid fa-eye"></i></a>
+                            <a asp-action="Delete" class="btn btn-outline-dark rounded-circle " asp-route-id="@item.Id"><i class="fa-sharp fa-solid fa-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+
+            }
+            else
+            {
+                <tr>
+                    <td colspan="9">Nenhum item encontrado.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
