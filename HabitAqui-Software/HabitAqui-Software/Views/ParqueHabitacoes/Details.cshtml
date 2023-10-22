@@ -1,0 +1,66 @@
+﻿@model HabitAqui_Software.Models.Habitacao
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Habitacao</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.location)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.location)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.rentalCost)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.rentalCost)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.startDateAvailability)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.startDateAvailability)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.endDateAvailability)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.endDateAvailability)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.minimumRentalPeriod)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.minimumRentalPeriod)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.maximumRentalPeriod)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.maximumRentalPeriod)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.available)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.available)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.grade)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.grade)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary tb-btn">Edit</a> 
+    <a asp-action="Index" class="btn btn-outline-danger">Back to List</a>
+</div>

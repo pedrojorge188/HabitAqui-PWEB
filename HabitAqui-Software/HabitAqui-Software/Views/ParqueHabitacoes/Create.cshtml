@@ -1,0 +1,62 @@
+﻿@model HabitAqui_Software.Models.Habitacao
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Criar Habitação</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="location" class="control-label"></label>
+                <input asp-for="location" class="form-control" required="true"/>
+                <span asp-validation-for="location" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label asp-for="rentalCost" class="control-label"></label>
+                <input asp-for="rentalCost" type="number" class="form-control" required="true" />
+                <span asp-validation-for="rentalCost" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label asp-for="startDateAvailability" class="control-label"></label>
+                <input asp-for="startDateAvailability" class="form-control" required="true" />
+                <span asp-validation-for="startDateAvailability" class="text-danger"></span>
+            </div>    <br />
+            <div class="form-group">
+                <label asp-for="endDateAvailability" class="control-label"></label>
+                <input asp-for="endDateAvailability" class="form-control" required="true" />
+                <span asp-validation-for="endDateAvailability" class="text-danger"></span>
+            </div>    <br />
+            <div class="form-group">
+                <label asp-for="minimumRentalPeriod" class="control-label"></label> (Dias)
+                <input asp-for="minimumRentalPeriod" class="form-control" required="true" />
+                <span asp-validation-for="minimumRentalPeriod" class="text-danger"></span>
+            </div>    <br />
+            <div class="form-group">
+                <label asp-for="maximumRentalPeriod" class="control-label"></label> (Dias)
+                <input asp-for="maximumRentalPeriod" class="form-control" required="true" />
+                <span asp-validation-for="maximumRentalPeriod" class="text-danger"></span>
+            </div>    <br />
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="available" /> @Html.DisplayNameFor(model => model.available)
+                </label>
+            </div>    <br />
+            <div class="form-group">
+                <label asp-for="category" class="control-label"></label>
+                <select asp-for="category" asp-items="ViewBag.Category" class="form-control"></select>
+                <span asp-validation-for="category" class="text-danger"></span>
+            </div> <br />
+            <div class="form-group">
+                <a asp-action="Index" class="btn btn-outline-danger">Voltar</a>
+                <input type="submit" value="Create" class="btn btn-primary tb-btn" />
+            </div>
+        </form>
+    </div>
+</div>
