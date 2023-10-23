@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HabitAqui_Software.Data;
 using HabitAqui_Software.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace HabitAqui_Software.Controllers
 {
@@ -20,7 +21,8 @@ namespace HabitAqui_Software.Controllers
             _context = context;
 
             //locador estatico de testes
-            _locador = _context.locador.FirstOrDefault(l => l.Id == 7);
+            _locador = _context.locador.FirstOrDefault(l => l.Id == 6);
+  
         }
 
        private string getLocadorName()
@@ -138,7 +140,7 @@ namespace HabitAqui_Software.Controllers
         public async Task<IActionResult> Create([Bind("Id,location," +
             "rentalCost,startDateAvailability,endDateAvailability," +
             "minimumRentalPeriod,maximumRentalPeriod," +
-            "available,category")] Habitacao habitacao)
+            "available,categoryId")] Habitacao habitacao)
         {
             var cat = _context.Categories.ToList();
             ViewBag.cat = cat;
@@ -178,7 +180,7 @@ namespace HabitAqui_Software.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,location,rentalCost,startDateAvailability,endDateAvailability,minimumRentalPeriod,maximumRentalPeriod,available,grade,category")] Habitacao habitacao)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,location,rentalCost,startDateAvailability,endDateAvailability,minimumRentalPeriod,maximumRentalPeriod,available,grade,categoryId")] Habitacao habitacao)
         {
 
             if (id != habitacao.Id)

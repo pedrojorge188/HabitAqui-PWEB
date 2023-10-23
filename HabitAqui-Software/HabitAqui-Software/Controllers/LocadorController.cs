@@ -82,7 +82,9 @@ namespace HabitAqui_Software.Controllers
         // GET: Locador/Create
         public IActionResult Create()
         {
-   
+            var enrollments = _context.enrollments.ToList();
+            ViewBag.Enrollments = new SelectList(enrollments, "Id", "name");
+
             return View();
         }
 
@@ -91,8 +93,11 @@ namespace HabitAqui_Software.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,name,company,address,email")] Locador locador)
+        public async Task<IActionResult> Create([Bind("Id,name,company,address,email,enrollmentStateId")] Locador locador)
         {
+            var enrollments = _context.enrollments.ToList();
+            ViewBag.Enrollments = new SelectList(enrollments, "Id", "name");
+
             if (ModelState.IsValid)
             {
                 _context.Add(locador);
@@ -128,7 +133,7 @@ namespace HabitAqui_Software.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,name,company,address,email,enrollmentState")] Locador locador)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,name,company,address,email,enrollmentStateId")] Locador locador)
         {
             if (id != locador.Id)
             {

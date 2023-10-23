@@ -10,7 +10,9 @@ namespace HabitAqui_Software.Models
         [Display(Name = "Location", Prompt = "Insert location...")]
         public string location { get; set; }
 
-        [Display(Name = "Model", Prompt = "Insert vehicle model...")]
+        public int? categoryId { get; set; }
+
+        [Display(Name = "Model", Prompt = "Insert category...")]
         public Category? category { get; set; }
 
         [Display(Name = "RentalCost", Prompt = "Insert rental cost...")]

@@ -145,7 +145,7 @@ namespace HabitAqui_Software.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("enrollmentStateId")
+                    b.Property<int>("enrollmentStateId")
                         .HasColumnType("int");
 
                     b.Property<string>("name")
@@ -476,7 +476,9 @@ namespace HabitAqui_Software.Data.Migrations
                 {
                     b.HasOne("HabitAqui_Software.Models.Enrollment", "enrollmentState")
                         .WithMany()
-                        .HasForeignKey("enrollmentStateId");
+                        .HasForeignKey("enrollmentStateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("enrollmentState");
                 });
