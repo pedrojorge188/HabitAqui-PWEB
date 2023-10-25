@@ -15,13 +15,18 @@ namespace HabitAqui_Software.Models
 
         [Display(Name = "Nif", Prompt = "Insert nif...")]
         public int nif {  get; set; }
-        public Locador? locador { get; set; }
 
         public DateTime? registerDate { get; set; }
 
         [Display(Name = "available")]
         public Boolean available { get; set; }
+
+
         public ICollection<RentalContract>? rentalContracts { get; set; }  
+
+
+        public int? locadorId { get; set; }
+        public Locador? locador { get; set; }
 
     }
 }

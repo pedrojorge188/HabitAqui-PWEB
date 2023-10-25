@@ -147,7 +147,7 @@ namespace HabitAqui_Software.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("enrollmentStateId")
+                    b.Property<int?>("enrollmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("name")
@@ -156,7 +156,7 @@ namespace HabitAqui_Software.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("enrollmentStateId");
+                    b.HasIndex("enrollmentId");
 
                     b.ToTable("locador");
                 });
@@ -476,11 +476,11 @@ namespace HabitAqui_Software.Data.Migrations
 
             modelBuilder.Entity("HabitAqui_Software.Models.Locador", b =>
                 {
-                    b.HasOne("HabitAqui_Software.Models.Enrollment", "enrollmentState")
+                    b.HasOne("HabitAqui_Software.Models.Enrollment", "enrollment")
                         .WithMany()
-                        .HasForeignKey("enrollmentStateId");
+                        .HasForeignKey("enrollmentId");
 
-                    b.Navigation("enrollmentState");
+                    b.Navigation("enrollment");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.RentalContract", b =>

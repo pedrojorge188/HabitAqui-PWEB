@@ -34,7 +34,13 @@
                     <label asp-for="email" class="control-label"></label>
                     <input asp-for="email" class="form-control" />
                     <span asp-validation-for="email" class="text-danger"></span>
+                </div> <br />
+                <div class="form-group">
+                    <label asp-for="enrollmentId" class="control-label"></label>
+                    <select asp-for="enrollmentId" asp-items="ViewBag.Enrollments" class="form-control"></select>
+                    <span asp-validation-for="enrollmentId" class="text-danger"></span>
                 </div>
+
                 <br />
                 <br />
                 <div class="form-group">

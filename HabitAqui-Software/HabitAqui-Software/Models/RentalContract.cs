@@ -13,21 +13,23 @@ namespace HabitAqui_Software.Models
         [Display(Name = "End Date")]
         public DateTime endDate { get; set; }
 
-        [Display(Name = "Habitacao to rent")]
-        public Habitacao? habitacao { get; set; }
-
-        [Display(Name = "Delivery habitacao from a client")]
-        public DeliveryStatus? receiveStatus { get; set; }
-
-        [Display(Name = "Delivery habitacao to a client")]
-        public ReceiveStatus? deliveryStatus { get; set; }
-
-        public string userId { get; set; }
-
-        [Display(Name = "User that did the reservation")]
-        public  User? user { get; set; }
-
         [DefaultValue(false)]
         public Boolean isConfirmed { get; set; }
+
+
+        public int? HabitacaoId { get; set; }
+        public Habitacao? habitacao { get; set; }
+
+
+        public int? DeliveryStatusId { get; set; }
+        public DeliveryStatus? deliveryStatus { get; set; }
+
+
+        public int? ReceiveStatusId { get; set; }
+        public ReceiveStatus? receiveStatus { get; set; }
+
+        
+        public int? UserId { get; set; }
+        public User? user { get; set; }
     }
 }

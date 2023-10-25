@@ -11,5 +11,8 @@ namespace HabitAqui_Software.Models
 
         [Display(Name = "desc of Enrollment")]
         public string desc { get; set; }
+
+
+        public ICollection<Locador> Locadores { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace HabitAqui_Software.Controllers
     public class LocadorController : Controller
     {
         private readonly ApplicationDbContext _context;
-
+        
         public LocadorController(ApplicationDbContext context)
         {
             _context = context;
@@ -28,14 +28,14 @@ namespace HabitAqui_Software.Controllers
             ViewBag.StatusInfo = enrollments;
             ViewBag.Enrollments = new SelectList(enrollments, "Id", "name");
             return _context.locador != null ?
-                        View(await _context.locador.Include(h => h.enrollmentState).ToListAsync()) :
+                        View(await _context.locador.Include(h => h.enrollment).ToListAsync()) :
                         Problem("Entity set 'ApplicationDbContext.locador'  is null.");
         }
 
         [HttpPost]
-        public async Task<ActionResult> Search(string? name, int? enrollmentState, bool? sortByAlphabet)
+        public async Task<ActionResult> Search(string? name, int? enrollment, bool? sortByAlphabet)
         {
-            IQueryable<Locador> allLocadores = _context.locador.Include(l => l.enrollmentState);
+            IQueryable<Locador> allLocadores = _context.locador.Include(l => l.enrollment);
 
             if (!string.IsNullOrEmpty(name))
             {
@@ -47,9 +47,9 @@ namespace HabitAqui_Software.Controllers
                 allLocadores = allLocadores.OrderBy(locador => locador.name);
             }
 
-            if (enrollmentState.HasValue && enrollmentState.Value != 0)
+            if (enrollment.HasValue && enrollment.Value != 0)
             {
-                allLocadores = allLocadores.Where(locador => locador.enrollmentState.Id == enrollmentState);
+                allLocadores = allLocadores.Where(locador => locador.enrollment.Id == enrollment);
             }
 
             var result = await allLocadores.ToListAsync();
@@ -82,7 +82,9 @@ namespace HabitAqui_Software.Controllers
         // GET: Locador/Create
         public IActionResult Create()
         {
-   
+            var enrollments = _context.enrollments.ToList();
+            ViewBag.Enrollments = new SelectList(enrollments, "Id", "name");
+
             return View();
         }
 
@@ -91,8 +93,11 @@ namespace HabitAqui_Software.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,name,company,address,email")] Locador locador)
+        public async Task<IActionResult> Create([Bind("Id,name,company,address,email,enrollmentId")] Locador locador)
         {
+            var enrollments = _context.enrollments.ToList();
+            ViewBag.Enrollments = new SelectList(enrollments, "Id", "name");
+
             if (ModelState.IsValid)
             {
                 _context.Add(locador);
@@ -128,7 +133,7 @@ namespace HabitAqui_Software.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,name,company,address,email,enrollmentState")] Locador locador)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,name,company,address,email,enrollmentId")] Locador locador)
         {
             if (id != locador.Id)
             {
@@ -136,28 +141,29 @@ namespace HabitAqui_Software.Controllers
             }
 
             if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(locador);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!LocadorExists(locador.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+            {   
+
+                _context.Update(locador);
+                await _context.SaveChangesAsync();
+
+                ViewBag.SuccessMessage = "Locador editado com sucesso";
 
                 var enrollments = _context.enrollments.ToList();
+                ViewBag.StatusInfo = enrollments;
                 ViewBag.Enrollments = new SelectList(enrollments, "Id", "name");
 
-                return RedirectToAction(nameof(Index));
+                return View("Index", await _context.locador.Include(h => h.enrollment).ToListAsync());
+            }
+            else
+            {
+                // Coleta as mensagens de erro do ModelState
+                var erros = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+
+                // Exibe as mensagens de erro no console
+                foreach (var erro in erros)
+                {
+                    Console.WriteLine("Erro de validação: " + erro);
+                }
             }
             return View(locador);
         }
@@ -212,12 +218,13 @@ namespace HabitAqui_Software.Controllers
             ViewBag.Enrollments = new SelectList(enrollments, "Id", "name");
 
             await _context.SaveChangesAsync();
-            return View("Index", await _context.locador.Include(it=>it.enrollmentState).ToListAsync());
+            return View("Index", await _context.locador.Include(it=>it.enrollment).ToListAsync());
         }
 
         private bool LocadorExists(int id)
         {
             return (_context.locador?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+        
     }
 }

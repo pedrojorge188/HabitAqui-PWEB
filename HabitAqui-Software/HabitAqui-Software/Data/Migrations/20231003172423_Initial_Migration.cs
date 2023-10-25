@@ -71,14 +71,14 @@ namespace HabitAqui_Software.Data.Migrations
                     company = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    enrollmentStateId = table.Column<int>(type: "int", nullable: true)
+                    enrollmentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_locador", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_locador_enrollments_enrollmentStateId",
-                        column: x => x.enrollmentStateId,
+                        name: "FK_locador_enrollments_enrollmentId",
+                        column: x => x.enrollmentId,
                         principalTable: "enrollments",
                         principalColumn: "Id");
                 });
@@ -160,9 +160,9 @@ namespace HabitAqui_Software.Data.Migrations
                 column: "locadorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_locador_enrollmentStateId",
+                name: "IX_locador_enrollmentId",
                 table: "locador",
-                column: "enrollmentStateId");
+                column: "enrollmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_rentalContracts_deliveryStatusId",
