@@ -4,6 +4,7 @@ using HabitAqui_Software.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HabitAqui_Software.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231025142722_Normalize2")]
+    partial class Normalize2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,7 +42,7 @@ namespace HabitAqui_Software.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.DeliveryStatus", b =>
@@ -60,7 +62,7 @@ namespace HabitAqui_Software.Data.Migrations
                         .IsUnique()
                         .HasFilter("[RentalContractId] IS NOT NULL");
 
-                    b.ToTable("deliveryStatus", (string)null);
+                    b.ToTable("deliveryStatus");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.Enrollment", b =>
@@ -81,7 +83,7 @@ namespace HabitAqui_Software.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("enrollments", (string)null);
+                    b.ToTable("enrollments");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.Habitacao", b =>
@@ -132,7 +134,7 @@ namespace HabitAqui_Software.Data.Migrations
 
                     b.HasIndex("locadorId");
 
-                    b.ToTable("habitacaos", (string)null);
+                    b.ToTable("habitacaos");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.Locador", b =>
@@ -142,6 +144,9 @@ namespace HabitAqui_Software.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("EnrollmentId")
+                        .HasColumnType("int");
 
                     b.Property<string>("address")
                         .IsRequired()
@@ -155,18 +160,15 @@ namespace HabitAqui_Software.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("enrollmentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("enrollmentId");
+                    b.HasIndex("EnrollmentId");
 
-                    b.ToTable("locador", (string)null);
+                    b.ToTable("locador");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.ReceiveStatus", b =>
@@ -186,7 +188,7 @@ namespace HabitAqui_Software.Data.Migrations
                         .IsUnique()
                         .HasFilter("[rentalContractId] IS NOT NULL");
 
-                    b.ToTable("receiveStatus", (string)null);
+                    b.ToTable("receiveStatus");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.RentalContract", b =>
@@ -206,8 +208,8 @@ namespace HabitAqui_Software.Data.Migrations
                     b.Property<int?>("ReceiveStatusId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("endDate")
                         .HasColumnType("datetime2");
@@ -218,16 +220,13 @@ namespace HabitAqui_Software.Data.Migrations
                     b.Property<DateTime>("startDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("userId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("HabitacaoId");
 
-                    b.HasIndex("userId");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("rentalContracts", (string)null);
+                    b.ToTable("rentalContracts");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -496,11 +495,9 @@ namespace HabitAqui_Software.Data.Migrations
 
             modelBuilder.Entity("HabitAqui_Software.Models.Locador", b =>
                 {
-                    b.HasOne("HabitAqui_Software.Models.Enrollment", "enrollment")
+                    b.HasOne("HabitAqui_Software.Models.Enrollment", null)
                         .WithMany("Locadores")
-                        .HasForeignKey("enrollmentId");
-
-                    b.Navigation("enrollment");
+                        .HasForeignKey("EnrollmentId");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.ReceiveStatus", b =>
@@ -518,13 +515,11 @@ namespace HabitAqui_Software.Data.Migrations
                         .WithMany("rentalContracts")
                         .HasForeignKey("HabitacaoId");
 
-                    b.HasOne("HabitAqui_Software.Models.User", "user")
+                    b.HasOne("HabitAqui_Software.Models.User", null)
                         .WithMany("rentalContracts")
-                        .HasForeignKey("userId");
+                        .HasForeignKey("UserId");
 
                     b.Navigation("habitacao");
-
-                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 
 namespace HabitAqui_Software.Models
@@ -17,5 +18,9 @@ namespace HabitAqui_Software.Models
         public string? observation;
 
         public string? imgLink;
+
+        [ForeignKey("rentalContract")]
+        public int? rentalContractId { get; set; }
+        public RentalContract? rentalContract {  get; set; }
     }
 }

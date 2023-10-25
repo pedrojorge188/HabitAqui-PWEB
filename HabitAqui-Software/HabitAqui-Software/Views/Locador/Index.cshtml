@@ -20,8 +20,8 @@
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="enrollmentState">Tipo de Subscrição</label>
-                    <select name="enrollmentState" class="form-control">
+                    <label for="enrollment">Tipo de Subscrição</label>
+                    <select name="enrollment" class="form-control">
                         <option value="0">Todos os Tipos</option>
                         @foreach (var h in ViewBag.StatusInfo)
                         {
@@ -87,7 +87,7 @@
                         </td>
                         <td>
 
-                            @Html.DisplayFor(modelItem => item.enrollmentState.name)
+                            @Html.DisplayFor(modelItem => item.enrollment.name)
                         </td>
                         <td>
                             <a asp-action="Edit" class="btn btn-outline-dark rounded-circle" asp-route-id="@item.Id"> <i class="fa-solid fa-pencil"></i></a>

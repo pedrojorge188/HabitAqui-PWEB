@@ -21,7 +21,7 @@ namespace HabitAqui_Software.Controllers
             _context = context;
 
             //locador estatico de testes
-            _locador = _context.locador.FirstOrDefault(l => l.Id == 6);
+            _locador = _context.locador.FirstOrDefault(l => l.Id == 7);
   
         }
 
@@ -180,7 +180,7 @@ namespace HabitAqui_Software.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,location,rentalCost,startDateAvailability,endDateAvailability,minimumRentalPeriod,maximumRentalPeriod,available,grade,categoryId")] Habitacao habitacao)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,location,rentalCost,startDateAvailability,endDateAvailability,minimumRentalPeriod,maximumRentalPeriod,available,grade,LocadorId,categoryId")] Habitacao habitacao)
         {
 
             if (id != habitacao.Id)
@@ -188,20 +188,32 @@ namespace HabitAqui_Software.Controllers
                 return NotFound();
             }
 
-            try
+            // Defina o LocadorId aqui
+            habitacao.LocadorId = _locador.Id;
+
+            if (ModelState.IsValid)
             {
+
                 _context.Update(habitacao);
                 await _context.SaveChangesAsync();
+                /*
+                ViewBag.SuccessMessage = "Locador editado com sucesso";
+
+                var enrollments = _context.enrollments.ToList();
+                ViewBag.StatusInfo = enrollments;
+                ViewBag.Enrollments = new SelectList(enrollments, "Id", "name");
+
+                return View("Index", await _context.locador.Include(h => h.enrollment).ToListAsync());*/
             }
-            catch (DbUpdateConcurrencyException)
+            else
             {
-                if (!HabitacaoExists(habitacao.Id))
+                // Coleta as mensagens de erro do ModelState
+                var erros = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+
+                // Exibe as mensagens de erro no console
+                foreach (var erro in erros)
                 {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
+                    Console.WriteLine("Erro de validação: " + erro);
                 }
             }
             return RedirectToAction(nameof(Index));

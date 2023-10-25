@@ -10,11 +10,6 @@ namespace HabitAqui_Software.Models
         [Display(Name = "Location", Prompt = "Insert location...")]
         public string location { get; set; }
 
-        public int? categoryId { get; set; }
-
-        [Display(Name = "Model", Prompt = "Insert category...")]
-        public Category? category { get; set; }
-
         [Display(Name = "RentalCost", Prompt = "Insert rental cost...")]
         public float rentalCost { get; set; }
 
@@ -36,7 +31,15 @@ namespace HabitAqui_Software.Models
         [Display(Name = "grade")]
         public int grade { get; set; }
 
-        public Locador locador { get; set; }
 
+        public int? LocadorId { get; set; }
+        public Locador? locador { get; set; }
+
+
+        public ICollection<RentalContract>? rentalContracts { get; set; }
+
+
+        public int? categoryId { get; set; }
+        public Category? category { get; set; }
     }
 }
