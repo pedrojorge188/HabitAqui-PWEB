@@ -1,0 +1,167 @@
+﻿@model IEnumerable<HabitAqui_Software.Models.RentalContract>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Arrendamentos do Locador: @ViewBag.locadorName</h1>
+
+
+@using (Html.BeginForm("Search", "RentalContracts", FormMethod.Post, new { @class = "rounded p-4 mb-5 shadow bg-dark" }))
+{
+
+    <div class="row">
+
+        <div class="col-md-3">
+             <label for="startDate">Data de Início:</label>
+             <input type="date" name="startDate" class="form-control">
+        </div>
+        <div class="col-md-3">
+             <label for="endDateAvailability">Data de Fim:</label>
+             <input type="date" name=" endDateAvailability" class="form-control">
+        </div>
+       
+        <div class="col-md-3">
+            <label for="HabitacaoId">Localização:</label>
+            <input name="location" class="form-control" placeholder="Digite a localização">
+        </div>
+        <div class="col-md-3">
+            <label for="UserId">Cliente:</label>
+            <input name="cliente" class="form-control" placeholder="Nome cliente">
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mt-3">
+            <input type="checkbox" name="isConfirmed" value="true" class="form-check-input" id=" sortByAlphabet">
+            <label class="form-check-label" for="isConfirmed">Confirmado</label>
+        </div>
+
+    </div>
+    <div class=" mt-3">
+        <button type="submit" value="Search" class="btn btn-primary btn-sm tb-btn">Pesquisar</button>
+    </div>
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-primary tb-btn">Adicionar arrendamento</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Data Início
+            </th>
+            <th>
+                Data Fim
+            </th>
+            <th>
+               Confirmação
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.habitacao)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DeliveryStatusId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReceiveStatusId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserId)
+            </th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.startDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.endDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.isConfirmed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.habitacao.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeliveryStatusId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReceiveStatusId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserId)
+            </td>
+            <td>
+                @if (!item.isConfirmed)
+                {
+                    <a asp-action="" class="btn btn-outline-dark rounded-circle" asp-route-id="@item.Id"  data-toggle="modal" data-target="#confirmModal"><i class="fa-solid fa-check"></i></a>
+                    <a asp-action="" class="btn btn-outline-dark rounded-circle" asp-route-id="@item.Id" data-toggle="modal" data-target="#rejectModal"><i class="fa-solid fa-xmark"></i></a>
+                }
+            </td>
+            <td>
+                <a asp-action="Edit" class="btn btn-outline-dark rounded-circle" asp-route-id="@item.Id"> <i class="fa-solid fa-pencil"></i></a>
+                <a asp-action="Details" class="btn btn-outline-dark rounded-circle" asp-route-id="@item.Id"><i class="fa-solid fa-eye"></i></a>
+                <a asp-action="Delete" class="btn btn-outline-dark rounded-circle " asp-route-id="@item.Id"><i class="fa-sharp fa-solid fa-trash"></i></a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-dark" role="document">
+
+        <div class="modal-content bg-dark text-light">
+
+            <div class="modal-header">
+                <h5 class="modal-title text-light" id="confirmModalLabel">Confirmação</h5>
+                <button type="button" class="close text-light" data-dismiss="modal" aria-label="Close">
+
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Tem a certeza que deseja confirmar o arrendamento?
+            </div>
+            <div class="modal-footer">
+                <form asp-action="Confirm">
+                    <input type="hidden"/>
+                    <button type="submit" class="btn btn-danger">Sim, confirmar</button>
+                </form>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Não</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-dark" role="document">
+
+        <div class="modal-content bg-dark text-light">
+
+            <div class="modal-header">
+                <h5 class="modal-title text-light" id="rejectModalLabel">Confirmação</h5>
+                <button type="button" class="close text-light" data-dismiss="modal" aria-label="Close">
+
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Tem a certeza que deseja rejeitar o arrendamento?
+            </div>
+            <div class="modal-footer">
+                <form asp-action="">
+                    <input type="hidden"/>
+                    <button type="submit" class="btn btn-danger">Sim, rejeitar</button>
+                </form>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Não</button>
+            </div>
+        </div>
+    </div>
+</div>
