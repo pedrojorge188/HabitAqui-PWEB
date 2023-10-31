@@ -15,6 +15,8 @@ namespace HabitAqui_Software.Data
         public DbSet<ReceiveStatus> receiveStatus { get; set; }
         public DbSet<RentalContract> rentalContracts { get; set; }
 
+        public DbSet<UserTeste> userTeste { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

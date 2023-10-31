@@ -13,10 +13,14 @@ namespace HabitAqui_Software.Controllers
     {
 
         private readonly ApplicationDbContext _context;
+        private UserTeste _userTeste;
 
         public HabitacoesController(ApplicationDbContext context)
         {
             this._context = context;
+
+            //userTeste
+            _userTeste = _context.userTeste.FirstOrDefault(u => u.Id == 1);
         }
 
         public async Task<IActionResult> Index()
@@ -27,6 +31,8 @@ namespace HabitAqui_Software.Controllers
                            .Include(h => h.locador)
                            .Include(h => h.category)
                             ;
+
+            
 
             var results = await query.ToListAsync();
 
@@ -43,7 +49,8 @@ namespace HabitAqui_Software.Controllers
             DateTime? startDateAvailability,
             DateTime? endDateAvailability,
             string? price,
-            string? grade)
+            string? grade,
+            bool userTeste)
         {
             ViewBag.Category = await _context.Categories.ToListAsync();
 
@@ -51,6 +58,17 @@ namespace HabitAqui_Software.Controllers
                 .Include(h => h.locador)
                 .Include(h => h.category)
                 .Where(data => data.available == true);
+
+            if (userTeste && _userTeste != null)
+            {
+                query = query.Where(item => item.rentalContracts.Any(contract => contract.UserTesteId == _userTeste.Id));
+
+            }
+            else
+            {
+                Console.WriteLine("userTeste: " + userTeste);
+                Console.WriteLine("userTesteId: " + _userTeste.Id);
+            }
 
             if (!string.IsNullOrEmpty(location))
             {

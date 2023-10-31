@@ -17,6 +17,9 @@ namespace HabitAqui_Software.Models
         public Boolean isConfirmed { get; set; }
 
 
+        public int? avaliacao { get; set; }
+
+
         public int? HabitacaoId { get; set; }
         public Habitacao? habitacao { get; set; }
 
@@ -31,5 +34,9 @@ namespace HabitAqui_Software.Models
         
         public int? UserId { get; set; }
         public User? user { get; set; }
+
+
+        public int? UserTesteId { get; set; }
+        public UserTeste? userTeste { get; set; }
     }
 }
