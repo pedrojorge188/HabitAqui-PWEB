@@ -30,9 +30,25 @@ namespace HabitAqui_Software.Controllers
             IQueryable<Habitacao> query = _context.habitacaos
                            .Include(h => h.locador)
                            .Include(h => h.category)
+                           .Where(i => i.available == true);
                             ;
 
             
+
+            var results = await query.ToListAsync();
+
+            return View(results);
+
+        }
+        public async Task<IActionResult> History()
+        {
+            ViewBag.Category = _context.Categories.ToList();
+
+            IQueryable<RentalContract> query = _context.rentalContracts
+                           .Include(h => h.habitacao)
+                           .Where(i => i.userTeste == this._userTeste);
+            ;
+
 
             var results = await query.ToListAsync();
 
@@ -63,11 +79,6 @@ namespace HabitAqui_Software.Controllers
             {
                 query = query.Where(item => item.rentalContracts.Any(contract => contract.UserTesteId == _userTeste.Id));
 
-            }
-            else
-            {
-                Console.WriteLine("userTeste: " + userTeste);
-                Console.WriteLine("userTesteId: " + _userTeste.Id);
             }
 
             if (!string.IsNullOrEmpty(location))
