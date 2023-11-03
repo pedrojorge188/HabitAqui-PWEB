@@ -64,27 +64,38 @@
                                 <i class="fa-sharp fa-solid fa-building"></i> Habitações
                             </a>
                         </li>
+                        @if (this.User.IsInRole("Client"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="RentalContracts" asp-action="History">
+                                    <i class="fa-solid fa-building"></i> Histórico arrendamentos
+                                </a>
+                            </li>
+                        }
+                        @if (this.User.IsInRole("Employer"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="ParqueHabitacoes" asp-action="Index">
+                                    <i class="fa-solid fa-building "></i> Habitações (Locador)
+                                </a>
+                            </li>
+                        }
+                         @if (this.User.IsInRole("Admin"))
+                         {
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="RentalContracts" asp-action="History">
-                                <i class="fa-solid fa-building"></i> Histórico arrendamentos
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="ParqueHabitacoes" asp-action="Index">
-                                <i class="fa-solid fa-building "></i> Habitações (Locador)
-                            </a>
-                        </li>
-                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Categories" asp-action="Index">
                                 <i class="fa-solid fa-file"></i> Categorias
                             </a>
                         </li>
+                         }
+                        @if (this.User.IsInRole("Admin")){
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Locador" asp-action="Index">
                                 <i class="fa-solid fa-person"></i> Locadores
                             </a>
                         </li>
-           
+                        }
+
                         <li class="nav-item bottom-settings">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Credits">
                                 <i class="fa-solid fa-gear"></i> Créditos
@@ -109,4 +120,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+@RenderSection("Scripts", required: false)
 </html>

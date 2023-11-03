@@ -18,7 +18,7 @@ namespace HabitAqui_Software.Models
         [Display(Name = "Email", Prompt = "Insert Locador email...")]
         public string email { get; set; }
 
-
+        public int? UserId;
         public ICollection<User>? Users { get; set; }
 
 

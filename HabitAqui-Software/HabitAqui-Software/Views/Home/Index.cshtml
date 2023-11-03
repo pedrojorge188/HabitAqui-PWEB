@@ -9,6 +9,7 @@
     <br /><br />
     <div class="d-flex flex-wrap justify-content-around m-2 p-4">
         <div class="row">
+
             <div class="col-md-4">
                 <div class="card bg-dark text-white">
                     <img src="img/habitacoes.jpg" class="card-img-top img-fluid" alt="Habitações">
@@ -19,16 +20,21 @@
                 </div>
             </div>
 
-            <div class="col-md-4">
-                <div class="card bg-dark text-white m-2">
-                    <img src="img/historico.jpg" class="card-img-top img-fluid" alt="Histórico de Alugueres">
-                    <div class="card-body">
-                        <h3 class="card-title">Histórico de Alugueres</h3>
-                        <a asp-action="History" asp-controller="RentalContracts" class="btn btn-primary tb-btn">Ver página</a>
+            @if (this.User.IsInRole("Client"))
+            {
+                <div class="col-md-4">
+                    <div class="card bg-dark text-white m-2">
+                        <img src="img/historico.jpg" class="card-img-top img-fluid" alt="Histórico de Alugueres">
+                        <div class="card-body">
+                            <h3 class="card-title">Histórico de Alugueres</h3>
+                            <a asp-action="History" asp-controller="RentalContracts" class="btn btn-primary tb-btn">Ver página</a>
+                        </div>
                     </div>
                 </div>
-            </div>
 
+            }
+
+            @if (this.User.IsInRole("Employer")){
             <div class="col-md-4">
                 <div class="card bg-dark text-white m-2">
                     <img src="img/alugueres.jpg" class="card-img-top img-fluid"  alt="Gerir alugueres do locador">
@@ -38,7 +44,8 @@
                     </div>
                 </div>
             </div>
-
+            }
+            @if (this.User.IsInRole("Employer")){
             <div class="col-md-4">
                 <div class="card bg-dark text-white m-2">
                     <img src="img/parqueHabit.jpg" class="card-img-top img-fluid"  alt="Gerir parque de habitações do locador">
@@ -48,7 +55,9 @@
                     </div>
                 </div>
             </div>
-
+            }
+            @if (this.User.IsInRole("Manager"))
+            {   
             <div class="col-md-4">
                 <div class="card bg-dark text-white m-2">
                     <img src="img/funcionarios.jpg" class="card-img-top img-fluid" alt="Gestão de Funcionários">
@@ -58,7 +67,8 @@
                     </div>
                 </div>
             </div>
-
+            }
+            @if(this.User.IsInRole("Admin")){
             <div class="col-md-4">
                 <div class="card bg-dark text-white m-2">
                     <img src="img/locadores.jpg" class="card-img-top img-fluid" alt="Gestão de locadores">
@@ -68,9 +78,11 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-4">
-                <div class="card bg-dark text-white m-2">
+            }
+            @if (this.User.IsInRole("Admin"))
+            {
+                <div class="col-md-4">
+                    <div class="card bg-dark text-white m-2">
                     <img src="img/categorias.jpg" class="card-img-top img-fluid" alt="Gestão de categorias">
                     <div class="card-body">
                         <h3 class="card-title">Gestão de categorias</h3>
@@ -78,9 +90,11 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-4">
-                <div class="card bg-dark text-white m-2">
+            }
+            @if (this.User.IsInRole("Admin"))
+            {
+                <div class="col-md-4">
+                    <div class="card bg-dark text-white m-2">
                     <img src="img/users.jpg" class="card-img-top img-fluid" alt="Gestão de utilizadores">
                     <div class="card-body">
                         <h3 class="card-title">Gestão de utilizadores</h3>
@@ -88,6 +102,7 @@
                     </div>
                 </div>
             </div>
+            }
         </div>
     </div>
 

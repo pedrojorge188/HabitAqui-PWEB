@@ -1,5 +1,6 @@
 ﻿using HabitAqui_Software.Data;
 using HabitAqui_Software.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +13,11 @@ namespace HabitAqui_Software.Controllers
     {
 
         private readonly ApplicationDbContext _context;
-
-        public HomeController(ApplicationDbContext context)
+        private readonly UserManager<User> _userManager;
+        public HomeController(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
         public IActionResult Index()
         {
