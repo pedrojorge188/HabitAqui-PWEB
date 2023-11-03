@@ -1,0 +1,53 @@
+﻿@model IEnumerable<HabitAqui_Software.Models.RentalContract>
+@{
+    ViewData["Title"] = "Habitações";
+}
+
+<h1>Histórico de Arrendamentos</h1>
+<hr />
+<br />
+<div class="text-center">
+
+
+    <div class="table-responsive">
+        <table class="table table-striped ">
+            <thead>
+                <tr>
+                    <th>Data Inicio</th>
+                    <th>Data Final</th>
+                    <th>Avaliacao Pessoal</th>
+                    <th>Detalhes Habitacao</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @item.startDate.ToShortDateString()
+                            </td>
+                            <td>
+                                @item.endDate.ToShortDateString()
+                            </td>
+                            <td>
+                                @item.avaliacao <i class="fa-solid fa-star"></i> <a asp-action="CreateClienteAval" class="btn btn-sm btn-primary tb-btn ms-3" asp-route-id="@item.habitacao.Id">Alterar</a>
+                            </td>
+                            <td style ="padding:10px">
+                                <a asp-action="Details" class="btn btn-sm btn-primary tb-btn" asp-controller="Habitacoes" asp-route-id="@item.habitacao.Id"> <i class="fa-sharp fa-solid fa-eye" style="color: #ffffff; margin-right: 5px"></i>@item.habitacao.location</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="9">Nenhum item encontrado.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br />
+    </div>
+</div>

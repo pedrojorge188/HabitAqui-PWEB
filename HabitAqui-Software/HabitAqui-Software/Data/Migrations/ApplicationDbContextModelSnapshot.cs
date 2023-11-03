@@ -40,7 +40,7 @@ namespace HabitAqui_Software.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.DeliveryStatus", b =>
@@ -60,7 +60,7 @@ namespace HabitAqui_Software.Data.Migrations
                         .IsUnique()
                         .HasFilter("[RentalContractId] IS NOT NULL");
 
-                    b.ToTable("deliveryStatus", (string)null);
+                    b.ToTable("deliveryStatus");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.Enrollment", b =>
@@ -81,7 +81,7 @@ namespace HabitAqui_Software.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("enrollments", (string)null);
+                    b.ToTable("enrollments");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.Habitacao", b =>
@@ -92,7 +92,7 @@ namespace HabitAqui_Software.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("LocatorId")
+                    b.Property<int?>("LocadorId")
                         .HasColumnType("int");
 
                     b.Property<bool>("available")
@@ -105,9 +105,6 @@ namespace HabitAqui_Software.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("grade")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("locadorId")
                         .HasColumnType("int");
 
                     b.Property<string>("location")
@@ -128,11 +125,11 @@ namespace HabitAqui_Software.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("LocadorId");
+
                     b.HasIndex("categoryId");
 
-                    b.HasIndex("locadorId");
-
-                    b.ToTable("habitacaos", (string)null);
+                    b.ToTable("habitacaos");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.Locador", b =>
@@ -155,7 +152,7 @@ namespace HabitAqui_Software.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("enrollmentId")
+                    b.Property<int>("enrollmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("name")
@@ -166,7 +163,7 @@ namespace HabitAqui_Software.Data.Migrations
 
                     b.HasIndex("enrollmentId");
 
-                    b.ToTable("locador", (string)null);
+                    b.ToTable("locador");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.ReceiveStatus", b =>
@@ -186,7 +183,7 @@ namespace HabitAqui_Software.Data.Migrations
                         .IsUnique()
                         .HasFilter("[rentalContractId] IS NOT NULL");
 
-                    b.ToTable("receiveStatus", (string)null);
+                    b.ToTable("receiveStatus");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.RentalContract", b =>
@@ -209,6 +206,12 @@ namespace HabitAqui_Software.Data.Migrations
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UserTesteId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("avaliacao")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("endDate")
                         .HasColumnType("datetime2");
 
@@ -225,9 +228,33 @@ namespace HabitAqui_Software.Data.Migrations
 
                     b.HasIndex("HabitacaoId");
 
+                    b.HasIndex("UserTesteId");
+
                     b.HasIndex("userId");
 
-                    b.ToTable("rentalContracts", (string)null);
+                    b.ToTable("rentalContracts");
+                });
+
+            modelBuilder.Entity("HabitAqui_Software.Models.UserTeste", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("locadorId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("locadorId");
+
+                    b.ToTable("userTeste");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -481,13 +508,13 @@ namespace HabitAqui_Software.Data.Migrations
 
             modelBuilder.Entity("HabitAqui_Software.Models.Habitacao", b =>
                 {
+                    b.HasOne("HabitAqui_Software.Models.Locador", "locador")
+                        .WithMany("Habitacoes")
+                        .HasForeignKey("LocadorId");
+
                     b.HasOne("HabitAqui_Software.Models.Category", "category")
                         .WithMany("habitacoes")
                         .HasForeignKey("categoryId");
-
-                    b.HasOne("HabitAqui_Software.Models.Locador", "locador")
-                        .WithMany("Habitacoes")
-                        .HasForeignKey("locadorId");
 
                     b.Navigation("category");
 
@@ -498,7 +525,9 @@ namespace HabitAqui_Software.Data.Migrations
                 {
                     b.HasOne("HabitAqui_Software.Models.Enrollment", "enrollment")
                         .WithMany("Locadores")
-                        .HasForeignKey("enrollmentId");
+                        .HasForeignKey("enrollmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("enrollment");
                 });
@@ -518,6 +547,10 @@ namespace HabitAqui_Software.Data.Migrations
                         .WithMany("rentalContracts")
                         .HasForeignKey("HabitacaoId");
 
+                    b.HasOne("HabitAqui_Software.Models.UserTeste", "userTeste")
+                        .WithMany("rentalContracts")
+                        .HasForeignKey("UserTesteId");
+
                     b.HasOne("HabitAqui_Software.Models.User", "user")
                         .WithMany("rentalContracts")
                         .HasForeignKey("userId");
@@ -525,6 +558,17 @@ namespace HabitAqui_Software.Data.Migrations
                     b.Navigation("habitacao");
 
                     b.Navigation("user");
+
+                    b.Navigation("userTeste");
+                });
+
+            modelBuilder.Entity("HabitAqui_Software.Models.UserTeste", b =>
+                {
+                    b.HasOne("HabitAqui_Software.Models.Locador", "locador")
+                        .WithMany()
+                        .HasForeignKey("locadorId");
+
+                    b.Navigation("locador");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -614,6 +658,11 @@ namespace HabitAqui_Software.Data.Migrations
                     b.Navigation("deliveryStatus");
 
                     b.Navigation("receiveStatus");
+                });
+
+            modelBuilder.Entity("HabitAqui_Software.Models.UserTeste", b =>
+                {
+                    b.Navigation("rentalContracts");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.User", b =>
