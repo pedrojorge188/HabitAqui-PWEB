@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HabitAqui_Software.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<User>
     {
 
         public DbSet<Category> Categories { get; set; }

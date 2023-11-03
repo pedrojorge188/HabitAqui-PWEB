@@ -15,12 +15,13 @@ namespace HabitAqui_Software.Controllers
     {
         private readonly ApplicationDbContext _context;
         private Locador _locador;
-
-        public ParqueHabitacoesController(ApplicationDbContext context)
+        private readonly UserManager<User> _userManager;
+        public ParqueHabitacoesController(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
-
+            _userManager = userManager;
             //locador estatico de testes
+            
             _locador = _context.locador.FirstOrDefault(l => l.Id == 7);
   
         }

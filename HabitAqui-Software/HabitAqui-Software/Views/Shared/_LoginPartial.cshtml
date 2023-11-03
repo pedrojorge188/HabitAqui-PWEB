@@ -1,18 +1,25 @@
 ﻿﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
 
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
-        <li class="nav-item dropdown">
-            <a class="nav-item nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name.Split('@')[0]!</a>
-        </li>
-        <li class="nav-item dropdown">
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                <button type="submit" class="nav-item nav-link btn btn-link text-white">Logout</button>
-            </form>
-        </li>
+        <div class="form-group">
+            <div class="dropdown">
+                <button class="btn btn-dark bg-dark dropdown-toggle" type="button" id="authDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa-solid fa-user"></i> @User.Identity?.Name.Split('@')[0]
+                </button>
+                <div class="dropdown-menu" aria-labelledby="authDropdown">
+                    <a class="nav-item nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Definições de conta</a>
+                    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                        <button type="submit" class="nav-item nav-link btn btn-link text-dark">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     }
     else
     {
