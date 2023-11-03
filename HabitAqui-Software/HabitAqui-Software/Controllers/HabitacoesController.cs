@@ -3,6 +3,7 @@ using HabitAqui_Software.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.IO.Pipelines;
@@ -13,14 +14,14 @@ namespace HabitAqui_Software.Controllers
     {
 
         private readonly ApplicationDbContext _context;
-        private UserTeste _userTeste;
+        
 
         public HabitacoesController(ApplicationDbContext context)
         {
             this._context = context;
 
-            //userTeste
-            _userTeste = _context.userTeste.FirstOrDefault(u => u.Id == 1);
+            
+            
         }
 
         public async Task<IActionResult> Index()
@@ -40,21 +41,7 @@ namespace HabitAqui_Software.Controllers
             return View(results);
 
         }
-        public async Task<IActionResult> History()
-        {
-            ViewBag.Category = _context.Categories.ToList();
-
-            IQueryable<RentalContract> query = _context.rentalContracts
-                           .Include(h => h.habitacao)
-                           .Where(i => i.userTeste == this._userTeste);
-            ;
-
-
-            var results = await query.ToListAsync();
-
-            return View(results);
-
-        }
+        
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -75,11 +62,7 @@ namespace HabitAqui_Software.Controllers
                 .Include(h => h.category)
                 .Where(data => data.available == true);
 
-            if (userTeste && _userTeste != null)
-            {
-                query = query.Where(item => item.rentalContracts.Any(contract => contract.UserTesteId == _userTeste.Id));
-
-            }
+            
 
             if (!string.IsNullOrEmpty(location))
             {
@@ -147,6 +130,9 @@ namespace HabitAqui_Software.Controllers
         public async Task<IActionResult> Details(int? id)
         {
 
+            TempData["UrlAnterior"] = Request.Headers["Referer"].ToString();
+            Console.WriteLine("URL de validação: " + Request.Headers["Referer"].ToString());
+
             if (id == null || _context.habitacaos == null)
             {
                 return NotFound();
@@ -168,6 +154,19 @@ namespace HabitAqui_Software.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult VoltarParaAnterior()
+        {
+            var urlAnterior = TempData["UrlAnterior"]?.ToString();
+
+            Console.WriteLine("URL de validação: " + urlAnterior);
+
+            if (!string.IsNullOrEmpty(urlAnterior))
+            {
+                return Redirect(urlAnterior);
+            }
+            return RedirectToAction("Index"); // Página inicial de fallback se não houver URL anterior
         }
     }
 }

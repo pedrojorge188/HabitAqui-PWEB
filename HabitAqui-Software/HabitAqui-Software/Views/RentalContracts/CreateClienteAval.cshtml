@@ -1,0 +1,40 @@
+﻿@model HabitAqui_Software.Models.RentalContract
+
+@{
+    ViewData["Title"] = "CreateClienteAval";
+}
+
+<h1>Criar Avaliacao RentalContract</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateClienteAval">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="startDate" class="control-label"></label>
+                <input asp-for="startDate" class="form-control" required="true" />
+                <span asp-validation-for="startDate" class="text-danger"></span>
+            </div>    <br />
+            <div class="form-group">
+                <label asp-for="endDate" class="control-label"></label>
+                <input asp-for="endDate" class="form-control" required="true" />
+                <span asp-validation-for="endDate" class="text-danger"></span>
+            </div>    <br />
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="isConfirmed" /> @Html.DisplayNameFor(model => model.isConfirmed)
+                </label>
+            </div>    <br />
+            <div class="form-group">
+                <label asp-for="avaliacao" class="control-label"></label>
+                <input asp-for="avaliacao" class="form-control" required="true" />
+                <span asp-validation-for="avaliacao" class="text-danger"></span>
+            </div>    <br />
+            <div class="form-group">
+                <a asp-action="History" class="btn btn-outline-danger">Voltar</a>
+                <input type="submit" value="Create" class="btn btn-primary tb-btn" />
+            </div>
+        </form>
+    </div>
+</div>

@@ -14,6 +14,7 @@ namespace HabitAqui_Software.Controllers
     {
         private readonly ApplicationDbContext _context;
         private Locador _locador;
+        private UserTeste _userTeste;
 
         public RentalContractsController(ApplicationDbContext context)
         {
@@ -21,6 +22,9 @@ namespace HabitAqui_Software.Controllers
 
             //locador estatico de testes
             _locador = _context.locador.FirstOrDefault(l => l.Id == 7);
+
+            //userTeste -------------------------------------------------------------------
+            _userTeste = _context.userTeste.FirstOrDefault(u => u.Id == 1);
         }
 
         private string getLocadorName()
@@ -68,25 +72,19 @@ namespace HabitAqui_Software.Controllers
         // GET: RentalContracts/Edit/5
         public async Task<IActionResult> Confirm(int? id)
         {
-            if (id == null || _context.rentalContracts == null)
-            {
-                return NotFound();
-            }
-
+ 
             var rentalContract = await _context.rentalContracts.FindAsync(id);
             if (rentalContract == null)
             {
                 return NotFound();
             }
 
-            //altera o atributo isConfirmed para true de modo a confirmar o arrendamento
             rentalContract.isConfirmed = true;
-
-            //Guarda a alterção na bd
-            _context.Entry(rentalContract).State = EntityState.Modified;
+           
+            _context.Update(rentalContract);
             await _context.SaveChangesAsync();
-
-            return View(rentalContract);
+            
+            return View("RentalContracts",rentalContract);
         }
 
         // GET: RentalContracts
@@ -235,6 +233,92 @@ namespace HabitAqui_Software.Controllers
         private bool RentalContractExists(int id)
         {
           return (_context.rentalContracts?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+
+
+
+
+        //-----------------------------------------------RENTALCONTRACTS USER/CLIENTE----------------------------------------------------
+        public async Task<IActionResult> History()
+        {
+            ViewBag.Category = _context.Categories.ToList();
+
+            IQueryable<RentalContract> query = _context.rentalContracts
+                           .Include(h => h.habitacao)
+                           .Where(i => i.userTeste == this._userTeste);
+            ;
+
+
+            var results = await query.ToListAsync();
+
+            return View(results);
+
+        }
+
+
+        
+        public IActionResult CreateClienteAval(int IdHabitacao)
+        {
+            var ren = _context.rentalContracts.ToList();
+            ViewBag.ren = ren;
+            ViewBag.RentalContracts = new SelectList(ren, "Id", "avaliacao");
+            return View();
+        }
+
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateClienteAval(int IdHabitacao, [Bind("Id,startDate," +
+            "endDate,isConfirmed,avaliacao,")] RentalContract rentalContract)
+        {
+            var ren = _context.rentalContracts.ToList();
+            ViewBag.ren = ren;
+            ViewBag.RentalContracts = new SelectList(ren, "Id", "avaliacao");
+
+            rentalContract.HabitacaoId = IdHabitacao;
+            rentalContract.userTeste = _userTeste;
+            
+
+            if (ModelState.IsValid)
+            {
+                _context.Add(rentalContract);
+                await _context.SaveChangesAsync();
+                
+            }
+            else
+            {
+                // Coleta as mensagens de erro do ModelState
+                var erros = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+
+                // Exibe as mensagens de erro no console
+                foreach (var erro in erros)
+                {
+                    Console.WriteLine("Erro de validação: " + erro);
+                }
+            }
+            return RedirectToAction(nameof(Index));
+
+        }
+
+        
+        public async Task<IActionResult> EditClienteAval(int? id)
+        {
+            var cat = _context.Categories.ToList();
+            ViewBag.cat = cat;
+            ViewBag.Category = new SelectList(cat, "Id", "name");
+
+            if (id == null || _context.habitacaos == null)
+            {
+                return NotFound();
+            }
+
+            var habitacao = await _context.habitacaos.FindAsync(id);
+            if (habitacao == null)
+            {
+                return NotFound();
+            }
+            return View(habitacao);
         }
     }
 }

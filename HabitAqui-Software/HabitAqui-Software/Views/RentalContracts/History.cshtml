@@ -13,12 +13,10 @@
         <table class="table table-striped ">
             <thead>
                 <tr>
-                    <th>Habitacao</th>
-                    <th>-</th>
-                    <th>-</th>
-                    <th>-</th>
-                    <th>-</th>
-                    <th></th>
+                    <th>Data Inicio</th>
+                    <th>Data Final</th>
+                    <th>Avaliacao Pessoal</th>
+                    <th>Detalhes Habitacao</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,22 +26,16 @@
                     {
                         <tr>
                             <td>
-                                <a asp-action="Details" class="btn btn-sm btn-primary tb-btn" asp-route-id="@item.habitacao.Id"> <i class="fa-sharp fa-solid fa-eye" style="color: #ffffff; margin-right: 5px"></i>@item.habitacao.location</a>
+                                @item.startDate.ToShortDateString()
                             </td>
                             <td>
-                                
+                                @item.endDate.ToShortDateString()
                             </td>
                             <td>
-                               
+                                @item.avaliacao <i class="fa-solid fa-star"></i> <a asp-action="CreateClienteAval" class="btn btn-sm btn-primary tb-btn ms-3" asp-route-id="@item.habitacao.Id">Alterar</a>
                             </td>
-                            <td>
-                                
-                            </td>
-                            <td>
-                                 <i class="fa-solid fa-star"></i>
-                            </td>
-                            <td style="padding:10px">
-                                <a asp-action="#" class="btn btn-sm btn-primary tb-btn" asp-route-id="#"> <i class="fa-sharp fa-solid fa-plus" style="color: #ffffff; margin-right: 5px"></i>Nota</a>
+                            <td style ="padding:10px">
+                                <a asp-action="Details" class="btn btn-sm btn-primary tb-btn" asp-controller="Habitacoes" asp-route-id="@item.habitacao.Id"> <i class="fa-sharp fa-solid fa-eye" style="color: #ffffff; margin-right: 5px"></i>@item.habitacao.location</a>
                             </td>
                         </tr>
                     }
