@@ -7,28 +7,28 @@ namespace HabitAqui_Software.Models
     {
         public int Id { get; set; }
 
-        [Display(Name = "Location", Prompt = "Insert location...")]
+        [Display(Name = "Localização", Prompt = "Insira a localização")]
         public string location { get; set; }
 
-        [Display(Name = "RentalCost", Prompt = "Insert rental cost...")]
+        [Display(Name = "Custo da Renda", Prompt = "Insira o custo da renda")]
         public float rentalCost { get; set; }
 
-        [Display(Name = "Start Date", Prompt = "Choose startDateAvailability ...")]
+        [Display(Name = "Data de inicio", Prompt = "Escolha a data de ínicio")]
         public DateTime startDateAvailability { get; set; }
 
-        [Display(Name = "End Date", Prompt = "Choose startDateAvailability ...")]
+        [Display(Name = "Data de Fim", Prompt = "Escolha a data de fim")]
         public DateTime endDateAvailability { get; set; }
 
-        [Display(Name = "Minium Rental Period", Prompt = "Choose Minium Rental Period ...")]
+        [Display(Name = "Periodo mínimo de renda", Prompt = "Escolha o Periodo mínimo de renda em dias")]
         public int minimumRentalPeriod { get; set; }
 
-        [Display(Name = "Maximum Rental Period", Prompt = "Choose Maximum Rental Period ...")]
+        [Display(Name = "Periodo máximo de renda", Prompt = "Escolha o Periodo máximo de renda em dias")]
         public int maximumRentalPeriod { get; set; }
 
-        [Display(Name = "avaliable")]
+        [Display(Name = "Disponibilidade")]
         public Boolean available { get; set; }
 
-        [Display(Name = "grade")]
+        [Display(Name = "Avaliação")]
         public int grade { get; set; }
 
 

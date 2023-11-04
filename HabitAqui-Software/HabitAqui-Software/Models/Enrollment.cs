@@ -6,10 +6,10 @@ namespace HabitAqui_Software.Models
     {
         public int Id { get; set; }
 
-        [Display(Name = "Name of Enrollment")]
+        [Display(Name = "Nome do Estado de Inscrição")]
         public string name { get; set; }
 
-        [Display(Name = "desc of Enrollment")]
+        [Display(Name = "Descrição")]
         public string desc { get; set; }
 
 

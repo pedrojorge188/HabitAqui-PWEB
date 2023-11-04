@@ -6,20 +6,21 @@ namespace HabitAqui_Software.Models
     {
         public int Id { get; set; }
 
-        [Display(Name = "Name", Prompt = "Insert your name...")]
+        [Display(Name = "Nome", Prompt = "Insira o nome do locador")]
         public string name { get; set; }
 
-        [Display(Name = "Company", Prompt = "Insert company name...")]
+        [Display(Name = "Empresa/Companhia", Prompt = "Insira o nome da empresa que este pertence")]
         public string company { get; set; }
 
-        [Display(Name = "Address", Prompt = "Insert Locador Adress...")]
+        [Display(Name = "Morada", Prompt = "Insira a morada do locador")]
         public string address { get; set; }
 
-        [Display(Name = "Email", Prompt = "Insert Locador email...")]
+        [Display(Name = "Email", Prompt = "Insira o email do locador")]
         public string email { get; set; }
 
         public ICollection<Habitacao>? Habitacoes { get; set; }
-        
+
+        [Display(Name = "Subscrição do locador")]
         public int enrollmentId { get; set; }
         public Enrollment? enrollment { get; set; }
 
