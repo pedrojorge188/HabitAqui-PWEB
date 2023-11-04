@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HabitAqui_Software.Models
 {
-    public class User : IdentityUser
+    public class ApplicationUser : IdentityUser
     {
 
         [Display(Name = "FirstName", Prompt = "Insert your FirstName...")]
@@ -21,12 +21,6 @@ namespace HabitAqui_Software.Models
         [Display(Name = "available")]
         public Boolean available { get; set; }
 
-
-        public ICollection<RentalContract>? rentalContracts { get; set; }  
-
-
-        public int? locadorId { get; set; }
-        public Locador? locador { get; set; }
 
     }
 }

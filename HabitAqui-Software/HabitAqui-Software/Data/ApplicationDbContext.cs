@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HabitAqui_Software.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<User>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
 
         public DbSet<Category> Categories { get; set; }
@@ -14,7 +14,8 @@ namespace HabitAqui_Software.Data
         public DbSet<Locador> locador { get; set; }
         public DbSet<ReceiveStatus> receiveStatus { get; set; }
         public DbSet<RentalContract> rentalContracts { get; set; }
-
+        public DbSet<Employer> employers { set; get; }
+        public DbSet<Manager> managers { set; get; }
         public DbSet<UserTeste> userTeste { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)

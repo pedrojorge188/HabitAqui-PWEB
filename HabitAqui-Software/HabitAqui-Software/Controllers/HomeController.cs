@@ -13,8 +13,8 @@ namespace HabitAqui_Software.Controllers
     {
 
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<User> _userManager;
-        public HomeController(ApplicationDbContext context, UserManager<User> userManager)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public HomeController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;

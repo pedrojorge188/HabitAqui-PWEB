@@ -33,7 +33,7 @@ namespace HabitAqui_Software.Models
 
         
         public int? UserId { get; set; }
-        public User? user { get; set; }
+        public ApplicationUser? user { get; set; }
 
 
         public int? UserTesteId { get; set; }
