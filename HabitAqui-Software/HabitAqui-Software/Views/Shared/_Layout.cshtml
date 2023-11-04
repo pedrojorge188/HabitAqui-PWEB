@@ -75,8 +75,16 @@
                         @if (this.User.IsInRole("Employer") || this.User.IsInRole("Manager"))
                         {
                             <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="RentalContracts" asp-action="Index">
+                                    <i class="fa-solid fa-file "></i> Arrendamentos
+                                </a>
+                            </li>
+                        }
+                        @if (this.User.IsInRole("Employer") || this.User.IsInRole("Manager"))
+                        {
+                            <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="ParqueHabitacoes" asp-action="Index">
-                                    <i class="fa-solid fa-building "></i> Habitações (Locador)
+                                    <i class="fa-solid fa-building "></i> Parque Habitações
                                 </a>
                             </li>
                         }

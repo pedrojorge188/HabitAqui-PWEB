@@ -84,7 +84,7 @@ namespace HabitAqui_Software.Controllers {
                      Problem("Entity set 'ApplicationDbContext.habitacaos'  is null.");
             }
 
-            return null;
+            return View();
         }
 
         [Authorize(Roles = "Employer, Manager")]
