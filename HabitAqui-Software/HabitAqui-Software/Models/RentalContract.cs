@@ -34,11 +34,7 @@ namespace HabitAqui_Software.Models
         public ReceiveStatus? receiveStatus { get; set; }
 
         [Display(Name = "Utilizador")]
-        public int? UserId { get; set; }
+        public string? userId { get; set; }
         public ApplicationUser? user { get; set; }
-
-
-        public int? UserTesteId { get; set; }
-        public UserTeste? userTeste { get; set; }
     }
 }

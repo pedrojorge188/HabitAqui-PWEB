@@ -22,6 +22,91 @@ namespace HabitAqui_Software.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("HabitAqui_Software.Models.ApplicationUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("available")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("bornDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("firstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("lastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("nif")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("registerDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
             modelBuilder.Entity("HabitAqui_Software.Models.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -249,12 +334,6 @@ namespace HabitAqui_Software.Data.Migrations
                     b.Property<int?>("ReceiveStatusId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserTesteId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("avaliacao")
                         .HasColumnType("int");
 
@@ -274,118 +353,9 @@ namespace HabitAqui_Software.Data.Migrations
 
                     b.HasIndex("HabitacaoId");
 
-                    b.HasIndex("UserTesteId");
-
                     b.HasIndex("userId");
 
                     b.ToTable("rentalContracts");
-                });
-
-            modelBuilder.Entity("HabitAqui_Software.Models.User", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("available")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("bornDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("firstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("lastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("nif")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("registerDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("HabitAqui_Software.Models.UserTeste", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("locadorId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("locadorId");
-
-                    b.ToTable("userTeste");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -542,7 +512,7 @@ namespace HabitAqui_Software.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HabitAqui_Software.Models.User", "user")
+                    b.HasOne("HabitAqui_Software.Models.ApplicationUser", "user")
                         .WithMany()
                         .HasForeignKey("userId");
 
@@ -585,7 +555,7 @@ namespace HabitAqui_Software.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HabitAqui_Software.Models.User", "user")
+                    b.HasOne("HabitAqui_Software.Models.ApplicationUser", "user")
                         .WithMany()
                         .HasForeignKey("userId");
 
@@ -609,28 +579,13 @@ namespace HabitAqui_Software.Data.Migrations
                         .WithMany("rentalContracts")
                         .HasForeignKey("HabitacaoId");
 
-                    b.HasOne("HabitAqui_Software.Models.UserTeste", "userTeste")
-                        .WithMany("rentalContracts")
-                        .HasForeignKey("UserTesteId");
-
-                    b.HasOne("HabitAqui_Software.Models.User", "user")
+                    b.HasOne("HabitAqui_Software.Models.ApplicationUser", "user")
                         .WithMany()
                         .HasForeignKey("userId");
 
                     b.Navigation("habitacao");
 
                     b.Navigation("user");
-
-                    b.Navigation("userTeste");
-                });
-
-            modelBuilder.Entity("HabitAqui_Software.Models.UserTeste", b =>
-                {
-                    b.HasOne("HabitAqui_Software.Models.Locador", "locador")
-                        .WithMany()
-                        .HasForeignKey("locadorId");
-
-                    b.Navigation("locador");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -644,7 +599,7 @@ namespace HabitAqui_Software.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("HabitAqui_Software.Models.User", null)
+                    b.HasOne("HabitAqui_Software.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -653,7 +608,7 @@ namespace HabitAqui_Software.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("HabitAqui_Software.Models.User", null)
+                    b.HasOne("HabitAqui_Software.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -668,7 +623,7 @@ namespace HabitAqui_Software.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HabitAqui_Software.Models.User", null)
+                    b.HasOne("HabitAqui_Software.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -677,7 +632,7 @@ namespace HabitAqui_Software.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("HabitAqui_Software.Models.User", null)
+                    b.HasOne("HabitAqui_Software.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -709,11 +664,6 @@ namespace HabitAqui_Software.Data.Migrations
                     b.Navigation("deliveryStatus");
 
                     b.Navigation("receiveStatus");
-                });
-
-            modelBuilder.Entity("HabitAqui_Software.Models.UserTeste", b =>
-                {
-                    b.Navigation("rentalContracts");
                 });
 #pragma warning restore 612, 618
         }

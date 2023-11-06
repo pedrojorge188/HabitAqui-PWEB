@@ -17,15 +17,12 @@ namespace HabitAqui_Software.Controllers
     public class RentalContractsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private UserTeste _userTeste;
         private readonly UserManager<ApplicationUser> _userManager;
 
         public RentalContractsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
-            //userTeste -------------------------------------------------------------------
-            _userTeste = _context.userTeste.FirstOrDefault(u => u.Id == 1);
         }
 
         private string getLocadorName()
@@ -281,49 +278,53 @@ namespace HabitAqui_Software.Controllers
         [Authorize(Roles = "Client")]
         public async Task<IActionResult> History()
         {
-            ViewBag.Category = _context.Categories.ToList();
+            var appUserId = _userManager.GetUserId(User);
+            IQueryable<RentalContract> rentalContracts = _context.rentalContracts.Include("habitacao").Where(ren => ren.user.Id == appUserId &&
+                                                                                                             ren.isConfirmed == true);
 
-            IQueryable<RentalContract> query = _context.rentalContracts
-                           .Include(h => h.habitacao)
-                           .Where(i => i.userTeste == this._userTeste);
-            ;
-
-
-            var results = await query.ToListAsync();
-
-            return View(results);
-
+            return View(await rentalContracts.ToListAsync());
         }
 
 
-        
-        public IActionResult CreateClienteAval(int IdHabitacao)
+        [Authorize(Roles = "Client")]
+        public async Task<IActionResult> EditClienteAval(int? id)
         {
-            var ren = _context.rentalContracts.ToList();
-            ViewBag.ren = ren;
-            ViewBag.RentalContracts = new SelectList(ren, "Id", "avaliacao");
-            return View();
+
+            if (id == null || _context.rentalContracts == null)
+            {
+                return NotFound();
+            }
+
+            var rentalContract = await _context.rentalContracts.FindAsync(id);
+            if (rentalContract == null)
+            {
+                return NotFound();
+            }
+            return View(rentalContract);
         }
 
-        
+
+        // POST: Curso/Edit/5
+        [Authorize(Roles = "Client")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateClienteAval(int IdHabitacao, [Bind("Id,startDate," +
-            "endDate,isConfirmed,avaliacao,")] RentalContract rentalContract)
+        public async Task<IActionResult> EditClienteAval(int? id, RentalContract rentalContract)
         {
-            var ren = _context.rentalContracts.ToList();
-            ViewBag.ren = ren;
-            ViewBag.RentalContracts = new SelectList(ren, "Id", "avaliacao");
-
-            rentalContract.HabitacaoId = IdHabitacao;
-            rentalContract.userTeste = _userTeste;
+            if (id == null || _context.rentalContracts == null)
+            {
+                return NotFound();
+            }
             
+            var grade = rentalContract.avaliacao;
+
+            RentalContract rc = await _context.rentalContracts.FindAsync(id);
+            rc.avaliacao = grade;
 
             if (ModelState.IsValid)
             {
-                _context.Add(rentalContract);
+                _context.Update(rc);
                 await _context.SaveChangesAsync();
-                
+                return RedirectToAction(nameof(History));
             }
             else
             {
@@ -336,28 +337,7 @@ namespace HabitAqui_Software.Controllers
                     Console.WriteLine("Erro de validação: " + erro);
                 }
             }
-            return RedirectToAction(nameof(Index));
-
-        }
-
-        
-        public async Task<IActionResult> EditClienteAval(int? id)
-        {
-            var cat = _context.Categories.ToList();
-            ViewBag.cat = cat;
-            ViewBag.Category = new SelectList(cat, "Id", "name");
-
-            if (id == null || _context.habitacaos == null)
-            {
-                return NotFound();
-            }
-
-            var habitacao = await _context.habitacaos.FindAsync(id);
-            if (habitacao == null)
-            {
-                return NotFound();
-            }
-            return View(habitacao);
+            return View();
         }
     }
 }

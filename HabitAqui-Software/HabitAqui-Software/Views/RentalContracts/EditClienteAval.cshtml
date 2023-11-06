@@ -1,67 +1,22 @@
-﻿@model HabitAqui_Software.Models.Habitacao
+﻿@model HabitAqui_Software.Models.RentalContract
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Avaliação do Cliente";
 }
 
-<h1>Editar</h1>
-
+<h1>@ViewData["Title"]</h1>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="location" class="control-label"></label>
-                <input asp-for="location" class="form-control" />
-                <span asp-validation-for="location" class="text-danger"></span>
-            </div>    <br />
-            <div class="form-group">
-                <label asp-for="rentalCost" class="control-label"></label>
-                <input asp-for="rentalCost" class="form-control" />
-                <span asp-validation-for="rentalCost" class="text-danger"></span>
-            </div>    <br />
-            <div class="form-group">
-                <label asp-for="startDateAvailability" class="control-label"></label>
-                <input asp-for="startDateAvailability" class="form-control" />
-                <span asp-validation-for="startDateAvailability" class="text-danger"></span>
-            </div>    <br />
-            <div class="form-group">
-                <label asp-for="endDateAvailability" class="control-label"></label>
-                <input asp-for="endDateAvailability" class="form-control" />
-                <span asp-validation-for="endDateAvailability" class="text-danger"></span>
-            </div>    <br />
-            <div class="form-group">
-                <label asp-for="minimumRentalPeriod" class="control-label"></label>
-                <input asp-for="minimumRentalPeriod" class="form-control" />
-                <span asp-validation-for="minimumRentalPeriod" class="text-danger"></span>
-            </div>    <br />
-            <div class="form-group">
-                <label asp-for="maximumRentalPeriod" class="control-label"></label>
-                <input asp-for="maximumRentalPeriod" class="form-control" />
-                <span asp-validation-for="maximumRentalPeriod" class="text-danger"></span>
-            </div>    <br />
-            <div class="form-group">
-                <input asp-for="grade" type="number" class="form-control" hidden></input>
-                <span asp-validation-for="grade" class="text-danger"></span>
-            </div>    <br />
-            <div class="form-group">
-                <label>Categoria da habitação</label>
-                <select asp-for="categoryId" asp-items="ViewBag.Category" class="form-control"></select>
-                <span asp-validation-for="categoryId" class="text-danger"></span>
-            </div>    <br />
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="available" /> @Html.DisplayNameFor(model => model.available)
-                </label>
-            </div>    <br />
-            <div class="form-group">
-                <a asp-action="Index" class="btn btn-outline-danger">Voltar</a>
-                <input type="submit" value="Edit" class="btn btn-primary tb-btn" />
-            </div>
-        </form>
+
+<form asp-action="EditClienteAval">
+    <div class="form-group">
+        <label asp-for="avaliacao"></label>
+        <input asp-for="avaliacao" class="form-control" />
+        <span asp-validation-for="avaliacao" class="text-danger"></span>
     </div>
-</div>
+
+
+
+    <button type="submit" class="btn btn-primary">Salvar</button>
+</form>
 
 

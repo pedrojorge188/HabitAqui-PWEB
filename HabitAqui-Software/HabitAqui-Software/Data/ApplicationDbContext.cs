@@ -16,7 +16,6 @@ namespace HabitAqui_Software.Data
         public DbSet<RentalContract> rentalContracts { get; set; }
         public DbSet<Employer> employers { set; get; }
         public DbSet<Manager> managers { set; get; }
-        public DbSet<UserTeste> userTeste { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
