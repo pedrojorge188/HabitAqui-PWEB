@@ -152,17 +152,16 @@ namespace HabitAqui_Software.Controllers
         [Authorize(Roles = "Employer, Manager")]
         public IActionResult Create()
         {
-            var habitationsId = _context.rentalContracts.Where(rc => rc.isConfirmed == false).Select(rc => rc.HabitacaoId).ToList();
 
+            var habitationsId = _context.rentalContracts.Select(rc => rc.HabitacaoId).ToList();
             var locadorIds = _context.rentalContracts.Where(rc => habitationsId.Contains(rc.HabitacaoId)).Select(rc => rc.habitacao.LocadorId).ToList();
-
             var habitationList = _context.habitacaos
                 .Where(av => av.available == true && !habitationsId.Contains(av.Id) && locadorIds.Contains(av.LocadorId))
                 .ToList();
-
             var users = _userManager.GetUsersInRoleAsync("Client").Result.ToList();
             ViewData["HabitacaoId"] = new SelectList(habitationList, "Id", "location");
             ViewData["userId"] = new SelectList(users, "Id", "firstName");
+
             return View();
         }
 
@@ -174,6 +173,7 @@ namespace HabitAqui_Software.Controllers
         {
             if (ModelState.IsValid)
             {
+                ViewBag.SuccessMessage = "Contrato criado com sucesso";
                 rentalContract.avaliacao = 0;
                 rentalContract.isConfirmed = false;
                
@@ -182,9 +182,13 @@ namespace HabitAqui_Software.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var habitaionList = _context.habitacaos.Where(av => av.available == true).ToList();
+            var habitationsId = _context.rentalContracts.Where(rc => rc.isConfirmed == false).Select(rc => rc.HabitacaoId).ToList();
+            var locadorIds = _context.rentalContracts.Where(rc => habitationsId.Contains(rc.HabitacaoId)).Select(rc => rc.habitacao.LocadorId).ToList();
+            var habitationList = _context.habitacaos
+                .Where(av => av.available == true && !habitationsId.Contains(av.Id) && locadorIds.Contains(av.LocadorId))
+                .ToList();
             var users = _userManager.GetUsersInRoleAsync("Client").Result.ToList();
-            ViewData["HabitacaoId"] = new SelectList(habitaionList, "Id", "location");
+            ViewData["HabitacaoId"] = new SelectList(habitationList, "Id", "location");
             ViewData["userId"] = new SelectList(users, "Id", "firstName");
 
             return View(rentalContract);
@@ -246,29 +250,7 @@ namespace HabitAqui_Software.Controllers
 
         // GET: RentalContracts/Delete/5
         [Authorize(Roles = "Employer, Manager")]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.rentalContracts == null)
-            {
-                return NotFound();
-            }
-
-            var rentalContract = await _context.rentalContracts
-                .Include(r => r.habitacao)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (rentalContract == null)
-            {
-                return NotFound();
-            }
-
-            return View(rentalContract);
-        }
-
-        // POST: RentalContracts/Delete/5
-        [Authorize(Roles = "Employer, Manager")]
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int? id)
         {
             if (_context.rentalContracts == null)
             {
@@ -277,12 +259,38 @@ namespace HabitAqui_Software.Controllers
             var rentalContract = await _context.rentalContracts.FindAsync(id);
             if (rentalContract != null)
             {
+                rentalContract.habitacao = null;
+                rentalContract.deliveryStatus = null;
+                rentalContract.receiveStatus = null;
+                rentalContract.user = null;
+
                 _context.rentalContracts.Remove(rentalContract);
+                ViewBag.SuccessMessage = "Categoria editada com sucesso";
             }
-            
+
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            if (User.IsInRole("Employer"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var employee = _context.employers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == employee.LocadorId);
+                var applicationDbContext = _context.rentalContracts.Include(r => r.habitacao).Include(u => u.user).Where(l => l.habitacao.locador == _locador);
+                return View("Index",await applicationDbContext.ToListAsync());
+
+            }
+            else if (User.IsInRole("Manager"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var manager = _context.managers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == manager.LocadorId);
+                var applicationDbContext = _context.rentalContracts.Include(r => r.habitacao).Include(u => u.user).Where(l => l.habitacao.locador == _locador);
+                return View("Index", await applicationDbContext.ToListAsync());
+            }
+            return View();
         }
+
+    
 
         private bool RentalContractExists(int id)
         {

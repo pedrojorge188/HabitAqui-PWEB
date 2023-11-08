@@ -65,7 +65,9 @@
                 <th>
                     @Html.DisplayNameFor(model => model.habitacao)
                 </th>
-                <th></th>
+                <th>
+                    Ações
+                </th>
                 <th></th>
             </tr>
         </thead>
@@ -96,17 +98,21 @@
                         <td>
                             <a asp-action="Details" class="btn btn-sm btn-primary tb-btn" asp-controller="Habitacoes" asp-route-id="@item.habitacao.Id"><i class="fa-sharp fa-solid fa-eye" style="color: #ffffff; margin-right: 5px"></i>@item.habitacao.location</a>
                         </td>
-                        <td>
                             @if (!item.isConfirmed)
                             {
-                                <a asp-action="" class="btn btn-outline-dark rounded-circle" asp-route-id="@item.Id" data-toggle="modal" data-target="#confirmModal"><i class="fa-solid fa-check"></i></a>
-                                <a asp-action="" class="btn btn-outline-dark rounded-circle" asp-route-id="@item.Id" data-toggle="modal" data-target="#rejectModal"><i class="fa-solid fa-xmark"></i></a>
+                            <td>
+                                <a asp-action="" class="btn btn-outline-dark rounded-circle" asp-route-id="@item.Id"><i class="fa-solid fa-check"></i></a>
+                                <a asp-action="DeleteConfirmed" class="btn btn-outline-dark rounded-circle" asp-route-id="@item.Id"><i class="fa-solid fa-xmark"></i></a>
+                            </td>
                             }
-                        </td>
+                            else
+                            {
+                            <td>
+                                <a asp-action="#" class="btn btn-sm btn-primary tb-btn" asp-route-id="@item.Id" >Receber do Cliente</a>
+                            </td>
+                            }
                         <td>
-                            <a asp-action="Edit" class="btn btn-outline-dark rounded-circle" asp-route-id="@item.Id"> <i class="fa-solid fa-pencil"></i></a>
-                            <a asp-action="Details" class="btn btn-outline-dark rounded-circle" asp-route-id="@item.Id"><i class="fa-solid fa-eye"></i></a>
-                            <a asp-action="Delete" class="btn btn-outline-dark rounded-circle " asp-route-id="@item.Id"><i class="fa-sharp fa-solid fa-trash"></i></a>
+                            <a asp-action="#" class="btn btn-outline-dark rounded-circle" asp-route-id="@item.Id"><i class="fa-solid fa-eye"></i></a>
                         </td>
                     </tr>
                 }
@@ -142,32 +148,6 @@
                 <form asp-action="Confirm">
                     <input type="hidden"/>
                     <button type="submit" class="btn btn-danger">Sim, confirmar</button>
-                </form>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Não</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-dark" role="document">
-
-        <div class="modal-content bg-dark text-light">
-
-            <div class="modal-header">
-                <h5 class="modal-title text-light" id="rejectModalLabel">Confirmação</h5>
-                <button type="button" class="close text-light" data-dismiss="modal" aria-label="Close">
-
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                Tem a certeza que deseja rejeitar o arrendamento?
-            </div>
-            <div class="modal-footer">
-                <form asp-action="">
-                    <input type="hidden"/>
-                    <button type="submit" class="btn btn-danger">Sim, rejeitar</button>
                 </form>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Não</button>
             </div>
