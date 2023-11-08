@@ -1,5 +1,4 @@
-﻿@model HabitAqui_Software.Models.RentalContract
-
+﻿@model HabitAqui_Software.Models.ViewModels.ConfirmRentalContracts
 @{
     ViewData["Title"] = "Confirm";
 }
@@ -12,22 +11,28 @@
     <div class="col-md-4">
         <form asp-action="Confirm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            
+            <input type="hidden" asp-for="rentalContract.Id" />
+
             <div class="form-group">
-                <label asp-for="hasEquipments" class="control-label"></label>
-                <input asp-for="hasEquipments" class="form-control" />
+                <div class="form-check">
+                    <input asp-for="hasEquipments" class="form-check-input" />
+                    <label class="form-check-label">Equipamentos</label>
+                </div>
                 <span asp-validation-for="hasEquipments" class="text-danger"></span>
-            </div>           <br />
-            <div class="form-group">
-                <label asp-for="hasDamage" class="control-label"></label>
-                <select asp-for="hasDamage" class="form-control" asp-items="ViewBag.HabitacaoId"></select>
             </div>
-            <br />
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input asp-for="hasDamage" value="false" class="form-check-input" />
+                    <label class="form-check-label">Danos</label>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label asp-for="observation" class="control-label"></label>
-                <select asp-for="observation" class="form-control" asp-items="ViewBag.userId"></select>
+                <input asp-for="observation" class="form-control" />
             </div>
-            <br />
+
             <div class="form-group">
                 <a asp-action="Index" class="btn btn-outline-danger">Voltar</a>
                 <input type="submit" value="Confirmar" class="btn btn-primary tb-btn" />
@@ -35,4 +40,5 @@
         </form>
     </div>
 </div>
+
 

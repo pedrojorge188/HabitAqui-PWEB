@@ -10,6 +10,8 @@ using HabitAqui_Software.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using SQLitePCL;
+using HabitAqui_Software.Models.ViewModels;
+using System.Diagnostics;
 
 namespace HabitAqui_Software.Controllers
 {
@@ -194,7 +196,7 @@ namespace HabitAqui_Software.Controllers
             return View(rentalContract);
         }
 
-        // GET: RentalContracts/Confirmed/5
+      
         [Authorize(Roles = "Employer, Manager")]
         public async Task<IActionResult> Confirm(int? id)
         {
@@ -202,37 +204,60 @@ namespace HabitAqui_Software.Controllers
             {
                 return NotFound();
             }
-            
-            var rentalContract = await _context.rentalContracts.FindAsync(id);
-            if (rentalContract == null)
+
+            ConfirmRentalContracts crc = new ConfirmRentalContracts();
+            crc.rentalContract =  await _context.rentalContracts.FindAsync(id);
+              
+            if (crc.rentalContract == null)
             {
                 return NotFound();
             }
-            return View(rentalContract);
+            return View(crc);
         }
 
-        // POST: RentalContracts/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
+        [Authorize(Roles = "Employer, Manager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Confirm(int id, [Bind("Id,RentalContractId,HasEquipments,HasDamage,Observation")] DeliveryStatus deliveryStatus)
+        public async Task<IActionResult> Confirm(int id, ConfirmRentalContracts confirmRentalContracts)
         {
-            if (id != deliveryStatus.Id)
+            if (confirmRentalContracts.rentalContract == null || id != confirmRentalContracts.rentalContract.Id)
             {
-                return NotFound();
+                return Problem("Entity set 'ApplicationDbContext.rentalContracts'  is null.");
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(deliveryStatus);
+                    DeliveryStatus delivery = new DeliveryStatus
+                    {
+                        hasDamage = confirmRentalContracts.hasDamage,
+                        hasEquipments = confirmRentalContracts.hasEquipments,
+                        observation = confirmRentalContracts.observation
+                    };
+
+                    _context.Add(delivery);
                     await _context.SaveChangesAsync();
+
+
+                    RentalContract rc = await _context.rentalContracts
+                     .Include(h => h.habitacao) 
+                     .FirstOrDefaultAsync(r => r.Id == id);
+
+
+                    rc.DeliveryStatusId = delivery.Id;
+                    rc.isConfirmed = true;
+                    rc.habitacao.available = false;
+
+                    _context.Update(rc);
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RentalContractExists(deliveryStatus.Id))
+                    if (!RentalContractExists(confirmRentalContracts.rentalContract.Id))
                     {
                         return NotFound();
                     }
@@ -241,13 +266,13 @@ namespace HabitAqui_Software.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            
-            return View(deliveryStatus);
+
+            return View(confirmRentalContracts.rentalContract);
         }
 
-        // GET: RentalContracts/Delete/5
+
+
         [Authorize(Roles = "Employer, Manager")]
         public async Task<IActionResult> DeleteConfirmed(int? id)
         {
@@ -287,64 +312,6 @@ namespace HabitAqui_Software.Controllers
                 return View("Index", await applicationDbContext.ToListAsync());
             }
             return View();
-        }
-
-
-        // POST: ParqueHabitacoes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Employer, Manager")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,location,rentalCost,startDateAvailability,endDateAvailability,minimumRentalPeriod,maximumRentalPeriod,available,grade,LocadorId,categoryId")] Habitacao habitacao)
-        {
-
-            if (id != habitacao.Id)
-            {
-                return NotFound();
-            }
-
-
-            if (User.IsInRole("Employer"))
-            {
-                var appUserId = _userManager.GetUserId(User);
-                var employee = _context.employers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
-                var _locador = _context.locador.FirstOrDefault(l => l.Id == employee.LocadorId);
-
-                habitacao.LocadorId = _locador.Id;
-
-            }
-            else if (User.IsInRole("Manager"))
-            {
-                var appUserId = _userManager.GetUserId(User);
-                var manager = _context.managers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
-                var _locador = _context.locador.FirstOrDefault(l => l.Id == manager.LocadorId);
-
-                habitacao.LocadorId = _locador.Id;
- 
-            }
-
-    
-
-            if (ModelState.IsValid)
-            {
-
-                _context.Update(habitacao);
-                await _context.SaveChangesAsync();
-                
-            }
-            else
-            {
-                // Coleta as mensagens de erro do ModelState
-                var erros = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-
-                // Exibe as mensagens de erro no console
-                foreach (var erro in erros)
-                {
-                    Console.WriteLine("Erro de validação: " + erro);
-                }
-            }
-            return RedirectToAction(nameof(Index));
         }
 
     
