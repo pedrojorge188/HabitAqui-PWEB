@@ -9,6 +9,7 @@ using HabitAqui_Software.Data;
 using HabitAqui_Software.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using SQLitePCL;
 
 namespace HabitAqui_Software.Controllers
 {
@@ -112,7 +113,7 @@ namespace HabitAqui_Software.Controllers
                 var appUserId = _userManager.GetUserId(User);
                 var employee = _context.employers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
                 var _locador = _context.locador.FirstOrDefault(l => l.Id == employee.LocadorId);
-                var applicationDbContext = _context.rentalContracts.Include(r => r.habitacao).Where(l => l.habitacao.locador == _locador);
+                var applicationDbContext = _context.rentalContracts.Include(r => r.habitacao).Include(u => u.user).Where(l => l.habitacao.locador == _locador);
                 return View(await applicationDbContext.ToListAsync());
 
             }
@@ -121,7 +122,7 @@ namespace HabitAqui_Software.Controllers
                 var appUserId = _userManager.GetUserId(User);
                 var manager = _context.managers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
                 var _locador = _context.locador.FirstOrDefault(l => l.Id == manager.LocadorId);
-                var applicationDbContext = _context.rentalContracts.Include(r => r.habitacao).Where(l => l.habitacao.locador == _locador);
+                var applicationDbContext = _context.rentalContracts.Include(r => r.habitacao).Include(u => u.user).Where(l => l.habitacao.locador == _locador);
                 return View(await applicationDbContext.ToListAsync());
             }
             return View();
@@ -151,25 +152,41 @@ namespace HabitAqui_Software.Controllers
         [Authorize(Roles = "Employer, Manager")]
         public IActionResult Create()
         {
-            ViewData["HabitacaoId"] = new SelectList(_context.habitacaos, "Id", "Id");
+            var habitationsId = _context.rentalContracts.Where(rc => rc.isConfirmed == false).Select(rc => rc.HabitacaoId).ToList();
+
+            var locadorIds = _context.rentalContracts.Where(rc => habitationsId.Contains(rc.HabitacaoId)).Select(rc => rc.habitacao.LocadorId).ToList();
+
+            var habitationList = _context.habitacaos
+                .Where(av => av.available == true && !habitationsId.Contains(av.Id) && locadorIds.Contains(av.LocadorId))
+                .ToList();
+
+            var users = _userManager.GetUsersInRoleAsync("Client").Result.ToList();
+            ViewData["HabitacaoId"] = new SelectList(habitationList, "Id", "location");
+            ViewData["userId"] = new SelectList(users, "Id", "firstName");
             return View();
         }
 
-        // POST: RentalContracts/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [Authorize(Roles = "Employer, Manager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,startDate,endDate,isConfirmed,HabitacaoId,DeliveryStatusId,ReceiveStatusId,UserId")] RentalContract rentalContract)
+        public async Task<IActionResult> Create([Bind("Id,startDate,endDate,isConfirmed,HabitacaoId,DeliveryStatusId,ReceiveStatusId,userId")] RentalContract rentalContract)
         {
             if (ModelState.IsValid)
             {
+                rentalContract.avaliacao = 0;
+                rentalContract.isConfirmed = false;
+               
                 _context.Add(rentalContract);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["HabitacaoId"] = new SelectList(_context.habitacaos, "Id", "Id", rentalContract.HabitacaoId);
+
+            var habitaionList = _context.habitacaos.Where(av => av.available == true).ToList();
+            var users = _userManager.GetUsersInRoleAsync("Client").Result.ToList();
+            ViewData["HabitacaoId"] = new SelectList(habitaionList, "Id", "location");
+            ViewData["userId"] = new SelectList(users, "Id", "firstName");
+
             return View(rentalContract);
         }
 

@@ -209,6 +209,7 @@ namespace HabitAqui_Software.Controllers {
             ViewBag.Category = new SelectList(cat, "Id", "name");
 
             if (User.IsInRole("Employer"))
+         
             {
                 var appUserId = _userManager.GetUserId(User);
                 var employee = _context.employers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
