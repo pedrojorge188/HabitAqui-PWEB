@@ -6,10 +6,10 @@ namespace HabitAqui_Software.Models
     {
         public int Id { get; set; }
 
-        [Display(Name = "Name", Prompt = "Insert name for the category...")]
+        [Display(Name = "Nome", Prompt = "Insira o nome da categoria...")]
         public string name { get; set; }
 
-        [Display(Name = "Description", Prompt = "Insert description for the category...")]
+        [Display(Name = "Descrição", Prompt = "Insira a descrição da categoria...")]
         public string description { get; set; }
 
 

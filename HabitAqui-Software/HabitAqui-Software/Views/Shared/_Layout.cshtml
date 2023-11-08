@@ -64,7 +64,7 @@
                                 <i class="fa-sharp fa-solid fa-building"></i> Habitações
                             </a>
                         </li>
-                        @if (this.User.IsInRole("Client"))
+                        @if (this.User.IsInRole("Client") )
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="RentalContracts" asp-action="History">
@@ -72,15 +72,23 @@
                                 </a>
                             </li>
                         }
-                        @if (this.User.IsInRole("Employer"))
+                        @if (this.User.IsInRole("Employer") || this.User.IsInRole("Manager"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="ParqueHabitacoes" asp-action="Index">
-                                    <i class="fa-solid fa-building "></i> Habitações (Locador)
+                                <a class="nav-link" asp-area="" asp-controller="RentalContracts" asp-action="Index">
+                                    <i class="fa-solid fa-file "></i> Arrendamentos
                                 </a>
                             </li>
                         }
-                         @if (this.User.IsInRole("Admin"))
+                        @if (this.User.IsInRole("Employer") || this.User.IsInRole("Manager"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="ParqueHabitacoes" asp-action="Index">
+                                    <i class="fa-solid fa-building "></i> Parque Habitações
+                                </a>
+                            </li>
+                        }
+                        @if (this.User.IsInRole("Admin"))
                          {
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Categories" asp-action="Index">

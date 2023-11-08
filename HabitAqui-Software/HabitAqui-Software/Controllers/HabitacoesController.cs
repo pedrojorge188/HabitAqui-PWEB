@@ -1,5 +1,6 @@
 ﻿using HabitAqui_Software.Data;
 using HabitAqui_Software.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,6 +11,7 @@ using System.IO.Pipelines;
 
 namespace HabitAqui_Software.Controllers
 {
+    [AllowAnonymous]
     public class HabitacoesController : Controller
     {
 
@@ -127,6 +129,7 @@ namespace HabitAqui_Software.Controllers
             return View("Index", results);
         }
 
+        [Authorize(Roles = "Client, Admin, Employer, Manager")]
         public async Task<IActionResult> Details(int? id)
         {
 

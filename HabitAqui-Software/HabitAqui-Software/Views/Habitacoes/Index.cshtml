@@ -80,16 +80,6 @@
                 <button type="submit" value="Search" class="btn btn-primary btn-lg tb-btn">Pesquisar</button>
             </div>
 
-            <div class="col-md-6 d-flex align-items-center justify-content-center">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="true" name="userTeste" id="flexCheckDefault">
-                    <label class="form-check-label ml-2" for="userTeste">
-                        User
-                    </label>
-                </div>
-            </div>
-
-
         </div>
 
     }
@@ -104,7 +94,11 @@
                     <th>Categoria</th>
                     <th>Aluguer</th>
                     <th>Avaliação</th>
-                    <th></th>
+                    @if (!User.Identity.IsAuthenticated) {
+                        <th>Entrar para ver detalhes</th>
+                    }else{
+                        <th></th>
+                    }
                 </tr>
             </thead>
             <tbody>
@@ -130,9 +124,16 @@
                             <td>
                                 @item.grade <i class="fa-solid fa-star"></i>
                             </td>
+                            @if (User.Identity.IsAuthenticated)
+                            {
                             <td style="padding:10px">
                                 <a asp-action="Details" class="btn btn-sm btn-primary tb-btn" asp-route-id="@item.Id"> <i class="fa-sharp fa-solid fa-plus" style="color: #ffffff; margin-right: 5px"></i>Informação</a>
                             </td>
+                            }
+                            else
+                            {
+                                  <td style="padding:10px">-</td>
+                            }
                         </tr>
                     }
                 }

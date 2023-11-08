@@ -9,9 +9,12 @@ using HabitAqui_Software.Data;
 using HabitAqui_Software.Models;
 using Microsoft.AspNetCore.Identity;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HabitAqui_Software.Controllers
 {
+
+    [Authorize(Roles = "Admin")]
     public class LocadorController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -22,6 +25,7 @@ namespace HabitAqui_Software.Controllers
         }
 
         // GET: Locador
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var enrollments = _context.enrollments.ToList();
@@ -32,6 +36,7 @@ namespace HabitAqui_Software.Controllers
                         Problem("Entity set 'ApplicationDbContext.locador'  is null.");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult> Search(string? name, int? enrollment, bool? sortByAlphabet)
         {
@@ -62,6 +67,7 @@ namespace HabitAqui_Software.Controllers
         }
 
         // GET: Locador/Details/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.locador == null)
@@ -80,6 +86,7 @@ namespace HabitAqui_Software.Controllers
         }
 
         // GET: Locador/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             var enrollments = _context.enrollments.ToList();
@@ -91,6 +98,7 @@ namespace HabitAqui_Software.Controllers
         // POST: Locador/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,name,company,address,email,enrollmentId")] Locador locador)
@@ -108,6 +116,7 @@ namespace HabitAqui_Software.Controllers
         }
 
         // GET: Locador/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
            
@@ -131,6 +140,7 @@ namespace HabitAqui_Software.Controllers
         // POST: Locador/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,name,company,address,email,enrollmentId")] Locador locador)
@@ -169,6 +179,7 @@ namespace HabitAqui_Software.Controllers
         }
 
         // GET: Locador/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.locador == null)
@@ -187,6 +198,7 @@ namespace HabitAqui_Software.Controllers
         }
 
         // POST: Locador/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

@@ -12,7 +12,7 @@ namespace HabitAqui_Software.Data
     }
     public static class RolesInitialization
     {
-        public static async Task generateInitialData(UserManager<User> userManager,
+        public static async Task generateInitialData(UserManager<ApplicationUser> userManager,
                                                     RoleManager<IdentityRole> roleManager)
         {
             await roleManager.CreateAsync(new IdentityRole(Roles.Admin.ToString()));
@@ -20,7 +20,7 @@ namespace HabitAqui_Software.Data
             await roleManager.CreateAsync(new IdentityRole(Roles.Employer.ToString()));
             await roleManager.CreateAsync(new IdentityRole(Roles.Client.ToString()));
 
-            var defaultUser = new User
+            var defaultUser = new ApplicationUser
             {
                 UserName = "admin@localhost.com",
                 Email = "admin@localhost.com",

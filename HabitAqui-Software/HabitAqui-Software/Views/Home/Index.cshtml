@@ -34,18 +34,20 @@
 
             }
 
-            @if (this.User.IsInRole("Employer")){
+            @if (this.User.IsInRole("Employer") || this.User.IsInRole("Manager"))
+            {
             <div class="col-md-4">
                 <div class="card bg-dark text-white m-2">
-                    <img src="img/alugueres.jpg" class="card-img-top img-fluid"  alt="Gerir alugueres do locador">
+                    <img src="img/alugueres.jpg" class="card-img-top img-fluid"  alt="Gerir arrendamentos do locador">
                     <div class="card-body">
-                        <h3 class="card-title">Gerir alugueres do locador</h3>
-                        <button type="button" class="btn btn-primary tb-btn">Ver página</button>
+                        <h3 class="card-title">Gerir arrendamentos do locador</h3>
+                            <a asp-area="" class="btn btn-primary tb-btn" asp-controller="RentalContracts" asp-action="Index">Ver página</a>
                     </div>
                 </div>
             </div>
             }
-            @if (this.User.IsInRole("Employer")){
+            @if (this.User.IsInRole("Employer") || this.User.IsInRole("Manager"))
+            {
             <div class="col-md-4">
                 <div class="card bg-dark text-white m-2">
                     <img src="img/parqueHabit.jpg" class="card-img-top img-fluid"  alt="Gerir parque de habitações do locador">

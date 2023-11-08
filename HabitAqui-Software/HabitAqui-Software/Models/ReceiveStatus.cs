@@ -8,13 +8,13 @@ namespace HabitAqui_Software.Models
     {
         public int Id { get; set; }
 
-        [Display(Name = "hasEquipments", Prompt = "check if habitation has an extra equipments...")]
+        [Display(Name = "Tem Equipamentos")]
         public Boolean hasEquipments;
 
-        [Display(Name = "hasDamage", Prompt = "check if habitation has any kind of damage...")]
+        [Display(Name = "Tem Danos")]
         public Boolean hasDamage;
 
-        [Display(Name = "Observation", Prompt = "Write any observation about delivery status to client...")]
+        [Display(Name = "Observações", Prompt = "Escreva observações sobre o estado de recolha da habitação do cliente")]
         public string? observation;
 
         public string? imgLink;

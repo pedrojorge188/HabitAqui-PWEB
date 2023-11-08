@@ -7,35 +7,68 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HabitAqui_Software.Data;
 using HabitAqui_Software.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using SQLitePCL;
 
 namespace HabitAqui_Software.Controllers
 {
+
+    [Authorize(Roles = "Client, Employer, Manager")]
     public class RentalContractsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private Locador _locador;
-        private UserTeste _userTeste;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public RentalContractsController(ApplicationDbContext context)
+        public RentalContractsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
-
-            //locador estatico de testes
-            _locador = _context.locador.FirstOrDefault(l => l.Id == 7);
-
-            //userTeste -------------------------------------------------------------------
-            _userTeste = _context.userTeste.FirstOrDefault(u => u.Id == 1);
+            _userManager = userManager;
         }
 
         private string getLocadorName()
         {
-            return _locador.name.ToString();
+            if (User.IsInRole("Employer"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var employee = _context.employers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == employee.LocadorId);
+                return _locador.name;
+
+            }
+            else if (User.IsInRole("Manager"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var manager = _context.managers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == manager.LocadorId);
+
+                return _locador.name;
+            }
+            return " ";
         }
 
+        [Authorize(Roles = "Employer, Manager")]
         [HttpPost]
         public async Task<ActionResult> Search(DateTime? startDate, DateTime? endDate, Boolean? isConfirmed, string? location, string? cliente)
         {
-            IQueryable<RentalContract> query = _context.rentalContracts.Include(r => r.habitacao).Where(l => l.habitacao.locador == _locador);
+            IQueryable<RentalContract> query = null;
+
+            if (User.IsInRole("Employer"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var employee = _context.employers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == employee.LocadorId);
+                query = _context.rentalContracts.Include(r => r.habitacao).Where(l => l.habitacao.locador == _locador);
+
+            }
+            else if (User.IsInRole("Manager"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var manager = _context.managers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == manager.LocadorId);
+                query = _context.rentalContracts.Include(r => r.habitacao).Where(l => l.habitacao.locador == _locador);
+            }
+ 
 
             if (startDate.HasValue)
             {
@@ -69,33 +102,33 @@ namespace HabitAqui_Software.Controllers
             return View("Index", result);
         }
 
-        // GET: RentalContracts/Edit/5
-        public async Task<IActionResult> Confirm(int? id)
-        {
- 
-            var rentalContract = await _context.rentalContracts.FindAsync(id);
-            if (rentalContract == null)
-            {
-                return NotFound();
-            }
-
-            rentalContract.isConfirmed = true;
-           
-            _context.Update(rentalContract);
-            await _context.SaveChangesAsync();
-            
-            return View("RentalContracts",rentalContract);
-        }
-
+        [Authorize(Roles = "Employer, Manager")]
         // GET: RentalContracts
         public async Task<IActionResult> Index()
         {
             ViewBag.locadorName = this.getLocadorName();
-            var applicationDbContext = _context.rentalContracts.Include(r => r.habitacao).Where(l => l.habitacao.locador == _locador);
 
-            return View(await applicationDbContext.ToListAsync());
+            if (User.IsInRole("Employer"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var employee = _context.employers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == employee.LocadorId);
+                var applicationDbContext = _context.rentalContracts.Include(r => r.habitacao).Include(u => u.user).Where(l => l.habitacao.locador == _locador);
+                return View(await applicationDbContext.ToListAsync());
+
+            }
+            else if (User.IsInRole("Manager"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var manager = _context.managers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == manager.LocadorId);
+                var applicationDbContext = _context.rentalContracts.Include(r => r.habitacao).Include(u => u.user).Where(l => l.habitacao.locador == _locador);
+                return View(await applicationDbContext.ToListAsync());
+            }
+            return View();
+        
         }
-
+        [Authorize(Roles = "Employer, Manager")]
         // GET: RentalContracts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -116,30 +149,53 @@ namespace HabitAqui_Software.Controllers
         }
 
         // GET: RentalContracts/Create
+        [Authorize(Roles = "Employer, Manager")]
         public IActionResult Create()
         {
-            ViewData["HabitacaoId"] = new SelectList(_context.habitacaos, "Id", "Id");
+
+            var habitationsId = _context.rentalContracts.Select(rc => rc.HabitacaoId).ToList();
+            var locadorIds = _context.rentalContracts.Where(rc => habitationsId.Contains(rc.HabitacaoId)).Select(rc => rc.habitacao.LocadorId).ToList();
+            var habitationList = _context.habitacaos
+                .Where(av => av.available == true && !habitationsId.Contains(av.Id) && locadorIds.Contains(av.LocadorId))
+                .ToList();
+            var users = _userManager.GetUsersInRoleAsync("Client").Result.ToList();
+            ViewData["HabitacaoId"] = new SelectList(habitationList, "Id", "location");
+            ViewData["userId"] = new SelectList(users, "Id", "firstName");
+
             return View();
         }
 
-        // POST: RentalContracts/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
+        [Authorize(Roles = "Employer, Manager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,startDate,endDate,isConfirmed,HabitacaoId,DeliveryStatusId,ReceiveStatusId,UserId")] RentalContract rentalContract)
+        public async Task<IActionResult> Create([Bind("Id,startDate,endDate,isConfirmed,HabitacaoId,DeliveryStatusId,ReceiveStatusId,userId")] RentalContract rentalContract)
         {
             if (ModelState.IsValid)
             {
+                ViewBag.SuccessMessage = "Contrato criado com sucesso";
+                rentalContract.avaliacao = 0;
+                rentalContract.isConfirmed = false;
+               
                 _context.Add(rentalContract);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["HabitacaoId"] = new SelectList(_context.habitacaos, "Id", "Id", rentalContract.HabitacaoId);
+
+            var habitationsId = _context.rentalContracts.Where(rc => rc.isConfirmed == false).Select(rc => rc.HabitacaoId).ToList();
+            var locadorIds = _context.rentalContracts.Where(rc => habitationsId.Contains(rc.HabitacaoId)).Select(rc => rc.habitacao.LocadorId).ToList();
+            var habitationList = _context.habitacaos
+                .Where(av => av.available == true && !habitationsId.Contains(av.Id) && locadorIds.Contains(av.LocadorId))
+                .ToList();
+            var users = _userManager.GetUsersInRoleAsync("Client").Result.ToList();
+            ViewData["HabitacaoId"] = new SelectList(habitationList, "Id", "location");
+            ViewData["userId"] = new SelectList(users, "Id", "firstName");
+
             return View(rentalContract);
         }
 
         // GET: RentalContracts/Edit/5
+        [Authorize(Roles = "Employer, Manager")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.rentalContracts == null)
@@ -193,28 +249,8 @@ namespace HabitAqui_Software.Controllers
         }
 
         // GET: RentalContracts/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.rentalContracts == null)
-            {
-                return NotFound();
-            }
-
-            var rentalContract = await _context.rentalContracts
-                .Include(r => r.habitacao)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (rentalContract == null)
-            {
-                return NotFound();
-            }
-
-            return View(rentalContract);
-        }
-
-        // POST: RentalContracts/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [Authorize(Roles = "Employer, Manager")]
+        public async Task<IActionResult> DeleteConfirmed(int? id)
         {
             if (_context.rentalContracts == null)
             {
@@ -223,12 +259,38 @@ namespace HabitAqui_Software.Controllers
             var rentalContract = await _context.rentalContracts.FindAsync(id);
             if (rentalContract != null)
             {
+                rentalContract.habitacao = null;
+                rentalContract.deliveryStatus = null;
+                rentalContract.receiveStatus = null;
+                rentalContract.user = null;
+
                 _context.rentalContracts.Remove(rentalContract);
+                ViewBag.SuccessMessage = "Categoria editada com sucesso";
             }
-            
+
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            if (User.IsInRole("Employer"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var employee = _context.employers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == employee.LocadorId);
+                var applicationDbContext = _context.rentalContracts.Include(r => r.habitacao).Include(u => u.user).Where(l => l.habitacao.locador == _locador);
+                return View("Index",await applicationDbContext.ToListAsync());
+
+            }
+            else if (User.IsInRole("Manager"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var manager = _context.managers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == manager.LocadorId);
+                var applicationDbContext = _context.rentalContracts.Include(r => r.habitacao).Include(u => u.user).Where(l => l.habitacao.locador == _locador);
+                return View("Index", await applicationDbContext.ToListAsync());
+            }
+            return View();
         }
+
+    
 
         private bool RentalContractExists(int id)
         {
@@ -237,54 +299,57 @@ namespace HabitAqui_Software.Controllers
 
 
 
-
-
         //-----------------------------------------------RENTALCONTRACTS USER/CLIENTE----------------------------------------------------
+        [Authorize(Roles = "Client")]
         public async Task<IActionResult> History()
         {
-            ViewBag.Category = _context.Categories.ToList();
+            var appUserId = _userManager.GetUserId(User);
+            IQueryable<RentalContract> rentalContracts = _context.rentalContracts.Include("habitacao").Where(ren => ren.user.Id == appUserId &&
+                                                                                                             ren.isConfirmed == true);
 
-            IQueryable<RentalContract> query = _context.rentalContracts
-                           .Include(h => h.habitacao)
-                           .Where(i => i.userTeste == this._userTeste);
-            ;
-
-
-            var results = await query.ToListAsync();
-
-            return View(results);
-
+            return View(await rentalContracts.ToListAsync());
         }
 
 
-        
-        public IActionResult CreateClienteAval(int IdHabitacao)
+        [Authorize(Roles = "Client")]
+        public async Task<IActionResult> EditClienteAval(int? id)
         {
-            var ren = _context.rentalContracts.ToList();
-            ViewBag.ren = ren;
-            ViewBag.RentalContracts = new SelectList(ren, "Id", "avaliacao");
-            return View();
+
+            if (id == null || _context.rentalContracts == null)
+            {
+                return NotFound();
+            }
+
+            var rentalContract = await _context.rentalContracts.FindAsync(id);
+            if (rentalContract == null)
+            {
+                return NotFound();
+            }
+            return View(rentalContract);
         }
 
-        
+
+        // POST: Curso/Edit/5
+        [Authorize(Roles = "Client")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateClienteAval(int IdHabitacao, [Bind("Id,startDate," +
-            "endDate,isConfirmed,avaliacao,")] RentalContract rentalContract)
+        public async Task<IActionResult> EditClienteAval(int? id, RentalContract rentalContract)
         {
-            var ren = _context.rentalContracts.ToList();
-            ViewBag.ren = ren;
-            ViewBag.RentalContracts = new SelectList(ren, "Id", "avaliacao");
-
-            rentalContract.HabitacaoId = IdHabitacao;
-            rentalContract.userTeste = _userTeste;
+            if (id == null || _context.rentalContracts == null)
+            {
+                return NotFound();
+            }
             
+            var grade = rentalContract.avaliacao;
+
+            RentalContract rc = await _context.rentalContracts.FindAsync(id);
+            rc.avaliacao = grade;
 
             if (ModelState.IsValid)
             {
-                _context.Add(rentalContract);
+                _context.Update(rc);
                 await _context.SaveChangesAsync();
-                
+                return RedirectToAction(nameof(History));
             }
             else
             {
@@ -297,28 +362,7 @@ namespace HabitAqui_Software.Controllers
                     Console.WriteLine("Erro de validação: " + erro);
                 }
             }
-            return RedirectToAction(nameof(Index));
-
-        }
-
-        
-        public async Task<IActionResult> EditClienteAval(int? id)
-        {
-            var cat = _context.Categories.ToList();
-            ViewBag.cat = cat;
-            ViewBag.Category = new SelectList(cat, "Id", "name");
-
-            if (id == null || _context.habitacaos == null)
-            {
-                return NotFound();
-            }
-
-            var habitacao = await _context.habitacaos.FindAsync(id);
-            if (habitacao == null)
-            {
-                return NotFound();
-            }
-            return View(habitacao);
+            return View();
         }
     }
 }

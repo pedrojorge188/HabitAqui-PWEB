@@ -7,30 +7,50 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HabitAqui_Software.Data;
 using HabitAqui_Software.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
-namespace HabitAqui_Software.Controllers
-{
+
+
+namespace HabitAqui_Software.Controllers {
+
+    [Authorize(Roles = "Employer, Manager")]
     public class ParqueHabitacoesController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private Locador _locador;
-        private readonly UserManager<User> _userManager;
-        public ParqueHabitacoesController(ApplicationDbContext context, UserManager<User> userManager)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private ApplicationUser _currentUser;
+
+        public ParqueHabitacoesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
-            //locador estatico de testes
-            
-            _locador = _context.locador.FirstOrDefault(l => l.Id == 7);
-  
         }
 
-       private string getLocadorName()
+
+        private string getLocadorName()
         {
-            return _locador.name.ToString();
+
+            if (User.IsInRole("Employer"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var employee = _context.employers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == employee.LocadorId);
+                return _locador.name;
+
+            }
+            else if (User.IsInRole("Manager"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var manager = _context.managers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == manager.LocadorId);
+
+                return _locador.name;
+            }
+            return " ";
         }
 
+        [Authorize(Roles = "Employer, Manager")]
         // GET: ParqueHabitacoes
         public async Task<IActionResult> Index()
         {
@@ -40,17 +60,56 @@ namespace HabitAqui_Software.Controllers
             ViewBag.cat = cat;
             ViewBag.Category = new SelectList(cat, "Id", "name");
 
-            return _context.habitacaos != null ?
-                        View(await _context.habitacaos.Include(it => it.category).Where(l => l.locador == _locador)
-                        .ToListAsync()) :
-                        Problem("Entity set 'ApplicationDbContext.habitacaos'  is null.");
+            if (User.IsInRole("Employer"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var employee = _context.employers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == employee.LocadorId);
+
+                return _context.habitacaos != null ?
+                     View(await _context.habitacaos.Include(it => it.category).Where(l => l.locador == _locador)
+                     .ToListAsync()) :
+                     Problem("Entity set 'ApplicationDbContext.habitacaos'  is null.");
+
+            }
+            else if (User.IsInRole("Manager"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var manager = _context.managers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == manager.LocadorId);
+
+                return _context.habitacaos != null ?
+                     View(await _context.habitacaos.Include(it => it.category).Where(l => l.locador == _locador)
+                     .ToListAsync()) :
+                     Problem("Entity set 'ApplicationDbContext.habitacaos'  is null.");
+            }
+
+            return View();
         }
 
+        [Authorize(Roles = "Employer, Manager")]
         [HttpPost]
-        public async Task<ActionResult> Search(Boolean? disp, int? category, string? price, string? grade)
-        {   
-            IQueryable<Habitacao> query = _context.habitacaos.Include(c => c.category)
-                .Where(l => l.locador == _locador);
+        public async Task<ActionResult> Search(Boolean? disp, int? category, string? price, string? grade) {
+
+            IQueryable<Habitacao> query = null;
+
+            if (User.IsInRole("Employer"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var employee = _context.employers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == employee.LocadorId);
+                query = _context.habitacaos.Include(c => c.category)
+               .Where(l => l.locador == _locador);
+
+            }
+            else if (User.IsInRole("Manager"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var manager = _context.managers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == manager.LocadorId);
+                query = _context.habitacaos.Include(c => c.category)
+               .Where(l => l.locador == _locador);
+            }
 
             if (disp.HasValue)
             {
@@ -101,7 +160,7 @@ namespace HabitAqui_Software.Controllers
             return View("Index", result);
         }
 
-
+        [Authorize(Roles = "Employer, Manager")]
         // GET: ParqueHabitacoes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -124,6 +183,7 @@ namespace HabitAqui_Software.Controllers
             return View(habitacao);
         }
 
+        [Authorize(Roles = "Employer, Manager")]
         // GET: ParqueHabitacoes/Create
         public IActionResult Create()
         {
@@ -136,6 +196,7 @@ namespace HabitAqui_Software.Controllers
         // POST: ParqueHabitacoes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Employer, Manager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,location," +
@@ -147,8 +208,26 @@ namespace HabitAqui_Software.Controllers
             ViewBag.cat = cat;
             ViewBag.Category = new SelectList(cat, "Id", "name");
 
-            habitacao.locador = _locador;
-            habitacao.grade = 0;
+            if (User.IsInRole("Employer"))
+         
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var employee = _context.employers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == employee.LocadorId);
+
+                habitacao.locador = _locador;
+                habitacao.grade = 0;
+
+            }else if (User.IsInRole("Manager"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var manager = _context.managers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == manager.LocadorId);
+
+                habitacao.locador = _locador;
+                habitacao.grade = 0;
+            }
+         
        
             _context.Add(habitacao);
             await _context.SaveChangesAsync();
@@ -157,6 +236,7 @@ namespace HabitAqui_Software.Controllers
         }
 
         // GET: ParqueHabitacoes/Edit/5
+        [Authorize(Roles = "Employer, Manager")]
         public async Task<IActionResult> Edit(int? id)
         {
             var cat = _context.Categories.ToList();
@@ -181,6 +261,7 @@ namespace HabitAqui_Software.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Employer, Manager")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,location,rentalCost,startDateAvailability,endDateAvailability,minimumRentalPeriod,maximumRentalPeriod,available,grade,LocadorId,categoryId")] Habitacao habitacao)
         {
 
@@ -189,22 +270,34 @@ namespace HabitAqui_Software.Controllers
                 return NotFound();
             }
 
-            // Defina o LocadorId aqui
-            habitacao.LocadorId = _locador.Id;
+
+            if (User.IsInRole("Employer"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var employee = _context.employers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == employee.LocadorId);
+
+                habitacao.LocadorId = _locador.Id;
+
+            }
+            else if (User.IsInRole("Manager"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var manager = _context.managers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == manager.LocadorId);
+
+                habitacao.LocadorId = _locador.Id;
+ 
+            }
+
+    
 
             if (ModelState.IsValid)
             {
 
                 _context.Update(habitacao);
                 await _context.SaveChangesAsync();
-                /*
-                ViewBag.SuccessMessage = "Locador editado com sucesso";
-
-                var enrollments = _context.enrollments.ToList();
-                ViewBag.StatusInfo = enrollments;
-                ViewBag.Enrollments = new SelectList(enrollments, "Id", "name");
-
-                return View("Index", await _context.locador.Include(h => h.enrollment).ToListAsync());*/
+                
             }
             else
             {
@@ -221,6 +314,7 @@ namespace HabitAqui_Software.Controllers
         }
 
         // GET: ParqueHabitacoes/Delete/5
+        [Authorize(Roles = "Employer, Manager")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.habitacaos == null)
@@ -239,6 +333,7 @@ namespace HabitAqui_Software.Controllers
         }
 
         // POST: ParqueHabitacoes/Delete/5
+        [Authorize(Roles = "Employer, Manager")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
