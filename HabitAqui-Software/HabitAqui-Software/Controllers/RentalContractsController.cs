@@ -194,21 +194,20 @@ namespace HabitAqui_Software.Controllers
             return View(rentalContract);
         }
 
-        // GET: RentalContracts/Edit/5
+        // GET: RentalContracts/Confirmed/5
         [Authorize(Roles = "Employer, Manager")]
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Confirm(int? id)
         {
             if (id == null || _context.rentalContracts == null)
             {
                 return NotFound();
             }
-
+            
             var rentalContract = await _context.rentalContracts.FindAsync(id);
             if (rentalContract == null)
             {
                 return NotFound();
             }
-            ViewData["HabitacaoId"] = new SelectList(_context.habitacaos, "Id", "Id", rentalContract.HabitacaoId);
             return View(rentalContract);
         }
 
@@ -217,9 +216,9 @@ namespace HabitAqui_Software.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,startDate,endDate,isConfirmed,HabitacaoId,DeliveryStatusId,ReceiveStatusId,UserId")] RentalContract rentalContract)
+        public async Task<IActionResult> Confirm(int id, [Bind("Id,RentalContractId,HasEquipments,HasDamage,Observation")] DeliveryStatus deliveryStatus)
         {
-            if (id != rentalContract.Id)
+            if (id != deliveryStatus.Id)
             {
                 return NotFound();
             }
@@ -228,12 +227,12 @@ namespace HabitAqui_Software.Controllers
             {
                 try
                 {
-                    _context.Update(rentalContract);
+                    _context.Update(deliveryStatus);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RentalContractExists(rentalContract.Id))
+                    if (!RentalContractExists(deliveryStatus.Id))
                     {
                         return NotFound();
                     }
@@ -244,8 +243,8 @@ namespace HabitAqui_Software.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["HabitacaoId"] = new SelectList(_context.habitacaos, "Id", "Id", rentalContract.HabitacaoId);
-            return View(rentalContract);
+            
+            return View(deliveryStatus);
         }
 
         // GET: RentalContracts/Delete/5
@@ -288,6 +287,64 @@ namespace HabitAqui_Software.Controllers
                 return View("Index", await applicationDbContext.ToListAsync());
             }
             return View();
+        }
+
+
+        // POST: ParqueHabitacoes/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Employer, Manager")]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,location,rentalCost,startDateAvailability,endDateAvailability,minimumRentalPeriod,maximumRentalPeriod,available,grade,LocadorId,categoryId")] Habitacao habitacao)
+        {
+
+            if (id != habitacao.Id)
+            {
+                return NotFound();
+            }
+
+
+            if (User.IsInRole("Employer"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var employee = _context.employers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == employee.LocadorId);
+
+                habitacao.LocadorId = _locador.Id;
+
+            }
+            else if (User.IsInRole("Manager"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var manager = _context.managers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == manager.LocadorId);
+
+                habitacao.LocadorId = _locador.Id;
+ 
+            }
+
+    
+
+            if (ModelState.IsValid)
+            {
+
+                _context.Update(habitacao);
+                await _context.SaveChangesAsync();
+                
+            }
+            else
+            {
+                // Coleta as mensagens de erro do ModelState
+                var erros = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+
+                // Exibe as mensagens de erro no console
+                foreach (var erro in erros)
+                {
+                    Console.WriteLine("Erro de validação: " + erro);
+                }
+            }
+            return RedirectToAction(nameof(Index));
         }
 
     
