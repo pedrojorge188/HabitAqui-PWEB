@@ -1,0 +1,102 @@
+﻿@model HabitAqui_Software.Models.ViewModels.ConfirmRentalContracts
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Detalhes do contrato de arrendamento</h1>
+<br />
+<hr />
+
+<div class="row">
+    <div class="col-md-6 ">
+        <h4>Detalhes do arrendamento</h4>
+        <div class=" border p-4 bg-dark text-light">
+            <dl class="row">
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.rentalContract.startDate)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.rentalContract.startDate)</dd>
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.rentalContract.endDate)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.rentalContract.endDate)</dd>
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.rentalContract.receiveStatus.Id)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.rentalContract.receiveStatus.Id)</dd>
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.rentalContract.deliveryStatus.Id)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.rentalContract.deliveryStatus.Id)</dd>
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.rentalContract.isConfirmed)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.rentalContract.isConfirmed)</dd>
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.rentalContract.user.firstName)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.rentalContract.user.firstName)</dd>
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.rentalContract.avaliacao)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.rentalContract.avaliacao)</dd>
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.rentalContract.HabitacaoId)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.rentalContract.HabitacaoId)</dd>
+            </dl>
+        </div>
+    </div>
+    <div class="col-md-6 ">
+        <h4>Detalhes da habitação</h4>
+        <div class=" border p-4 bg-dark text-light">
+            <dl class="row">
+                <dt class="col-sm-5"><b>Localização</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.rentalContract.habitacao.location)</dd>
+
+                <dt class="col-sm-5"><b>Custo do Aluguer</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.rentalContract.habitacao.rentalCost) €</dd>
+
+                <dt class="col-sm-5"><b>Nome do Locador</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.rentalContract.habitacao.locador.name)</dd>
+
+                <dt class="col-sm-5"><b>Data Início do período do aluguer</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.rentalContract.habitacao.startDateAvailability)</dd>
+
+                <dt class="col-sm-5"><b>Data Fim do período do aluguer</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.rentalContract.habitacao.endDateAvailability)</dd>
+
+                <dt class="col-sm-5"><b>Avaliação</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.rentalContract.habitacao.grade) <i class="fa-solid fa-star"></i></dd>
+            </dl>
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-6">
+        <h4>Detalhes do estado da entrega</h4>
+        <div class="border p-4 bg-dark text-light">
+            <dl class="row">
+                <dt class="col-sm-5"><b>Equipamentos</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.hasEquipments)</dd>
+
+                <dt class="col-sm-5"><b>Danos</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.hasDamage)</dd>
+
+                <dt class="col-sm-5"><b>Observações</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.observation)</dd>
+            </dl>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <h4>Detalhes do user</h4>
+        <div class="border p-4 bg-dark text-light">
+            <dl class="row">
+                <dt class="col-sm-5"><b>Equipamentos</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.hasEquipments)</dd>
+
+                <dt class="col-sm-5"><b>Danos</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.hasDamage)</dd>
+
+                <dt class="col-sm-5"><b>Observações</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.observation)</dd>
+            </dl>
+        </div>
+    </div>
+</div>
+<div class="form-group mt-3">
+    <a asp-action="Index" class="btn  btn-primary tb-btn">Voltar</a>
+</div>
+

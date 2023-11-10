@@ -139,19 +139,21 @@ namespace HabitAqui_Software.Controllers
                 return NotFound();
             }
 
-            var rentalContract = await _context.rentalContracts
-                .Include(r => r.habitacao)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (rentalContract == null)
+            ConfirmRentalContracts crc = new ConfirmRentalContracts();
+            crc.rentalContract = await _context.rentalContracts.FindAsync(id);
+            crc.rentalContract.habitacao = await _context.habitacaos.FindAsync(crc.rentalContract.HabitacaoId); 
+            crc.rentalContract.habitacao.locador = await _context.locador.FindAsync(crc.rentalContract.habitacao.LocadorId);
+            if (crc == null)
             {
                 return NotFound();
             }
 
-            return View(rentalContract);
+            return View(crc);
         }
 
-        // GET: RentalContracts/Create
-        [Authorize(Roles = "Employer, Manager")]
+
+    // GET: RentalContracts/Create
+    [Authorize(Roles = "Employer, Manager")]
         public IActionResult Create()
         {
 
@@ -289,7 +291,7 @@ namespace HabitAqui_Software.Controllers
                 rentalContract.user = null;
 
                 _context.rentalContracts.Remove(rentalContract);
-                ViewBag.SuccessMessage = "Categoria editada com sucesso";
+                ViewBag.SuccessMessage = "Arrendamento recusado com sucesso";
             }
 
             await _context.SaveChangesAsync();

@@ -8,37 +8,36 @@
 <hr />
 
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Confirm">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="rentalContract.Id" />
+        <div class="col-md-8">
+            <form asp-action="Confirm" class="border p-4 bg-dark text-light">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="rentalContract.Id" />
 
-            <div class="form-group">
-                <div class="form-check">
-                    <input asp-for="hasEquipments" class="form-check-input" />
-                    <label class="form-check-label">Equipamentos</label>
+                <div class="form-group">
+                    <div class="form-check">
+                        <input asp-for="hasEquipments" class="form-check-input" />
+                        <label class="form-check-label">Equipamentos</label>
+                    </div>
+                    <span asp-validation-for="hasEquipments" class="text-danger"></span>
                 </div>
-                <span asp-validation-for="hasEquipments" class="text-danger"></span>
-            </div>
 
-            <div class="form-group">
-                <div class="form-check">
-                    <input asp-for="hasDamage" value="false" class="form-check-input" />
-                    <label class="form-check-label">Danos</label>
+                <div class="form-group">
+                    <div class="form-check">
+                        <input asp-for="hasDamage" value="false" class="form-check-input" />
+                        <label class="form-check-label">Danos</label>
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label asp-for="observation" class="control-label"></label>
-                <input asp-for="observation" class="form-control" />
-            </div>
+                <div class="form-group mt-2">
+                    <label asp-for="observation" class="control-label">Observação</label>
+                    <textarea asp-for="observation" class="form-control bg-dark text-light" rows="3"></textarea>
+                </div>
 
-            <div class="form-group">
-                <a asp-action="Index" class="btn btn-outline-danger">Voltar</a>
-                <input type="submit" value="Confirmar" class="btn btn-primary tb-btn" />
-            </div>
-        </form>
-    </div>
+                <div class="form-group mt-3">
+                    <a asp-action="Index" class="btn  btn-primary tb-btn">Voltar</a>
+                    <input type="submit" value="Confirmar" class="btn btn-primary ml-2" />
+                </div>
+            </form>
+        </div>
 </div>
-
 
