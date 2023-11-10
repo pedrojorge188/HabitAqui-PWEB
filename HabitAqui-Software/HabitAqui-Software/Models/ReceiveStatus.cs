@@ -14,6 +14,9 @@ namespace HabitAqui_Software.Models
         [Display(Name = "Tem Danos")]
         public Boolean hasDamage;
 
+        [Display(Name = "Descricao Danos")]
+        public string? damageDescription;
+
         [Display(Name = "Observações", Prompt = "Escreva observações sobre o estado de recolha da habitação do cliente")]
         public string? observation;
 

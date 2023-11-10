@@ -1,0 +1,52 @@
+﻿@model HabitAqui_Software.Models.ViewModels.ReceiveRentalContract
+
+@{
+    ViewData["Title"] = "Receber Habitação";
+}
+
+<h1>Receber Habitação de um Cliente</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Receive" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="rentalContract.Id" />
+
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" asp-for="hasEquipments">
+                <label asp-for="hasEquipments" class="form-check-label">
+                    Existência de Equipamentos
+                </label>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input asp-for="hasDamage" class="form-check-input" />
+                    <input type="hidden" asp-for="hasDamage" value="true" />
+                    <label asp-for="hasDamage" class="form-check-label">Existência de Danos</label>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label asp-for="damageDescription" class="control-label">Descrição dos Danos</label>
+                <textarea asp-for="damageDescription" class="form-control"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="damagePhotos" class="control-label">Fotos dos Danos</label>
+                <input asp-for="damagePhotos" type="file" multiple class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="observation" class="control-label">Observações</label>
+                <textarea asp-for="observation" class="form-control"></textarea>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Confirmar Recebimento</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
