@@ -272,6 +272,70 @@ namespace HabitAqui_Software.Controllers
         }
 
 
+        // GET: Receber habitação
+        [Authorize(Roles = "Employer, Manager")]
+        public async Task<IActionResult> Receive(int? id)
+        {
+            if (id == null || _context.rentalContracts == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new ReceiveRentalContract
+            {
+                rentalContract = await _context.rentalContracts.FindAsync(id)
+            };
+
+            if (viewModel.rentalContract == null)
+            {
+                return NotFound();
+            }
+            return View(viewModel);
+        }
+
+        // POST: Confirmar recebimento da habitação
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Receive(int id, ReceiveRentalContract viewModel)
+        {
+            if (id != viewModel.rentalContract.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                // Aqui você pode adicionar lógica para lidar com fotos de danos, se necessário
+                // ...
+
+                ReceiveStatus receiveStatus = new ReceiveStatus
+                {
+                    hasDamage = viewModel.hasDamage,
+                    hasEquipments = viewModel.hasEquipments,
+                    damageDescription = viewModel.damageDescription,
+                    rentalContractId = viewModel.rentalContract.Id,
+                    // anexar fotos de danos, se aplicável
+                    observation = viewModel.observation,
+                    // você pode adicionar informações sobre o funcionário que recebeu a habitação
+                };
+
+                _context.Add(receiveStatus);
+                await _context.SaveChangesAsync();
+
+                RentalContract rentalContract = await _context.rentalContracts.FindAsync(id);
+                rentalContract.ReceiveStatusId = receiveStatus.Id;
+                rentalContract.isConfirmed = false;
+                // outras atualizações no contrato de arrendamento, se necessário
+
+                _context.Update(rentalContract);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+            return View(viewModel);
+        }
+
+
 
         [Authorize(Roles = "Employer, Manager")]
         public async Task<IActionResult> DeleteConfirmed(int? id)
