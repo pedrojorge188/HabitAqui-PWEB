@@ -143,6 +143,7 @@ namespace HabitAqui_Software.Controllers
             crc.rentalContract = await _context.rentalContracts.FindAsync(id);
             crc.rentalContract.habitacao = await _context.habitacaos.FindAsync(crc.rentalContract.HabitacaoId); 
             crc.rentalContract.habitacao.locador = await _context.locador.FindAsync(crc.rentalContract.habitacao.LocadorId);
+            crc.rentalContract.user = await _context.Users.FindAsync(crc.rentalContract.userId);
             if (crc == null)
             {
                 return NotFound();

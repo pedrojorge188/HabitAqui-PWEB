@@ -7,7 +7,7 @@
 <br />
 <hr />
 
-<div class="row">
+<div class="row d-flex align-items-stretch">
     <div class="col-md-6 ">
         <h4>Detalhes do arrendamento</h4>
         <div class=" border p-4 bg-dark text-light">
@@ -66,22 +66,25 @@
 <br />
 <div class="row">
     <div class="col-md-6">
-        <h4>Detalhes do estado da entrega</h4>
+        <h4>Detalhes do user</h4>
         <div class="border p-4 bg-dark text-light">
             <dl class="row">
-                <dt class="col-sm-5"><b>Equipamentos</b></dt>
-                <dd class="col-sm-6">@Html.DisplayFor(model => model.hasEquipments)</dd>
+                <dt class="col-sm-5"><b>Nome</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.rentalContract.user.firstName)</dd>
 
-                <dt class="col-sm-5"><b>Danos</b></dt>
-                <dd class="col-sm-6">@Html.DisplayFor(model => model.hasDamage)</dd>
+                <dt class="col-sm-5"><b>Email</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.rentalContract.user.Email)</dd>
 
-                <dt class="col-sm-5"><b>Observações</b></dt>
-                <dd class="col-sm-6">@Html.DisplayFor(model => model.observation)</dd>
+                <dt class="col-sm-5"><b>Número de telefone</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model =>  model.rentalContract.user.PhoneNumber)</dd>
+
+                <dt class="col-sm-5"><b>NIF</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model =>  model.rentalContract.user.nif)</dd>
             </dl>
         </div>
     </div>
     <div class="col-md-6">
-        <h4>Detalhes do user</h4>
+        <h4>Detalhes do estado da entrega</h4>
         <div class="border p-4 bg-dark text-light">
             <dl class="row">
                 <dt class="col-sm-5"><b>Equipamentos</b></dt>
