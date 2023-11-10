@@ -1,5 +1,44 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model HabitAqui_Software.Models.ViewModels.ConfirmRentalContracts
 @{
+    ViewData["Title"] = "Confirm";
 }
+
+<h1>Confirmar contrato de arrendamento</h1>
+<br />
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Confirm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="rentalContract.Id" />
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input asp-for="hasEquipments" class="form-check-input" />
+                    <label class="form-check-label">Equipamentos</label>
+                </div>
+                <span asp-validation-for="hasEquipments" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input asp-for="hasDamage" value="false" class="form-check-input" />
+                    <label class="form-check-label">Danos</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="observation" class="control-label"></label>
+                <input asp-for="observation" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <a asp-action="Index" class="btn btn-outline-danger">Voltar</a>
+                <input type="submit" value="Confirmar" class="btn btn-primary tb-btn" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
