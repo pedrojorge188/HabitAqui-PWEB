@@ -290,7 +290,8 @@ namespace HabitAqui_Software.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LocadorId");
+                    b.HasIndex("LocadorId")
+                        .IsUnique();
 
                     b.HasIndex("userId");
 
@@ -507,7 +508,7 @@ namespace HabitAqui_Software.Data.Migrations
             modelBuilder.Entity("HabitAqui_Software.Models.Employer", b =>
                 {
                     b.HasOne("HabitAqui_Software.Models.Locador", "locador")
-                        .WithMany()
+                        .WithMany("employers")
                         .HasForeignKey("LocadorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -550,8 +551,8 @@ namespace HabitAqui_Software.Data.Migrations
             modelBuilder.Entity("HabitAqui_Software.Models.Manager", b =>
                 {
                     b.HasOne("HabitAqui_Software.Models.Locador", "locador")
-                        .WithMany()
-                        .HasForeignKey("LocadorId")
+                        .WithOne("managers")
+                        .HasForeignKey("HabitAqui_Software.Models.Manager", "LocadorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -657,6 +658,10 @@ namespace HabitAqui_Software.Data.Migrations
             modelBuilder.Entity("HabitAqui_Software.Models.Locador", b =>
                 {
                     b.Navigation("Habitacoes");
+
+                    b.Navigation("employers");
+
+                    b.Navigation("managers");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.RentalContract", b =>

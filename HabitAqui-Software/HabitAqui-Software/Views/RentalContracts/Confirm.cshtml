@@ -20,19 +20,19 @@
                     </div>
                     <span asp-validation-for="hasEquipments" class="text-danger"></span>
                 </div>
-
+            <br />
                 <div class="form-group">
                     <div class="form-check">
                         <input asp-for="hasDamage" value="false" class="form-check-input" />
                         <label class="form-check-label">Danos</label>
                     </div>
                 </div>
-
+            <br />
                 <div class="form-group mt-2">
                     <label asp-for="observation" class="control-label">Observação</label>
                     <textarea asp-for="observation" class="form-control bg-dark text-light" rows="3"></textarea>
                 </div>
-
+                <br />
                 <div class="form-group mt-3">
                     <a asp-action="Index" class="btn  btn-primary tb-btn">Voltar</a>
                     <input type="submit" value="Confirmar" class="btn btn-primary ml-2" />

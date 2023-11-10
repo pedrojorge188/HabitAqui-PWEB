@@ -319,16 +319,18 @@ namespace HabitAqui_Software.Controllers
                     rentalContractId = viewModel.rentalContract.Id,
                     // anexar fotos de danos, se aplicável
                     observation = viewModel.observation,
-                    // você pode adicionar informações sobre o funcionário que recebeu a habitação
                 };
 
                 _context.Add(receiveStatus);
                 await _context.SaveChangesAsync();
 
-                RentalContract rentalContract = await _context.rentalContracts.FindAsync(id);
+   
+                RentalContract rentalContract = await _context.rentalContracts
+                   .Include(h => h.habitacao)
+                   .FirstOrDefaultAsync(r => r.Id == id);
+
                 rentalContract.ReceiveStatusId = receiveStatus.Id;
-                rentalContract.isConfirmed = false;
-                // outras atualizações no contrato de arrendamento, se necessário
+                rentalContract.habitacao.available = true;
 
                 _context.Update(rentalContract);
                 await _context.SaveChangesAsync();
@@ -366,7 +368,7 @@ namespace HabitAqui_Software.Controllers
                 var appUserId = _userManager.GetUserId(User);
                 var employee = _context.employers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
                 var _locador = _context.locador.FirstOrDefault(l => l.Id == employee.LocadorId);
-                var applicationDbContext = _context.rentalContracts.Include(r => r.habitacao).Include(u => u.user).Where(l => l.habitacao.locador == _locador);
+                var applicationDbContext = _context.rentalContracts.Include(r => r.habitacao).Include(u => u.user).Include(r => r.receiveStatus).Where(l => l.habitacao.locador == _locador);
                 return View("Index",await applicationDbContext.ToListAsync());
 
             }
@@ -375,7 +377,7 @@ namespace HabitAqui_Software.Controllers
                 var appUserId = _userManager.GetUserId(User);
                 var manager = _context.managers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
                 var _locador = _context.locador.FirstOrDefault(l => l.Id == manager.LocadorId);
-                var applicationDbContext = _context.rentalContracts.Include(r => r.habitacao).Include(u => u.user).Where(l => l.habitacao.locador == _locador);
+                var applicationDbContext = _context.rentalContracts.Include(r => r.habitacao).Include(u => u.user).Include(r => r.receiveStatus).Where(l => l.habitacao.locador == _locador);
                 return View("Index", await applicationDbContext.ToListAsync());
             }
             return View();
@@ -396,7 +398,7 @@ namespace HabitAqui_Software.Controllers
         {
             var appUserId = _userManager.GetUserId(User);
             IQueryable<RentalContract> rentalContracts = _context.rentalContracts.Include("habitacao").Where(ren => ren.user.Id == appUserId &&
-                                                                                                             ren.isConfirmed == true);
+                                                                                                              ren.isConfirmed == true && ren.receiveStatus != null);
 
             return View(await rentalContracts.ToListAsync());
         }
