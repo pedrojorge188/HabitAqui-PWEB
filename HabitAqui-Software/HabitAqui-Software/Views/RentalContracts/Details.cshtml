@@ -139,7 +139,24 @@
                 {
                     <dd>Não</dd>
                 }
-                <!-- Colocar fotos -->
+                <dt class="col-sm-5"><b>Foto(s) de Dano</b></dt>
+                <dd class="col-sm-7">
+                    @if (Model.receiveStatus.hasDamage && !string.IsNullOrEmpty(Model.receiveStatus.ImagePaths))
+                    {
+                        <div class="row">
+                            @foreach (var imagePath in Model.receiveStatus.ImagePaths.Split(';'))
+                            {
+                                <div class="col-md-3">
+                                    <img src="@Url.Content("~/img_upload/" + imagePath)" alt="Imagem de Dano" class="img-fluid">
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p>Nenhuma imagem de dano.</p>
+                    }
+                </dd>
                 <dt class="col-sm-5"><b>Observações</b></dt>
                     <dd class="col-sm-6">@Html.DisplayFor(model => model.receiveStatus.observation)</dd>
             </dl>

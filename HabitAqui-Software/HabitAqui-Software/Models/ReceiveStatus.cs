@@ -9,18 +9,20 @@ namespace HabitAqui_Software.Models
         public int Id { get; set; }
 
         [Display(Name = "Tem Equipamentos")]
-        public Boolean hasEquipments;
+        public Boolean hasEquipments { get; set; }
 
         [Display(Name = "Tem Danos")]
-        public Boolean hasDamage;
+        public Boolean hasDamage { get; set; }
 
         [Display(Name = "Descricao Danos")]
-        public string? damageDescription;
+        public string? damageDescription { get; set; }
 
         [Display(Name = "Observações", Prompt = "Escreva observações sobre o estado de recolha da habitação do cliente")]
-        public string? observation;
+        public string? observation { get; set; }
 
-        public string? imgLink;
+        [Display(Name = "Imagens de Danos")]
+        public string ImagePaths { get; set; }
+
 
         [ForeignKey("rentalContract")]
         public int? rentalContractId { get; set; }

@@ -8,7 +8,7 @@ namespace HabitAqui_Software.Models.ViewModels
         public bool hasEquipments { get; set; }
         public bool hasDamage { get; set; }
         public string? damageDescription { get; set; }
-        public List<IFormFile>? damagePhotos { get; set; }
+        public List<IFormFile> DamageImages { get; set; } = new List<IFormFile>();
         public string? observation { get; set; }
     }
 }

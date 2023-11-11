@@ -139,6 +139,15 @@ namespace HabitAqui_Software.Data.Migrations
                     b.Property<int?>("RentalContractId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("hasDamage")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("hasEquipments")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("observation")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("RentalContractId")
@@ -305,6 +314,22 @@ namespace HabitAqui_Software.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ImagePaths")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("damageDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("hasDamage")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("hasEquipments")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("observation")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("rentalContractId")
                         .HasColumnType("int");

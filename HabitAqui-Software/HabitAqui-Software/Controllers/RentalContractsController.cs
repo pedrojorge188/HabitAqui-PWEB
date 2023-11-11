@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Identity;
 using SQLitePCL;
 using HabitAqui_Software.Models.ViewModels;
 using System.Diagnostics;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace HabitAqui_Software.Controllers
 {
@@ -21,11 +23,13 @@ namespace HabitAqui_Software.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public RentalContractsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public RentalContractsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
             _userManager = userManager;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         private string getLocadorName()
@@ -355,8 +359,36 @@ namespace HabitAqui_Software.Controllers
 
             if (ModelState.IsValid)
             {
-                // Aqui você pode adicionar lógica para lidar com fotos de danos, se necessário
-                // ...
+                // Verifica se o diretório para uploads de imagens existe, se não, cria
+                string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "img_upload");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                string uniqueFileName = null;
+                List<string> savedFiles = new List<string>();
+
+                // Processa o arquivo de imagem recebido
+                if (viewModel.DamageImages != null && viewModel.DamageImages.Count > 0)
+                {
+
+                    foreach (var imageFile in viewModel.DamageImages)
+                    {
+                        uniqueFileName = Guid.NewGuid().ToString() + "_" + imageFile.FileName;
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                        using (var image = Image.Load(imageFile.OpenReadStream()))
+                        {
+                            image.Mutate(x => x.Resize(100, 100));
+                            await image.SaveAsync(filePath); // Salva cada imagem redimensionada
+                        }
+
+                        savedFiles.Add(uniqueFileName); // Adiciona o nome do arquivo salvo à lista
+                    }
+                }
+
+                string imagePaths = string.Join(";", savedFiles);
 
                 ReceiveStatus receiveStatus = new ReceiveStatus
                 {
@@ -366,6 +398,7 @@ namespace HabitAqui_Software.Controllers
                     rentalContractId = viewModel.rentalContract.Id,
                     // anexar fotos de danos, se aplicável
                     observation = viewModel.observation,
+                    ImagePaths = imagePaths
                 };
 
                 _context.Add(receiveStatus);
