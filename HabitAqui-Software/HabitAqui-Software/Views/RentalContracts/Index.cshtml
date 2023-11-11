@@ -105,15 +105,16 @@
                                     <a asp-action="DeleteConfirmed" class="btn btn-outline-dark rounded-circle" asp-route-id="@item.Id"><i class="fa-solid fa-xmark"></i></a>
                                 </td>
                             }
-                            else if(item.isConfirmed && item.deliveryStatus != null)
+                        else if (item.isConfirmed && item.DeliveryStatusId != null && item.ReceiveStatusId == null)
                             {
                                 <td>
                                     <a asp-action="Receive" class="btn btn-sm btn-primary tb-btn" asp-route-id="@item.Id" >Receber do Cliente</a>
                                 </td>
-                            }else
-                            {
-                                <td>Contrato terminado</td>
-                            }
+                             }
+                            else
+                                {
+                                    <td>Contrato terminado</td>
+                                }
                         <td>
                             <a asp-action="Details" class="btn btn-outline-dark rounded-circle" asp-route-id="@item.Id"><i class="fa-solid fa-eye"></i></a>
                         </td>
