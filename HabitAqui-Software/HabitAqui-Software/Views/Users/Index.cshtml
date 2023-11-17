@@ -60,7 +60,14 @@
                         <i class="fa-solid fa-pencil"></i>
                     </a>
                     <a asp-action="Inative" class="btn btn-outline-dark rounded-circle" asp-route-id="@userWithRoles.User.Id">
-                        <i class="fa-sharp fa-solid fa-trash"></i>
+                        @if (userWithRoles.User.available)
+                        {
+                            <i class="fa-solid fa-lock"></i>
+                        }
+                        else
+                        {
+                            <i class="fa-solid fa-check"></i>
+                        }
                     </a>
                 </td>
             </tr>
