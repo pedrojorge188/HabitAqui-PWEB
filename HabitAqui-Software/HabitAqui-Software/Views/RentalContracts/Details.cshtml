@@ -1,0 +1,170 @@
+﻿@model HabitAqui_Software.Models.RentalContract
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Detalhes do contrato de arrendamento</h1>
+<br />
+<hr />
+
+<div class="row d-flex align-items-stretch">
+    <div class="col-md-6 ">
+        <h4>Detalhes do arrendamento</h4>
+        <div class=" border p-4 bg-dark text-light">
+            <dl class="row">
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.startDate)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.startDate)</dd>
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.endDate)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.endDate)</dd>
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.isConfirmed)</dt>
+
+                @if(Model.isConfirmed == true)
+                {
+                    <dd class="col-sm-8" style="color:Green">Sim</dd>
+                }
+                else
+                {
+                    <dd class="col-sm-8" style="color:red">Não</dd>
+                }
+                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.avaliacao)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.avaliacao) </dd>
+
+            </dl>
+        </div>
+    </div>
+    <div class="col-md-6 ">
+        <h4>Detalhes da habitação</h4>
+        <div class=" border p-4 bg-dark text-light">
+            <dl class="row">
+                <dt class="col-sm-5"><b>Localização</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.habitacao.location)</dd>
+
+                <dt class="col-sm-5"><b>Custo do Aluguer</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.habitacao.rentalCost) €</dd>
+
+                <dt class="col-sm-5"><b>Nome do Locador</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.habitacao.locador.name)</dd>
+
+                <dt class="col-sm-5"><b>Data Início do período do aluguer</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.habitacao.startDateAvailability)</dd>
+
+                <dt class="col-sm-5"><b>Data Fim do período do aluguer</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.habitacao.endDateAvailability)</dd>
+
+                <dt class="col-sm-5"><b>Avaliação</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.habitacao.grade) <i class="fa-solid fa-star"></i></dd>
+            </dl>
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-6">
+        <h4>Detalhes do user</h4>
+        <div class="border p-4 bg-dark text-light">
+            <dl class="row">
+                <dt class="col-sm-5"><b>Nome</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.user.firstName)</dd>
+
+                <dt class="col-sm-5"><b>Email</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.user.Email)</dd>
+
+                <dt class="col-sm-5"><b>Número de telefone</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model =>  model.user.PhoneNumber)</dd>
+
+                <dt class="col-sm-5"><b>NIF</b></dt>
+                <dd class="col-sm-6">@Html.DisplayFor(model =>  model.user.nif)</dd>
+            </dl>
+        </div>
+    </div>
+    @if (Model.DeliveryStatusId != null)
+    {
+        <div class="col-md-6">
+            <h4>Detalhes ao entregar habitação ao cliente</h4>
+            <div class="border p-4 bg-dark text-light">
+                <dl class="row">
+                    <dt class="col-sm-5"><b>Equipamentos</b></dt>
+                    @if (Model.deliveryStatus.hasEquipments)
+                    {
+                        <dd class="col-sm-8" style="color:Green">Sim</dd>
+                    }
+                    else
+                    {
+                        <dd class="col-sm-8" style="color:red">Não</dd>
+                    }
+
+                    <dt class="col-sm-5"><b>Danos</b></dt>
+                    @if (Model.deliveryStatus.hasDamage)
+                    {
+                        <dd class="col-sm-8" style="color:Green">Sim</dd>
+                    }
+                    else
+                    {
+                        <dd class="col-sm-8" style="color:red">Não</dd>
+                    }
+
+                    <dt class="col-sm-5"><b>Observações</b></dt>
+                    <dd class="col-sm-6">@Html.DisplayFor(model => model.deliveryStatus.observation)</dd>
+                </dl>
+            </div>
+        </div>
+    }
+</div>
+<br />
+@if (Model.ReceiveStatusId != null)
+{
+<div class="row">
+       <div class="col-md-9">
+        <h4>Detalhes ao receber a habitação</h4>
+        <div class="border p-4 bg-dark text-light">
+            <dl class="row">
+                <dt class="col-sm-5"><b>Equipamentos</b></dt>
+                    @if (Model.receiveStatus.hasEquipments)
+                {
+                        <dd class="col-sm-8" style="color:Green">Sim</dd>
+                }
+                else
+                {
+                    <dd class="col-sm-8" style="color:Red">Não</dd>
+                }
+
+                <dt class="col-sm-5"><b>Danos</b></dt>
+                    @if (Model.receiveStatus.hasDamage)
+                {
+                    <dd>Sim</dd>
+                }
+                else
+                {
+                    <dd>Não</dd>
+                }
+                <dt class="col-sm-5"><b>Foto(s) de Dano</b></dt>
+                <dd class="col-sm-7">
+                    @if (Model.receiveStatus.hasDamage && !string.IsNullOrEmpty(Model.receiveStatus.ImagePaths))
+                    {
+                        <div class="row">
+                            @foreach (var imagePath in Model.receiveStatus.ImagePaths.Split(';'))
+                            {
+                                <div class="col-md-3">
+                                    <img src="@Url.Content("~/img_upload/" + imagePath)" alt="Imagem de Dano" class="img-fluid">
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p>Nenhuma imagem de dano.</p>
+                    }
+                </dd>
+                <dt class="col-sm-5"><b>Observações</b></dt>
+                    <dd class="col-sm-6">@Html.DisplayFor(model => model.receiveStatus.observation)</dd>
+            </dl>
+        </div>
+    </div>
+</div>
+}
+<div class="form-group mt-3">
+    <a asp-action="Index" class="btn  btn-primary tb-btn">Voltar</a>
+</div>
+

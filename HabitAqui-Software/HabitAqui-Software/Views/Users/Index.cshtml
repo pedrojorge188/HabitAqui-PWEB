@@ -1,0 +1,76 @@
+﻿@model List<HabitAqui_Software.Models.ViewModels.UserWithRolesViewModel>
+
+@{
+    ViewData["Title"] = "Utilizadores";
+}
+
+<h1>Utilizadores Registados</h1>
+<hr />
+<br />
+<table class="table-responsive table text-center">
+    <thead>
+        <tr>
+            <th>
+                Primeiro Nome
+            </th>
+            <th>
+                Último Nome
+            </th>
+            <th>
+                NIF
+            </th>
+            <th>
+                Disponibilidade
+            </th>
+            <th>
+                Permissão
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var userWithRoles in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => userWithRoles.User.firstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => userWithRoles.User.lastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => userWithRoles.User.nif)
+                </td>
+                @if (userWithRoles.User.available)
+                {
+                    <td>Acesso Permitido</td>
+                }
+                else
+                {
+                    <td style="color:red">Acesso Bloqueado</td>
+                }
+                <td>
+                    @foreach (var role in userWithRoles.Roles)
+                    {
+                        <span>@role</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" class="btn btn-outline-dark rounded-circle" asp-route-id="@userWithRoles.User.Id">
+                        <i class="fa-solid fa-pencil"></i>
+                    </a>
+                    <a asp-action="Inative" class="btn btn-outline-dark rounded-circle" asp-route-id="@userWithRoles.User.Id">
+                        @if (userWithRoles.User.available)
+                        {
+                            <i class="fa-solid fa-lock"></i>
+                        }
+                        else
+                        {
+                            <i class="fa-solid fa-check"></i>
+                        }
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

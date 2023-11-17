@@ -22,6 +22,8 @@ namespace HabitAqui_Software.Models
 
         [Display(Name = "Subscrição do locador")]
         public int enrollmentId { get; set; }
+        public ICollection<Employer>? employers { get; set; }
+        public Manager? managers { get; set; }
         public Enrollment? enrollment { get; set; }
 
     }

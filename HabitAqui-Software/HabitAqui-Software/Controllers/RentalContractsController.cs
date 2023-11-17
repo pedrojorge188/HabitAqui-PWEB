@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Identity;
 using SQLitePCL;
 using HabitAqui_Software.Models.ViewModels;
 using System.Diagnostics;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace HabitAqui_Software.Controllers
 {
@@ -21,11 +23,13 @@ namespace HabitAqui_Software.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public RentalContractsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public RentalContractsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
             _userManager = userManager;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         private string getLocadorName()
@@ -139,30 +143,57 @@ namespace HabitAqui_Software.Controllers
                 return NotFound();
             }
 
-            var rentalContract = await _context.rentalContracts
-                .Include(r => r.habitacao)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (rentalContract == null)
+            var ret = await _context.rentalContracts
+              .Include(rc => rc.habitacao)        
+              .Include(rc => rc.deliveryStatus)    
+              .Include(rc => rc.receiveStatus)  
+              .Include(rc => rc.user) 
+              .FirstOrDefaultAsync(l => l.Id == id);
+
+            if (ret == null)
             {
                 return NotFound();
             }
 
-            return View(rentalContract);
+            return View(ret);
         }
 
-        // GET: RentalContracts/Create
-        [Authorize(Roles = "Employer, Manager")]
+
+    // GET: RentalContracts/Create
+    [Authorize(Roles = "Employer, Manager")]
         public IActionResult Create()
         {
 
-            var habitationsId = _context.rentalContracts.Select(rc => rc.HabitacaoId).ToList();
-            var locadorIds = _context.rentalContracts.Where(rc => habitationsId.Contains(rc.HabitacaoId)).Select(rc => rc.habitacao.LocadorId).ToList();
-            var habitationList = _context.habitacaos
-                .Where(av => av.available == true && !habitationsId.Contains(av.Id) && locadorIds.Contains(av.LocadorId))
+            var habitationsId = _context.rentalContracts.Where(rc => rc.receiveStatus == null).Select(rc => rc.HabitacaoId).ToList();
+            if (habitationsId.Count == 0)
+            {
+                habitationsId = _context.rentalContracts.Select(rc => rc.HabitacaoId).ToList();
+            }
+
+            if (User.IsInRole("Employer"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var employee = _context.employers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == employee.LocadorId);
+                var habitationList = _context.habitacaos
+                .Where(av => av.available == true && !habitationsId.Contains(av.Id) && av.LocadorId == _locador.Id)
                 .ToList();
-            var users = _userManager.GetUsersInRoleAsync("Client").Result.ToList();
-            ViewData["HabitacaoId"] = new SelectList(habitationList, "Id", "location");
-            ViewData["userId"] = new SelectList(users, "Id", "firstName");
+                var users = _userManager.GetUsersInRoleAsync("Client").Result.ToList();
+                ViewData["HabitacaoId"] = new SelectList(habitationList, "Id", "location");
+                ViewData["userId"] = new SelectList(users, "Id", "firstName");
+            }
+            else if (User.IsInRole("Manager"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var manager = _context.managers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == manager.LocadorId);
+                var habitationList = _context.habitacaos
+               .Where(av => av.available == true && !habitationsId.Contains(av.Id) && av.LocadorId == _locador.Id)
+               .ToList();
+                var users = _userManager.GetUsersInRoleAsync("Client").Result.ToList();
+                ViewData["HabitacaoId"] = new SelectList(habitationList, "Id", "location");
+                ViewData["userId"] = new SelectList(users, "Id", "firstName");
+            }
 
             return View();
         }
@@ -184,14 +215,36 @@ namespace HabitAqui_Software.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var habitationsId = _context.rentalContracts.Where(rc => rc.isConfirmed == false).Select(rc => rc.HabitacaoId).ToList();
-            var locadorIds = _context.rentalContracts.Where(rc => habitationsId.Contains(rc.HabitacaoId)).Select(rc => rc.habitacao.LocadorId).ToList();
-            var habitationList = _context.habitacaos
-                .Where(av => av.available == true && !habitationsId.Contains(av.Id) && locadorIds.Contains(av.LocadorId))
+            var habitationsId = _context.rentalContracts.Where(rc => rc.receiveStatus == null).Select(rc => rc.HabitacaoId).ToList();
+            if (habitationsId.Count == 0)
+            {
+                habitationsId = _context.rentalContracts.Select(rc => rc.HabitacaoId).ToList();
+            }
+
+            if (User.IsInRole("Employer"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var employee = _context.employers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == employee.LocadorId);
+                var habitationList = _context.habitacaos
+                .Where(av => av.available == true && !habitationsId.Contains(av.Id) && av.LocadorId == _locador.Id)
                 .ToList();
-            var users = _userManager.GetUsersInRoleAsync("Client").Result.ToList();
-            ViewData["HabitacaoId"] = new SelectList(habitationList, "Id", "location");
-            ViewData["userId"] = new SelectList(users, "Id", "firstName");
+                var users = _userManager.GetUsersInRoleAsync("Client").Result.ToList();
+                ViewData["HabitacaoId"] = new SelectList(habitationList, "Id", "location");
+                ViewData["userId"] = new SelectList(users, "Id", "firstName");
+            }
+            else if (User.IsInRole("Manager"))
+            {
+                var appUserId = _userManager.GetUserId(User);
+                var manager = _context.managers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == manager.LocadorId);
+                var habitationList = _context.habitacaos
+               .Where(av => av.available == true && !habitationsId.Contains(av.Id) && av.LocadorId == _locador.Id)
+               .ToList();
+                var users = _userManager.GetUsersInRoleAsync("Client").Result.ToList();
+                ViewData["HabitacaoId"] = new SelectList(habitationList, "Id", "location");
+                ViewData["userId"] = new SelectList(users, "Id", "firstName");
+            }
 
             return View(rentalContract);
         }
@@ -234,7 +287,8 @@ namespace HabitAqui_Software.Controllers
                     {
                         hasDamage = confirmRentalContracts.hasDamage,
                         hasEquipments = confirmRentalContracts.hasEquipments,
-                        observation = confirmRentalContracts.observation
+                        observation = confirmRentalContracts.observation,
+                        RentalContractId = id
                     };
 
                     _context.Add(delivery);
@@ -272,6 +326,101 @@ namespace HabitAqui_Software.Controllers
         }
 
 
+        // GET: Receber habitação
+        [Authorize(Roles = "Employer, Manager")]
+        public async Task<IActionResult> Receive(int? id)
+        {
+            if (id == null || _context.rentalContracts == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new ReceiveRentalContract
+            {
+                rentalContract = await _context.rentalContracts.FindAsync(id)
+            };
+
+            if (viewModel.rentalContract == null)
+            {
+                return NotFound();
+            }
+            return View(viewModel);
+        }
+
+        // POST: Confirmar recebimento da habitação
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Receive(int id, ReceiveRentalContract viewModel)
+        {
+            if (id != viewModel.rentalContract.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                // Verifica se o diretório para uploads de imagens existe, se não, cria
+                string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "img_upload");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                string uniqueFileName = null;
+                List<string> savedFiles = new List<string>();
+
+                // Processa o arquivo de imagem recebido
+                if (viewModel.DamageImages != null && viewModel.DamageImages.Count > 0)
+                {
+
+                    foreach (var imageFile in viewModel.DamageImages)
+                    {
+                        uniqueFileName = Guid.NewGuid().ToString() + "_" + imageFile.FileName;
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                        using (var image = Image.Load(imageFile.OpenReadStream()))
+                        {
+                            image.Mutate(x => x.Resize(100, 100));
+                            await image.SaveAsync(filePath); // Salva cada imagem redimensionada
+                        }
+
+                        savedFiles.Add(uniqueFileName); // Adiciona o nome do arquivo salvo à lista
+                    }
+                }
+
+                string imagePaths = string.Join(";", savedFiles);
+
+                ReceiveStatus receiveStatus = new ReceiveStatus
+                {
+                    hasDamage = viewModel.hasDamage,
+                    hasEquipments = viewModel.hasEquipments,
+                    damageDescription = viewModel.damageDescription,
+                    rentalContractId = viewModel.rentalContract.Id,
+                    // anexar fotos de danos, se aplicável
+                    observation = viewModel.observation,
+                    ImagePaths = imagePaths
+                };
+
+                _context.Add(receiveStatus);
+                await _context.SaveChangesAsync();
+
+   
+                RentalContract rentalContract = await _context.rentalContracts
+                   .Include(h => h.habitacao)
+                   .FirstOrDefaultAsync(r => r.Id == id);
+
+                rentalContract.ReceiveStatusId = receiveStatus.Id;
+                rentalContract.habitacao.available = true;
+
+                _context.Update(rentalContract);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+            return View(viewModel);
+        }
+
+
 
         [Authorize(Roles = "Employer, Manager")]
         public async Task<IActionResult> DeleteConfirmed(int? id)
@@ -289,7 +438,7 @@ namespace HabitAqui_Software.Controllers
                 rentalContract.user = null;
 
                 _context.rentalContracts.Remove(rentalContract);
-                ViewBag.SuccessMessage = "Categoria editada com sucesso";
+                ViewBag.SuccessMessage = "Arrendamento recusado com sucesso";
             }
 
             await _context.SaveChangesAsync();
@@ -299,7 +448,7 @@ namespace HabitAqui_Software.Controllers
                 var appUserId = _userManager.GetUserId(User);
                 var employee = _context.employers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
                 var _locador = _context.locador.FirstOrDefault(l => l.Id == employee.LocadorId);
-                var applicationDbContext = _context.rentalContracts.Include(r => r.habitacao).Include(u => u.user).Where(l => l.habitacao.locador == _locador);
+                var applicationDbContext = _context.rentalContracts.Include(r => r.habitacao).Include(u => u.user).Include(r => r.receiveStatus).Where(l => l.habitacao.locador == _locador);
                 return View("Index",await applicationDbContext.ToListAsync());
 
             }
@@ -308,7 +457,7 @@ namespace HabitAqui_Software.Controllers
                 var appUserId = _userManager.GetUserId(User);
                 var manager = _context.managers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
                 var _locador = _context.locador.FirstOrDefault(l => l.Id == manager.LocadorId);
-                var applicationDbContext = _context.rentalContracts.Include(r => r.habitacao).Include(u => u.user).Where(l => l.habitacao.locador == _locador);
+                var applicationDbContext = _context.rentalContracts.Include(r => r.habitacao).Include(u => u.user).Include(r => r.receiveStatus).Where(l => l.habitacao.locador == _locador);
                 return View("Index", await applicationDbContext.ToListAsync());
             }
             return View();
@@ -329,7 +478,7 @@ namespace HabitAqui_Software.Controllers
         {
             var appUserId = _userManager.GetUserId(User);
             IQueryable<RentalContract> rentalContracts = _context.rentalContracts.Include("habitacao").Where(ren => ren.user.Id == appUserId &&
-                                                                                                             ren.isConfirmed == true);
+                                                                                                              ren.isConfirmed == true && ren.receiveStatus != null);
 
             return View(await rentalContracts.ToListAsync());
         }
