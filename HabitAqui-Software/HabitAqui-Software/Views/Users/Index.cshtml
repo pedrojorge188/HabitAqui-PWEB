@@ -43,11 +43,11 @@
                 </td>
                 @if (userWithRoles.User.available)
                 {
-                    <td>Sim</td>
+                    <td>Acesso Permitido</td>
                 }
                 else
                 {
-                    <td style="color:red">Não</td>
+                    <td style="color:red">Acesso Bloqueado</td>
                 }
                 <td>
                     @foreach (var role in userWithRoles.Roles)

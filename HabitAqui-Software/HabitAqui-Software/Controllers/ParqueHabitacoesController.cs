@@ -332,25 +332,31 @@ namespace HabitAqui_Software.Controllers {
             return View(habitacao);
         }
 
-        // POST: ParqueHabitacoes/Delete/5
         [Authorize(Roles = "Employer, Manager")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.habitacaos == null)
+            var habitacao = await _context.habitacaos
+                .Include(h => h.rentalContracts)
+                .FirstOrDefaultAsync(h => h.Id == id);
+
+            if (habitacao == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.habitacaos'  is null.");
-            }
-            var habitacao = await _context.habitacaos.FindAsync(id);
-            if (habitacao != null)
-            {
-                _context.habitacaos.Remove(habitacao);
+                return NotFound();
             }
 
+            if (habitacao.rentalContracts != null && habitacao.rentalContracts.Any())
+            {
+                ViewBag.ErrorMessage = "Habitação associada a uma reserva!";
+                return RedirectToAction(nameof(Index));
+            }
+
+            _context.habitacaos.Remove(habitacao);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool HabitacaoExists(int id)
         {
