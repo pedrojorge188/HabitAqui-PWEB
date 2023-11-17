@@ -1,0 +1,49 @@
+﻿@model HabitAqui_Software.Models.ApplicationUser;
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Editar Utilizador</h1>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="firstName" class="control-label"></label>
+                <input asp-for="firstName" class="form-control" />
+                <span asp-validation-for="firstName" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label asp-for="lastName" class="control-label"></label>
+                <input asp-for="lastName" class="form-control" />
+                <span asp-validation-for="lastName" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label asp-for="bornDate" class="control-label"></label>
+                <input asp-for="bornDate" class="form-control" />
+                <span asp-validation-for="bornDate" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label asp-for="nif" class="control-label"></label>
+                <input asp-for="nif" class="form-control" />
+                <span asp-validation-for="nif" class="text-danger"></span>
+            </div>
+            <br />
+        
+            <br />
+            <div class="form-group">
+                <a asp-action="Index" class="btn btn-outline-danger">Voltar</a>
+                <button type="submit" class="btn btn-primary tb-btn">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
