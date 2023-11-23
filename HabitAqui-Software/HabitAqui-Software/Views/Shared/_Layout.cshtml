@@ -88,6 +88,14 @@
                                 </a>
                             </li>
                         }
+                        @if (this.User.IsInRole("Manager"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Managers" asp-action="Index">
+                                    <i class="fa-solid fa-person "></i> Gestão Funcionários
+                                </a>
+                            </li>
+                        }
                         @if (this.User.IsInRole("Admin"))
                          {
                         <li class="nav-item">

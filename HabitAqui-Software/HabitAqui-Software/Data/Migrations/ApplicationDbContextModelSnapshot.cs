@@ -169,6 +169,7 @@ namespace HabitAqui_Software.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("userId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -295,6 +296,7 @@ namespace HabitAqui_Software.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("userId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -540,7 +542,9 @@ namespace HabitAqui_Software.Data.Migrations
 
                     b.HasOne("HabitAqui_Software.Models.ApplicationUser", "user")
                         .WithMany()
-                        .HasForeignKey("userId");
+                        .HasForeignKey("userId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("locador");
 
@@ -583,7 +587,9 @@ namespace HabitAqui_Software.Data.Migrations
 
                     b.HasOne("HabitAqui_Software.Models.ApplicationUser", "user")
                         .WithMany()
-                        .HasForeignKey("userId");
+                        .HasForeignKey("userId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("locador");
 

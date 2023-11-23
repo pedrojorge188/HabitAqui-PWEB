@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HabitAqui_Software.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin, Manager")]
     public class UsersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -99,16 +99,26 @@ namespace HabitAqui_Software.Controllers
             return View(userToUpdate);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> Inative(string id)
         {
+            TempData["UrlAnterior"] = Request.Headers["Referer"].ToString();
+            //Console.WriteLine("URL de validação: " + Request.Headers["Referer"].ToString());
+
             if (ModelState.IsValid)
             {   
                 await makeUserAvailableUnavailable(id);
                 ViewBag.SuccessMessage = "Disponibilidade do utilizador alterada com sucesso!";
             }
 
-            return RedirectToAction(nameof(Index));
+            var urlAnterior = TempData["UrlAnterior"]?.ToString();
+
+            if (!string.IsNullOrEmpty(urlAnterior))
+            {
+                return Redirect(urlAnterior);
+            }
+
+            return RedirectToAction("Index"); // Página inicial de fallback se não houver URL anterior
         }
 
         private bool UserExists(string id)
@@ -116,7 +126,7 @@ namespace HabitAqui_Software.Controllers
             return _context.Users.Any(e => e.Id == id);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> makeUserAvailableUnavailable(string id)
         {
             if (id == null || _context.Users == null)
@@ -169,6 +179,83 @@ namespace HabitAqui_Software.Controllers
                 }
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = "Admin, Manager")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            TempData["UrlAnterior"] = Request.Headers["Referer"].ToString();
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Impedir que o usuário atual se exclua
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (user.Id == currentUser.Id)
+            {
+                // Retornar um erro ou redirecionar, conforme a lógica do seu aplicativo
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(user);
+        }
+
+        
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Manager")]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            Console.WriteLine("ID user: " + id);
+
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var urlAnterior = TempData["UrlAnterior"]?.ToString();
+
+            // Impedir que o usuário atual se exclua
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (user.Id == currentUser.Id)
+            {
+                if (!string.IsNullOrEmpty(urlAnterior))
+                {
+                    return Redirect(urlAnterior);
+                }
+
+                return RedirectToAction("Index"); // Página inicial de fallback se não houver URL anterior
+            }
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+            if (!string.IsNullOrEmpty(urlAnterior))
+            {
+                return Redirect(urlAnterior);
+            }
+
+            return RedirectToAction("Index"); // Página inicial de fallback se não houver URL anterior
+        }
+
+        public IActionResult VoltarParaAnterior()
+        {
+            var urlAnterior = TempData["UrlAnterior"]?.ToString();
+
+            Console.WriteLine("URL de validação: " + urlAnterior);
+
+            if (!string.IsNullOrEmpty(urlAnterior))
+            {
+                return Redirect(urlAnterior);
+            }
+            return RedirectToAction("Index"); // Página inicial de fallback se não houver URL anterior
         }
 
     }
