@@ -1,15 +1,16 @@
 ﻿@page
-@model RegisterModel
+@model RegisterModelEmployer
 @{
-    ViewData["Title"] = "Registo";
+    ViewData["Title"] = "Registo Funcionário";
 }
 
 <h1>@ViewData["Title"]</h1>
 
-<div class="row">
-    <div class="col-md-8 p-2">
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 p-2">
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="mt-4">
-            <h2 class="mb-4">Criar nova conta como cliente</h2>
+            <h2 class="mb-4">Criar nova conta de funcionário</h2>
             <hr />
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -50,7 +51,8 @@
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
 
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-outline-light">Criar conta</button>
+            <button id="registerSubmit" type="submit" class="btn btn-lg btn-outline-light">Criar conta</button>
+            <a asp-action="Index" asp-controller="Managers" class="btn btn-lg btn-outline-light">Cancelar</a>
         </form>
     </div>
 </div>

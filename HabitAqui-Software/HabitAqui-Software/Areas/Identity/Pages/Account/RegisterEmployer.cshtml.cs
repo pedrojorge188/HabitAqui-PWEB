@@ -24,20 +24,20 @@ using HabitAqui_Software.Data;
 
 namespace HabitAqui_Software.Areas.Identity.Pages.Account
 {
-    public class RegisterModel : PageModel
+    public class RegisterModelEmployer : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
-        private readonly ILogger<RegisterModel> _logger;
+        private readonly ILogger<RegisterModelEmployer> _logger;
         private readonly IEmailSender _emailSender;
 
-        public RegisterModel(
+        public RegisterModelEmployer(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterModel> logger,
+            ILogger<RegisterModelEmployer> logger,
             IEmailSender emailSender)
         {
             _userManager = userManager;
@@ -144,7 +144,7 @@ namespace HabitAqui_Software.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
 
-                    await _userManager.AddToRoleAsync(user,Roles.Client.ToString());
+                    await _userManager.AddToRoleAsync(user,Roles.Employer.ToString());
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

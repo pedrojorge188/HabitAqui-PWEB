@@ -32,21 +32,23 @@ namespace HabitAqui_Software.Controllers
 
             foreach (var user in _context.Users.ToList())
             {
-                // Verificar associação com arrendamentos para cada usuário individualmente
-                bool isUserAssociatedWithRentals = _context.rentalContracts.Any(rc => rc.userId == user.Id);
-
-                //Console.WriteLine("ID user: " + user.Id + " Associado? " + isUserAssociatedWithRentals);
-
                 var userRoles = await _userManager.GetRolesAsync(user);
-                usersWithRoles.Add(new UserWithRolesViewModel
+
+                // Verificar se o usuário tem a role de "Manager" ou "Employee"
+                if (userRoles.Contains("Manager") || userRoles.Contains("Employer"))
                 {
-                    User = user,
-                    Roles = userRoles.ToList(),
-                    IsAssociatedWithRentals = isUserAssociatedWithRentals
-                });
+                    bool isUserAssociatedWithRentals = _context.rentalContracts.Any(rc => rc.userId == user.Id);
+
+                    usersWithRoles.Add(new UserWithRolesViewModel
+                    {
+                        User = user,
+                        Roles = userRoles.ToList(),
+                        IsAssociatedWithRentals = isUserAssociatedWithRentals
+                    });
+                }
             }
 
-            return View(usersWithRoles); // Incluir todos os usuários, incluindo o usuário atual
+            return View(usersWithRoles);
         }
 
         // GET: Managers/Details/5
@@ -188,6 +190,7 @@ namespace HabitAqui_Software.Controllers
           return (_context.managers?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
+        /*
         public async Task<IActionResult> CreateEmployeeAsync()
         {
             var currentUser = await _userManager.GetUserAsync(User);
@@ -221,9 +224,9 @@ namespace HabitAqui_Software.Controllers
                 };
 
                 var createUserResult = await _userManager.CreateAsync(user, model.Password);
+
                 if (createUserResult.Succeeded)
                 {
-                    
                     await _userManager.AddToRoleAsync(user, model.Role);
 
                     // Verificar o papel e criar a entidade apropriada
@@ -263,5 +266,7 @@ namespace HabitAqui_Software.Controllers
             // Se o modelo não for válido ou a criação falhar, recarregue a view
             return View(model);
         }
+
+        */
     }
 }
