@@ -79,71 +79,7 @@ namespace HabitAqui_Software.Controllers
             ViewData["LocadorId"] = new SelectList(_context.locador, "Id", "Id");
             return View();
         }
-        // POST: Managers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,LocadorId")] Manager manager)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(manager);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["LocadorId"] = new SelectList(_context.locador, "Id", "Id", manager.LocadorId);
-            return View(manager);
-        }
-        // GET: Managers/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.managers == null)
-            {
-                return NotFound();
-            }
-            var manager = await _context.managers.FindAsync(id);
-            if (manager == null)
-            {
-                return NotFound();
-            }
-            ViewData["LocadorId"] = new SelectList(_context.locador, "Id", "Id", manager.LocadorId);
-            return View(manager);
-        }
-        // POST: Managers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,LocadorId")] Manager manager)
-        {
-            if (id != manager.Id)
-            {
-                return NotFound();
-            }
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(manager);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ManagerExists(manager.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["LocadorId"] = new SelectList(_context.locador, "Id", "Id", manager.LocadorId);
-            return View(manager);
-        }
+      
         // GET: Managers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -160,7 +96,7 @@ namespace HabitAqui_Software.Controllers
             }
             return View(manager);
         }
-        // POST: Managers/Delete/5
+  
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
