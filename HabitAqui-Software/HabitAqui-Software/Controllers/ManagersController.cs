@@ -10,6 +10,8 @@ using HabitAqui_Software.Models;
 using Microsoft.AspNetCore.Identity;
 using HabitAqui_Software.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using System.Data;
+
 namespace HabitAqui_Software.Controllers
 {
     [Authorize(Roles = "Manager")]
@@ -25,19 +27,33 @@ namespace HabitAqui_Software.Controllers
         // GET: Managers
         public async Task<IActionResult> Index()
         {
+            var currentUser = await _userManager.GetUserAsync(User);
+            var currentManager = await _context.managers
+                                               .FirstOrDefaultAsync(m => m.userId == currentUser.Id);
+
+            var locadorId = currentManager.LocadorId;
+
             var usersWithRoles = new List<UserWithRolesViewModel>();
+            var allUsers = _context.Users.ToList();
+
             foreach (var user in _context.Users.ToList())
             {
-                // Verificar associação com arrendamentos para cada usuário individualmente
-                bool isUserAssociatedWithRentals = _context.rentalContracts.Any(rc => rc.userId == user.Id);
-                //Console.WriteLine("ID user: " + user.Id + " Associado? " + isUserAssociatedWithRentals);
                 var userRoles = await _userManager.GetRolesAsync(user);
-                usersWithRoles.Add(new UserWithRolesViewModel
+
+                if (userRoles.Contains("Employer") || userRoles.Contains("Manager"))
                 {
-                    User = user,
-                    Roles = userRoles.ToList(),
-                    IsAssociatedWithRentals = isUserAssociatedWithRentals
-                });
+                    var isSameLocadorId = _context.employers.Any(e => e.userId == user.Id && e.LocadorId == locadorId) ||
+                                          _context.managers.Any(m => m.userId == user.Id && m.LocadorId == locadorId);
+
+                    if (isSameLocadorId)
+                    {
+                        usersWithRoles.Add(new UserWithRolesViewModel
+                        {
+                            User = user,
+                            Roles = userRoles.ToList()
+                        });
+                    }
+                }
             }
             return View(usersWithRoles); // Incluir todos os usuários, incluindo o usuário atual
         }
