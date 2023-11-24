@@ -10,7 +10,6 @@ using HabitAqui_Software.Models;
 using Microsoft.AspNetCore.Identity;
 using HabitAqui_Software.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-
 namespace HabitAqui_Software.Controllers
 {
     [Authorize(Roles = "Manager")]
@@ -18,39 +17,30 @@ namespace HabitAqui_Software.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-
         public ManagersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
-
         // GET: Managers
         public async Task<IActionResult> Index()
         {
             var usersWithRoles = new List<UserWithRolesViewModel>();
-
             foreach (var user in _context.Users.ToList())
             {
+                // Verificar associação com arrendamentos para cada usuário individualmente
+                bool isUserAssociatedWithRentals = _context.rentalContracts.Any(rc => rc.userId == user.Id);
+                //Console.WriteLine("ID user: " + user.Id + " Associado? " + isUserAssociatedWithRentals);
                 var userRoles = await _userManager.GetRolesAsync(user);
-
-                // Verificar se o usuário tem a role de "Manager" ou "Employee"
-                if (userRoles.Contains("Manager") || userRoles.Contains("Employer"))
+                usersWithRoles.Add(new UserWithRolesViewModel
                 {
-                    bool isUserAssociatedWithRentals = _context.rentalContracts.Any(rc => rc.userId == user.Id);
-
-                    usersWithRoles.Add(new UserWithRolesViewModel
-                    {
-                        User = user,
-                        Roles = userRoles.ToList(),
-                        IsAssociatedWithRentals = isUserAssociatedWithRentals
-                    });
-                }
+                    User = user,
+                    Roles = userRoles.ToList(),
+                    IsAssociatedWithRentals = isUserAssociatedWithRentals
+                });
             }
-
-            return View(usersWithRoles);
+            return View(usersWithRoles); // Incluir todos os usuários, incluindo o usuário atual
         }
-
         // GET: Managers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -58,7 +48,6 @@ namespace HabitAqui_Software.Controllers
             {
                 return NotFound();
             }
-
             var manager = await _context.managers
                 .Include(m => m.locador)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -66,17 +55,14 @@ namespace HabitAqui_Software.Controllers
             {
                 return NotFound();
             }
-
             return View(manager);
         }
-
         // GET: Managers/Create
         public IActionResult Create()
         {
             ViewData["LocadorId"] = new SelectList(_context.locador, "Id", "Id");
             return View();
         }
-
         // POST: Managers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -93,7 +79,6 @@ namespace HabitAqui_Software.Controllers
             ViewData["LocadorId"] = new SelectList(_context.locador, "Id", "Id", manager.LocadorId);
             return View(manager);
         }
-
         // GET: Managers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -101,7 +86,6 @@ namespace HabitAqui_Software.Controllers
             {
                 return NotFound();
             }
-
             var manager = await _context.managers.FindAsync(id);
             if (manager == null)
             {
@@ -110,7 +94,6 @@ namespace HabitAqui_Software.Controllers
             ViewData["LocadorId"] = new SelectList(_context.locador, "Id", "Id", manager.LocadorId);
             return View(manager);
         }
-
         // POST: Managers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -122,7 +105,6 @@ namespace HabitAqui_Software.Controllers
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
@@ -146,7 +128,6 @@ namespace HabitAqui_Software.Controllers
             ViewData["LocadorId"] = new SelectList(_context.locador, "Id", "Id", manager.LocadorId);
             return View(manager);
         }
-
         // GET: Managers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -154,7 +135,6 @@ namespace HabitAqui_Software.Controllers
             {
                 return NotFound();
             }
-
             var manager = await _context.managers
                 .Include(m => m.locador)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -162,10 +142,8 @@ namespace HabitAqui_Software.Controllers
             {
                 return NotFound();
             }
-
             return View(manager);
         }
-
         // POST: Managers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -180,31 +158,28 @@ namespace HabitAqui_Software.Controllers
             {
                 _context.managers.Remove(manager);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
         private bool ManagerExists(int id)
         {
-          return (_context.managers?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.managers?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        /*
+
         public async Task<IActionResult> CreateEmployeeAsync()
         {
             var currentUser = await _userManager.GetUserAsync(User);
             var manager = await _context.managers.FirstOrDefaultAsync(m => m.user.Id == currentUser.Id);
-
             var locadorId = manager.LocadorId;
-
             var viewModel = new CreateEmployeeViewModel
             {
                 LocadorId = locadorId
             };
-
             return View(viewModel);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -216,19 +191,17 @@ namespace HabitAqui_Software.Controllers
                 {
                     UserName = model.Email,
                     Email = model.Email,
-                    firstName = model.firstName, 
+                    firstName = model.firstName,
                     lastName = model.lastName,
                     nif = model.nif,
                     available = true,
                     EmailConfirmed = true
                 };
-
                 var createUserResult = await _userManager.CreateAsync(user, model.Password);
-
                 if (createUserResult.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, model.Role);
 
+                    await _userManager.AddToRoleAsync(user, model.Role);
                     // Verificar o papel e criar a entidade apropriada
                     if (model.Role == "Employer")
                     {
@@ -237,7 +210,6 @@ namespace HabitAqui_Software.Controllers
                             userId = user.Id,    // Associa o ID do usuário recém-criado
                             LocadorId = model.LocadorId  // Usa o LocadorId do ViewModel
                         };
-
                         _context.employers.Add(employer);  // Adiciona o novo registro à tabela Employer
                     }
                     else if (model.Role == "Manager")
@@ -247,26 +219,18 @@ namespace HabitAqui_Software.Controllers
                             userId = user.Id,    // Associa o ID do usuário recém-criado
                             LocadorId = model.LocadorId  // Usa o LocadorId do ViewModel
                         };
-
                         _context.managers.Add(manager);  // Adiciona o novo registro à tabela Manager
                     }
-
                     await _context.SaveChangesAsync(); // Salva as alterações no banco de dados
-
-
                     return RedirectToAction("Index"); // Redirecionar para a página desejada
                 }
-
                 foreach (var error in createUserResult.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-
             // Se o modelo não for válido ou a criação falhar, recarregue a view
             return View(model);
         }
-
-        */
     }
 }

@@ -4,64 +4,69 @@
     ViewData["Title"] = "Criar Novo Funcionário/Gestor";
 }
 
-<h2>@ViewData["Title"]</h2>
 
-<div class="row">
-    <div class="col-md-8 p-2">
 
-        <form asp-action="CreateEmployee" method="post" class="mt-4">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="container">
+    <div class="row justify-content-left">
+        <div class="col-md-8 p-2">
 
-            <div class="mb-3">
-                <label asp-for="Email" class="form-label">Email</label>
-                <input asp-for="Email" class="form-control" autocomplete="username" aria-required="true" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
+            <h2>@ViewData["Title"]</h2>
 
-            <div class="mb-3">
-                <label asp-for="firstName" class="form-label">Primeiro Nome</label>
-                <input asp-for="firstName" class="form-control" autocomplete="first name" aria-required="true" />
-                <span asp-validation-for="firstName" class="text-danger"></span>
-            </div>
+            <form asp-action="CreateEmployee" method="post" class="mt-4">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="mb-3">
-                <label asp-for="lastName" class="form-label">Último Nome</label>
-                <input asp-for="lastName" class="form-control" autocomplete="last name" aria-required="true" />
-                <span asp-validation-for="lastName" class="text-danger"></span>
-            </div>
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">Email</label>
+                    <input asp-for="Email" class="form-control" autocomplete="username" aria-required="true" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
 
-            <div class="mb-3">
-                <label asp-for="nif" class="form-label">NIF</label>
-                <input asp-for="nif" class="form-control" autocomplete="nif" type="number" aria-required="true" />
-                <span asp-validation-for="nif" class="text-danger"></span>
-            </div>
+                <div class="mb-3">
+                    <label asp-for="firstName" class="form-label">Primeiro Nome</label>
+                    <input asp-for="firstName" class="form-control" autocomplete="first name" aria-required="true" />
+                    <span asp-validation-for="firstName" class="text-danger"></span>
+                </div>
 
-            <div class="mb-3">
-                <label asp-for="Password" class="form-label">Password</label>
-                <input asp-for="Password" class="form-control" autocomplete="new-password" aria-required="true" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
+                <div class="mb-3">
+                    <label asp-for="lastName" class="form-label">Último Nome</label>
+                    <input asp-for="lastName" class="form-control" autocomplete="last name" aria-required="true" />
+                    <span asp-validation-for="lastName" class="text-danger"></span>
+                </div>
 
-            <div class="mb-3">
-                <label asp-for="ConfirmPassword" class="form-label">Confirmar Password</label>
-                <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
+                <div class="mb-3">
+                    <label asp-for="nif" class="form-label">NIF</label>
+                    <input asp-for="nif" class="form-control" autocomplete="nif" type="number" aria-required="true" />
+                    <span asp-validation-for="nif" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <label asp-for="Role" class="form-label"></label>
-                <select asp-for="Role" class="form-control">
-                    <option value="">Selecione um perfil</option>
-                    <option value="Employer">Funcionário</option>
-                    <option value="Manager">Gestor</option>
-                </select>
-                <span asp-validation-for="Role" class="text-danger"></span>
-            </div>
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label">Password</label>
+                    <input asp-for="Password" class="form-control" autocomplete="new-password" aria-required="true" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
 
-            <!-- O LocadorId pode ser um campo oculto se for definido automaticamente -->
-            <input type="hidden" asp-for="LocadorId" />
+                <div class="mb-3">
+                    <label asp-for="ConfirmPassword" class="form-label">Confirmar Password</label>
+                    <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
 
-            <button type="submit" class="mt-4 w-100 btn btn-lg btn-outline-light">Criar conta</button>
-        </form>
+                <div class="form-group">
+                    <label asp-for="Role" class="form-label"></label>
+                    <select asp-for="Role" class="form-control">
+                        <option value="">Selecione um perfil</option>
+                        <option value="Employer">Funcionário</option>
+                        <option value="Manager">Gestor</option>
+                    </select>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
+
+                <!-- O LocadorId pode ser um campo oculto se for definido automaticamente -->
+                <input type="hidden" asp-for="LocadorId" />
+
+                <button type="submit" class="mt-4 btn btn-lg btn-outline-light">Criar conta</button>
+                <a asp-action="Index" class="mt-4 btn btn-lg btn-outline-light">Cancelar</a>
+            </form>
+        </div>
     </div>
 </div>
