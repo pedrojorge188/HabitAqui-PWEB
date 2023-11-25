@@ -10,6 +10,7 @@ using HabitAqui_Software.Models;
 using Microsoft.AspNetCore.Identity;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.AspNetCore.Authorization;
+using HabitAqui_Software.Models.ViewModels;
 
 namespace HabitAqui_Software.Controllers
 {
@@ -18,10 +19,12 @@ namespace HabitAqui_Software.Controllers
     public class LocadorController : Controller
     {
         private readonly ApplicationDbContext _context;
-        
-        public LocadorController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public LocadorController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Locador
@@ -106,11 +109,17 @@ namespace HabitAqui_Software.Controllers
             var enrollments = _context.enrollments.ToList();
             ViewBag.Enrollments = new SelectList(enrollments, "Id", "name");
 
+       
             if (ModelState.IsValid)
             {
                 _context.Add(locador);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+   
+                var viewModel = new CreateEmployeeViewModel
+                {
+                    LocadorId = locador.Id
+            };
+                return View("CreateManager", viewModel);
             }
             return View(locador);
         }
@@ -232,6 +241,66 @@ namespace HabitAqui_Software.Controllers
             await _context.SaveChangesAsync();
             return View("Index", await _context.locador.Include(it=>it.enrollment).ToListAsync());
         }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateManager(CreateEmployeeViewModel model)
+        {
+            var user = new ApplicationUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                firstName = model.firstName,
+                lastName = model.lastName,
+                nif = model.nif,
+                available = true,
+                EmailConfirmed = true
+            };
+
+            var createUserResult = await _userManager.CreateAsync(user, model.Password);
+
+            if (createUserResult.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, "Manager");
+                var locadorExists = await _context.locador.AnyAsync(l => l.Id == model.LocadorId);
+
+                if (locadorExists)
+                {
+                    var manager = new Manager
+                    {
+                        userId = user.Id,    // Associa o ID do usuário recém-criado
+                        LocadorId = model.LocadorId  // Usa o LocadorId do ViewModel
+                    };
+
+                    using (var transaction = _context.Database.BeginTransaction())
+                    {
+                        try
+                        {
+                            _context.managers.Add(manager);  // Adiciona o novo registro à tabela Manager
+                            await _context.SaveChangesAsync();
+                            transaction.Commit();
+                            return RedirectToAction("Index", await _context.locador.Include(h => h.enrollment).ToListAsync());
+                        }
+                        catch (Exception)
+                        {
+                            transaction.Rollback();
+                            return Problem("Error adding manager");
+                        }
+                    }
+                }
+                else
+                {
+                    return Problem("LocadorId does not exist");
+                }
+            }
+            else
+            {
+                ViewBag.ErrorMessage = "Coloque os dados necessários para a criação do gestor ! (Verifique password)";
+                return View(model);
+            }
+        }
+
 
         private bool LocadorExists(int id)
         {

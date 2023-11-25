@@ -6,5 +6,6 @@ namespace HabitAqui_Software.Models.ViewModels
     {
         public ApplicationUser User { get; set; }
         public List<string> Roles { get; set; }
+        public bool IsAssociatedWithRentals { get; set; }
     }
 }

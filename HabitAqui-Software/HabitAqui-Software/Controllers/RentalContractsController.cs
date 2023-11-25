@@ -113,21 +113,42 @@ namespace HabitAqui_Software.Controllers
         public async Task<IActionResult> Index()
         {
             ViewBag.locadorName = this.getLocadorName();
+      
 
             if (User.IsInRole("Employer"))
             {
-                var appUserId = _userManager.GetUserId(User);
-                var employee = _context.employers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
-                var _locador = _context.locador.FirstOrDefault(l => l.Id == employee.LocadorId);
-                var applicationDbContext = _context.rentalContracts.Include(r => r.habitacao).Include(u => u.user).Where(l => l.habitacao.locador == _locador);
-                return View(await applicationDbContext.ToListAsync());
 
+                var appUserId = _userManager.GetUserId(User);
+                var employee = _context.employers.FirstOrDefault(uid => uid.user.Id == appUserId);
+                var _locador = _context.locador.FirstOrDefault(l => l.Id == employee.LocadorId);
+
+                var contractsByUser = _context.rentalContracts
+                    .Where(rc => rc.isConfirmed && rc.habitacao.LocadorId == _locador.Id)
+                    .GroupBy(rc => rc.user.UserName)
+                    .Select(group => new { userName = group.Key, Count = group.Count() })
+                    .ToList();
+
+                ViewBag.ContractsData = contractsByUser;
+
+                var applicationDbContext = _context.rentalContracts
+                    .Include(r => r.habitacao)
+                    .Include(u => u.user)
+                    .Where(l => l.habitacao.locador == _locador);
+
+                return View(await applicationDbContext.ToListAsync());
             }
             else if (User.IsInRole("Manager"))
             {
                 var appUserId = _userManager.GetUserId(User);
                 var manager = _context.managers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
                 var _locador = _context.locador.FirstOrDefault(l => l.Id == manager.LocadorId);
+                var contractsByUser = _context.rentalContracts
+                   .Where(rc => rc.isConfirmed && rc.habitacao.LocadorId == _locador.Id)
+                   .GroupBy(rc => rc.user.UserName)
+                   .Select(group => new { userName = group.Key, Count = group.Count() })
+                   .ToList();
+
+                ViewBag.ContractsData = contractsByUser;
                 var applicationDbContext = _context.rentalContracts.Include(r => r.habitacao).Include(u => u.user).Where(l => l.habitacao.locador == _locador);
                 return View(await applicationDbContext.ToListAsync());
             }

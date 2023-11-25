@@ -1,0 +1,89 @@
+﻿@model List<HabitAqui_Software.Models.ViewModels.UserWithRolesViewModel>
+
+@{
+    ViewData["Title"] = "Gestão de Funcionários e Gestores";
+}
+
+<!-- Título Responsivo -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <h1 class="display-4 text-left text-md-left">@ViewData["Title"]</h1>
+            <hr />
+        </div>
+    </div>
+    @using (Html.BeginForm("Search", "Managers", FormMethod.Post, new { @class = "rounded p-4 mb-5 shadow bg-dark" }))
+    {   
+
+        <div class="row m-2">
+            <label for="location">Nome:</label>
+            <input name="name" class="form-control" placeholder="Digite o nome">
+        </div>
+        <br />
+        <div class="m-2">
+            <button type="submit" value="Search" class="btn btn-primary btn-sm tb-btn">Pesquisar</button>
+        </div>
+    }
+    <br />
+    <div class="row mt-2">
+        <div class="col text-left text-md-left">
+            <a asp-action="CreateEmployee" class="mb-2 btn btn-lg btn-outline-light">Criar Funcionário/Gestor</a>
+        </div>
+    </div>
+
+    <!-- Tabela Responsiva -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover text-center">
+            <thead class="thead-light">
+                <tr>
+                    <th>Primeiro Nome</th>
+                    <th>Último Nome</th>
+                    <th>NIF</th>
+                    <th>Disponibilidade</th>
+                    <th>Permissão</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var userWithRoles in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => userWithRoles.User.firstName)</td>
+                        <td>@Html.DisplayFor(modelItem => userWithRoles.User.lastName)</td>
+                        <td>@Html.DisplayFor(modelItem => userWithRoles.User.nif)</td>
+                        <td>@(userWithRoles.User.available ? "Acesso Permitido" : "Acesso Bloqueado")</td>
+                        <td>
+                            @foreach (var role in userWithRoles.Roles)
+                            {
+                                <span>@role </span>
+                            }
+                        </td>
+                        <td>
+                            <!-- Botões Responsivos -->
+                            @if (User.Identity.Name != userWithRoles.User.Email)
+                            {
+                                <a asp-action="Inative" asp-controller="Users" class="btn btn-outline-dark rounded-circle" asp-route-id="@userWithRoles.User.Id">
+                                    @if (userWithRoles.User.available)
+                                    {
+                                        <i class="fa-solid fa-lock"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa-solid fa-check"></i>
+                                    }
+                                </a>
+
+                                if (!userWithRoles.IsAssociatedWithRentals)
+                                {
+                                    <a asp-action="Delete" asp-controller="Users" class="btn btn-outline-dark rounded-circle" asp-route-id="@userWithRoles.User.Id">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                }
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

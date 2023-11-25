@@ -88,6 +88,14 @@
                                 </a>
                             </li>
                         }
+                        @if (this.User.IsInRole("Manager"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Managers" asp-action="Index">
+                                    <i class="fa-solid fa-person "></i> Gestão Funcionários
+                                </a>
+                            </li>
+                        }
                         @if (this.User.IsInRole("Admin"))
                          {
                         <li class="nav-item">
@@ -134,6 +142,63 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+
+    @if (ViewBag.ContractsData != null && ViewBag.ContractsData.Count > 0)
+    {
+        <script>
+            var labels = [];
+            var data = [];
+
+            var contractsData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.ContractsData));
+            contractsData.forEach(function (item) {
+                labels.push(item.userName);
+                data.push(item.Count);
+            });
+
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'arrendamentos confirmados por cliente',
+                        color: 'white',
+                        data: data,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.5)',
+                            'rgba(54, 162, 235, 0.5)',
+                            'rgba(255, 206, 86, 0.5)',
+                            'rgba(75, 192, 192, 0.5)',
+                            'rgba(153, 102, 255, 0.5)',
+                            'rgba(255, 159, 64, 0.5)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'white' 
+                            },
+                            position: 'right',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Arrendamentos confirmados por cliente',
+                            color: 'white',
+                            font: {
+                                size: 18 // Define o tamanho da fonte do título
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
+    }
+
 </body>
 @RenderSection("Scripts", required: false)
 </html>

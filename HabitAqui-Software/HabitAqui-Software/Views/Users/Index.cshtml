@@ -6,6 +6,18 @@
 
 <h1>Utilizadores Registados</h1>
 <hr />
+@using (Html.BeginForm("Search", "Users", FormMethod.Post, new { @class = "rounded p-4 mb-5 shadow bg-dark" }))
+{
+
+    <div class="row m-2">
+        <label for="location">Nome:</label>
+        <input name="name" class="form-control" placeholder="Digite o nome">
+    </div>
+    <br />
+    <div class="m-2">
+        <button type="submit" value="Search" class="btn btn-primary btn-sm tb-btn">Pesquisar</button>
+    </div>
+}
 <br />
 <table class="table-responsive table text-center">
     <thead>
