@@ -24,6 +24,70 @@ namespace HabitAqui_Software.Controllers
             _context = context;
             _userManager = userManager;
         }
+
+        [Authorize(Roles = "Manager")]
+        [HttpPost]
+        public async Task<ActionResult> Search(string? name)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            var currentManager = await _context.managers
+                                              .FirstOrDefaultAsync(m => m.userId == currentUser.Id);
+
+            var locadorId = currentManager.LocadorId;
+
+            var usersWithRoles = new List<UserWithRolesViewModel>();
+
+            if(name != null)
+            {
+                var filteredUsers = _context.Users
+              .Where(u => (u.firstName + " " + u.lastName).Contains(name))
+              .ToList();
+
+                foreach (var user in filteredUsers)
+                {
+                    var userRoles = await _userManager.GetRolesAsync(user);
+
+                    if (userRoles.Contains("Employer") || userRoles.Contains("Manager"))
+                    {
+                        var isSameLocadorId = _context.employers.Any(e => e.userId == user.Id && e.LocadorId == locadorId) ||
+                                              _context.managers.Any(m => m.userId == user.Id && m.LocadorId == locadorId);
+
+                        if (isSameLocadorId)
+                        {
+                            usersWithRoles.Add(new UserWithRolesViewModel
+                            {
+                                User = user,
+                                Roles = userRoles.ToList()
+                            });
+                        }
+                    }
+                }
+                return View("Index", usersWithRoles);
+            }
+
+            foreach (var user in _context.Users.ToList())
+            {
+                var userRoles = await _userManager.GetRolesAsync(user);
+
+                if (userRoles.Contains("Employer") || userRoles.Contains("Manager"))
+                {
+                    var isSameLocadorId = _context.employers.Any(e => e.userId == user.Id && e.LocadorId == locadorId) ||
+                                          _context.managers.Any(m => m.userId == user.Id && m.LocadorId == locadorId);
+
+                    if (isSameLocadorId)
+                    {
+                        usersWithRoles.Add(new UserWithRolesViewModel
+                        {
+                            User = user,
+                            Roles = userRoles.ToList()
+                        });
+                    }
+                }
+            }
+            return View("Index", usersWithRoles);
+        }
+
+
         // GET: Managers
         public async Task<IActionResult> Index()
         {

@@ -5,8 +5,22 @@
 }
 
 <h1>Arrendamentos do Locador: @ViewBag.locadorName</h1>
-
-
+<hr />
+@if (ViewBag.ContractsData != null && ViewBag.ContractsData.Count > 0)
+{
+    <div class="container">
+        <div class="row justify-content-start">
+            <div class="col-md-4">
+                <canvas id="myChart" width="30" height="30"></canvas>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <h4 style="color:red">Nenhum contrato confirmado para ser mostrado no gráfico</h4>
+}
+<hr />
 @using (Html.BeginForm("Search", "RentalContracts", FormMethod.Post, new { @class = "rounded p-4 mb-5 shadow bg-dark" }))
 {
 
@@ -158,3 +172,4 @@
         </div>
     </div>
 </div>
+

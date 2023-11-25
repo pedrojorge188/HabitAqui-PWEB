@@ -12,7 +12,19 @@
             <hr />
         </div>
     </div>
+    @using (Html.BeginForm("Search", "Managers", FormMethod.Post, new { @class = "rounded p-4 mb-5 shadow bg-dark" }))
+    {   
 
+        <div class="row m-2">
+            <label for="location">Nome:</label>
+            <input name="name" class="form-control" placeholder="Digite o nome">
+        </div>
+        <br />
+        <div class="m-2">
+            <button type="submit" value="Search" class="btn btn-primary btn-sm tb-btn">Pesquisar</button>
+        </div>
+    }
+    <br />
     <div class="row mt-2">
         <div class="col text-left text-md-left">
             <a asp-action="CreateEmployee" class="mb-2 btn btn-lg btn-outline-light">Criar Funcionário/Gestor</a>
@@ -39,7 +51,7 @@
                         <td>@Html.DisplayFor(modelItem => userWithRoles.User.firstName)</td>
                         <td>@Html.DisplayFor(modelItem => userWithRoles.User.lastName)</td>
                         <td>@Html.DisplayFor(modelItem => userWithRoles.User.nif)</td>
-                        <td>@(userWithRoles.User.available ? "Acesso Permitido" : "<span class='text-danger'>Acesso Bloqueado</span>")</td>
+                        <td>@(userWithRoles.User.available ? "Acesso Permitido" : "Acesso Bloqueado")</td>
                         <td>
                             @foreach (var role in userWithRoles.Roles)
                             {

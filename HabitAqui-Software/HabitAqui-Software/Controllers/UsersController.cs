@@ -39,6 +39,45 @@ namespace HabitAqui_Software.Controllers
             return View(usersWithRoles);
         }
 
+        public async Task<ActionResult> Search(string? name)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            var usersWithRoles = new List<UserWithRolesViewModel>();
+
+            if (name != null)
+            {
+                var filteredUsers = _context.Users
+              .Where(u => (u.firstName + " " + u.lastName).Contains(name) && u.Id != currentUser.Id)
+              .ToList();
+
+                foreach (var user in filteredUsers)
+                {
+                    var userRoles = await _userManager.GetRolesAsync(user);
+
+                    usersWithRoles.Add(new UserWithRolesViewModel
+                    {
+                        User = user,
+                        Roles = userRoles.ToList()
+                    });
+                       
+                 }
+                
+                return View("Index", usersWithRoles);
+            }
+
+            foreach (var user in _context.Users.Where(u => u.Id != currentUser.Id).ToList())
+            {
+                var userRoles = await _userManager.GetRolesAsync(user);
+                usersWithRoles.Add(new UserWithRolesViewModel
+                {
+                    User = user,
+                    Roles = userRoles.ToList()
+                });
+            }
+
+            return View("Index", usersWithRoles);
+        }
 
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(string id)
