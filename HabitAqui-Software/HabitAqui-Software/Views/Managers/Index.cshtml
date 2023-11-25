@@ -50,7 +50,7 @@
                             <!-- Botões Responsivos -->
                             @if (User.Identity.Name != userWithRoles.User.Email)
                             {
-                                <a asp-action="Inative" asp-controller="Users" class="btn btn-outline-secondary btn-sm" asp-route-id="@userWithRoles.User.Id">
+                                <a asp-action="Inative" asp-controller="Users" class="btn btn-outline-dark rounded-circle" asp-route-id="@userWithRoles.User.Id">
                                     @if (userWithRoles.User.available)
                                     {
                                         <i class="fa-solid fa-lock"></i>
@@ -63,7 +63,7 @@
 
                                 if (!userWithRoles.IsAssociatedWithRentals)
                                 {
-                                    <a asp-action="Delete" asp-controller="Users" class="btn btn-outline-danger btn-sm" asp-route-id="@userWithRoles.User.Id">
+                                    <a asp-action="Delete" asp-controller="Users" class="btn btn-outline-dark rounded-circle" asp-route-id="@userWithRoles.User.Id">
                                         <i class="fa-solid fa-trash"></i>
                                     </a>
                                 }

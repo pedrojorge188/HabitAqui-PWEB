@@ -296,7 +296,8 @@ namespace HabitAqui_Software.Controllers
             }
             else
             {
-                return Problem("Error creating user");
+                ViewBag.ErrorMessage = "Coloque os dados necessários para a criação do gestor ! (Verifique password)";
+                return View(model);
             }
         }
 
