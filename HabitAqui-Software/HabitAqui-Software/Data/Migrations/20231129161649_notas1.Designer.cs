@@ -4,6 +4,7 @@ using HabitAqui_Software.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HabitAqui_Software.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231129161649_notas1")]
+    partial class notas1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -125,7 +127,7 @@ namespace HabitAqui_Software.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.DeliveryStatus", b =>
@@ -154,7 +156,7 @@ namespace HabitAqui_Software.Data.Migrations
                         .IsUnique()
                         .HasFilter("[RentalContractId] IS NOT NULL");
 
-                    b.ToTable("deliveryStatus", (string)null);
+                    b.ToTable("deliveryStatus");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.Employer", b =>
@@ -178,7 +180,7 @@ namespace HabitAqui_Software.Data.Migrations
 
                     b.HasIndex("userId");
 
-                    b.ToTable("employers", (string)null);
+                    b.ToTable("employers");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.Enrollment", b =>
@@ -199,7 +201,7 @@ namespace HabitAqui_Software.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("enrollments", (string)null);
+                    b.ToTable("enrollments");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.Habitacao", b =>
@@ -247,7 +249,7 @@ namespace HabitAqui_Software.Data.Migrations
 
                     b.HasIndex("categoryId");
 
-                    b.ToTable("habitacaos", (string)null);
+                    b.ToTable("habitacaos");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.Locador", b =>
@@ -281,7 +283,7 @@ namespace HabitAqui_Software.Data.Migrations
 
                     b.HasIndex("enrollmentId");
 
-                    b.ToTable("locador", (string)null);
+                    b.ToTable("locador");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.Manager", b =>
@@ -306,7 +308,7 @@ namespace HabitAqui_Software.Data.Migrations
 
                     b.HasIndex("userId");
 
-                    b.ToTable("managers", (string)null);
+                    b.ToTable("managers");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.ReceiveStatus", b =>
@@ -342,7 +344,7 @@ namespace HabitAqui_Software.Data.Migrations
                         .IsUnique()
                         .HasFilter("[rentalContractId] IS NOT NULL");
 
-                    b.ToTable("receiveStatus", (string)null);
+                    b.ToTable("receiveStatus");
                 });
 
             modelBuilder.Entity("HabitAqui_Software.Models.RentalContract", b =>
@@ -383,7 +385,7 @@ namespace HabitAqui_Software.Data.Migrations
 
                     b.HasIndex("userId");
 
-                    b.ToTable("rentalContracts", (string)null);
+                    b.ToTable("rentalContracts");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
