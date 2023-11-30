@@ -89,6 +89,17 @@
                     @if (Model.deliveryStatus.hasEquipments)
                     {
                         <dd class="col-sm-8" style="color:Green">Sim</dd>
+                        @if (!string.IsNullOrEmpty(Model.deliveryStatus.EquipmentList))
+                        {
+                            <dd class="col-sm-8">
+                                <ul>
+                                    @foreach (var equipment in Model.deliveryStatus.EquipmentList.Split(';'))
+                                    {
+                                        <li>@equipment</li>
+                                    }
+                                </ul>
+                            </dd>
+                        }
                     }
                     else
                     {
@@ -104,7 +115,27 @@
                     {
                         <dd class="col-sm-8" style="color:red">Não</dd>
                     }
-
+                    @if (Model.deliveryStatus.hasDamage)
+                    {
+                        <dt class="col-sm-5"><b>Foto(s) de Dano</b></dt>
+                        <dd class="col-sm-7">
+                            @if (!string.IsNullOrEmpty(Model.deliveryStatus.ImagePaths))
+                            {
+                                <div class="row">
+                                    @foreach (var imagePath in Model.deliveryStatus.ImagePaths.Split(';'))
+                                    {
+                                        <div class="col-md-3">
+                                            <img src="@Url.Content("~/img_upload/" + imagePath)" alt="Imagem de Dano" class="img-fluid">
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <p>Nenhuma imagem de dano.</p>
+                            }
+                        </dd>
+                    }
                     <dt class="col-sm-5"><b>Observações</b></dt>
                     <dd class="col-sm-6">@Html.DisplayFor(model => model.deliveryStatus.observation)</dd>
                 </dl>
@@ -120,15 +151,26 @@
         <h4>Detalhes ao receber a habitação</h4>
         <div class="border p-4 bg-dark text-light">
             <dl class="row">
-                <dt class="col-sm-5"><b>Equipamentos</b></dt>
+                <dt class="col-sm-5"><b>Equipamentos Devolvidos</b></dt>
                     @if (Model.receiveStatus.hasEquipments)
-                {
+                    {
                         <dd class="col-sm-8" style="color:Green">Sim</dd>
-                }
-                else
-                {
-                    <dd class="col-sm-8" style="color:Red">Não</dd>
-                }
+                        @if (!string.IsNullOrEmpty(Model.receiveStatus.EquipmentList))
+                        {
+                            <dd class="col-sm-8">
+                                <ul>
+                                    @foreach (var equipment in Model.receiveStatus.EquipmentList.Split(';'))
+                                    {
+                                        <li>@equipment</li>
+                                    }
+                                </ul>
+                            </dd>
+                        }
+                    }
+                    else
+                    {
+                        <dd class="col-sm-8" style="color:red">Não</dd>
+                    }
 
                 <dt class="col-sm-5"><b>Danos extra</b></dt>
                     @if (Model.receiveStatus.hasDamage)
@@ -139,26 +181,29 @@
                 {
                     <dd style="color:Red">Não</dd>
                 }
-                <dt class="col-sm-5"><b>Foto(s) de Dano</b></dt>
-                <dd class="col-sm-7">
-                    @if (Model.receiveStatus.hasDamage && !string.IsNullOrEmpty(Model.receiveStatus.ImagePaths))
-                    {
-                        <div class="row">
-                            @foreach (var imagePath in Model.receiveStatus.ImagePaths.Split(';'))
-                            {
-                                <div class="col-md-3">
-                                    <img src="@Url.Content("~/img_upload/" + imagePath)" alt="Imagem de Dano" class="img-fluid">
-                                </div>
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <p>Nenhuma imagem de dano.</p>
-                    }
-                </dd>
+                @if (Model.receiveStatus.hasDamage)
+                {
+                    <dt class="col-sm-5"><b>Foto(s) de Dano</b></dt>
+                    <dd class="col-sm-7">
+                        @if (!string.IsNullOrEmpty(Model.receiveStatus.ImagePaths))
+                        {
+                            <div class="row">
+                                @foreach (var imagePath in Model.receiveStatus.ImagePaths.Split(';'))
+                                {
+                                    <div class="col-md-3">
+                                        <img src="@Url.Content("~/img_upload/" + imagePath)" alt="Imagem de Dano" class="img-fluid">
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p>Nenhuma imagem de dano.</p>
+                        }
+                    </dd>
+                }
                 <dt class="col-sm-5"><b>Observações</b></dt>
-                    <dd class="col-sm-6">@Html.DisplayFor(model => model.receiveStatus.observation)</dd>
+                <dd class="col-sm-6">@Html.DisplayFor(model => model.receiveStatus.observation)</dd>
             </dl>
         </div>
     </div>

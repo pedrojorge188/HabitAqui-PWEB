@@ -10,6 +10,7 @@ namespace HabitAqui_Software.Models
 
         [Display(Name = "Tem Equipamentos")]
         public Boolean hasEquipments { get; set; }
+        public string? EquipmentList { get; set; }
 
         [Display(Name = "Tem Danos")]
         public Boolean hasDamage { get; set; }

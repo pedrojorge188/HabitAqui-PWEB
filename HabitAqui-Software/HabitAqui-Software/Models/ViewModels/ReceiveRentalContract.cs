@@ -6,6 +6,7 @@ namespace HabitAqui_Software.Models.ViewModels
     {
         public RentalContract rentalContract { get; set; }
         public bool hasEquipments { get; set; }
+        public List<String> equipments { get; set; }
         public bool hasDamage { get; set; }
         public string? damageDescription { get; set; }
         public List<IFormFile> DamageImages { get; set; } = new List<IFormFile>();

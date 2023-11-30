@@ -20,13 +20,29 @@
                     <label asp-for="hasEquipments" class="form-check-label">Existência de Equipamentos</label>
                 </div>
             </div>
-            <br />
 
-            <div class="form-group">
+            <div class="form-group mt-3">
                 <div class="form-check">
                     <input asp-for="hasDamage" class="form-check-input" id="hasDamage" />
-                    <label asp-for="hasDamage" class="form-check-label">Existência de Danos</label>
+                    <label asp-for="hasDamage" class="form-check-label">Existência de Danos Extra</label>
                 </div>
+            </div>
+            <br />
+
+            <div id="equipmentDetails" style="display: none;">
+                <h3>Equipamentos Devolvidos</h3>
+                @if (Model.rentalContract.deliveryStatus != null && Model.rentalContract.deliveryStatus.hasEquipments)
+                {
+                    var confirmedEquipments = Model.rentalContract.deliveryStatus.EquipmentList.Split(';').ToList();
+
+                    foreach (var equipment in confirmedEquipments)
+                    {
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="@equipment" name="equipments" value="@equipment">
+                            <label class="form-check-label" for="@equipment">@equipment</label>
+                        </div>
+                    }
+                }
             </div>
             <br />
 
@@ -38,13 +54,13 @@
             
             <div id="damageDetails" style="display: none;">
                 <div class="form-group mt-2">
-                    <label asp-for="damageDescription" class="control-label">Descrição dos Danos</label>
+                    <label asp-for="damageDescription" class="control-label">Descrição dos Danos Extra</label>
                     <textarea asp-for="damageDescription" class="form-control bg-dark text-light" rows="3"></textarea>
                 </div>
                 <br />
 
                 <div class="form-group">
-                    <label asp-for="DamageImages" class="control-label">Fotos dos Danos</label>
+                    <label asp-for="DamageImages" class="control-label">Fotos dos Danos Extra</label>
                     <input asp-for="DamageImages" type="file" multiple class="form-control bg-dark text-light" />
                 </div>
             </div>
@@ -71,6 +87,18 @@
 
             // Inicializa com o estado atual do checkbox
             toggleDamageDetails();
+
+            const hasEquipmentsCheckbox = document.getElementById("hasEquipments");
+            const equipmentDetailsDiv = document.getElementById("equipmentDetails");
+
+            function toggleEquipmentDetails() {
+                equipmentDetailsDiv.style.display = hasEquipmentsCheckbox.checked ? "block" : "none";
+            }
+
+            hasEquipmentsCheckbox.addEventListener("change", toggleEquipmentDetails);
+
+            // Inicializa com o estado atual do checkbox
+            toggleEquipmentDetails();
         });
     </script>
 }

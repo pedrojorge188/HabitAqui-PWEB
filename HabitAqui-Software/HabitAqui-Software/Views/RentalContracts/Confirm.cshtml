@@ -9,7 +9,7 @@
 
 <div class="row">
     <div class="col-md-8">
-        <form asp-action="Confirm" method="post" class="border p-4 bg-dark text-light">
+        <form asp-action="Confirm" method="post" enctype="multipart/form-data" class="border p-4 bg-dark text-light">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="rentalContract.Id" />
 
@@ -20,14 +20,34 @@
                 </div>
                 <span asp-validation-for="hasEquipments" class="text-danger"></span>
             </div>
-            <br />
 
             <div class="form-group">
-                <div class="form-check">
+                <div class="form-check mt-3">
                     <input asp-for="hasDamage" class="form-check-input" />
                     <label asp-for="hasDamage" class="form-check-label">Existência de Danos</label>
                 </div>
                 <span asp-validation-for="hasDamage" class="text-danger"></span>
+            </div>
+            <br />
+
+            <div id="equipmentDetails" style="display: none;">
+                <h3>Equipamentos Disponíveis</h3>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="equip1" name="equipments" value="Sala Equipada">
+                    <label class="form-check-label" for="equip1">Sala Equipada</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="equip2" name="equipments" value="Cozinha Equipada">
+                    <label class="form-check-label" for="equip2">Cozinha Equipada</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="equip3" name="equipments" value="Quarto(s) Equipados">
+                    <label class="form-check-label" for="equip3">Quarto(s) Equipado</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="equip4" name="equipments" value="Casa de Banho Equipada">
+                    <label class="form-check-label" for="equip3">Casa de Banho Equipada</label>
+                </div>
             </div>
             <br />
 
@@ -37,10 +57,53 @@
             </div>
             <br />
 
-            <div class="form-group">
+            <div id="damageDetails" style="display: none;">
+                <div class="form-group mt-2">
+                    <label asp-for="damageDescription" class="control-label">Descrição dos Danos</label>
+                    <textarea asp-for="damageDescription" class="form-control bg-dark text-light" rows="3"></textarea>
+                </div>
+                <br />
+
+                <div class="form-group">
+                    <label asp-for="DamageImages" class="control-label">Fotos dos Danos</label>
+                    <input asp-for="DamageImages" type="file" multiple class="form-control bg-dark text-light" />
+                </div>
+            </div>
+
+            <div class="form-group mt-3">
                 <button type="submit" class="btn btn-primary">Confirmar</button>
                 <a asp-action="Index" class="btn btn-secondary">Voltar</a>
             </div>
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const hasDamageCheckbox = document.getElementById("hasDamage");
+            const damageDetailsDiv = document.getElementById("damageDetails");
+
+            function toggleDamageDetails() {
+                damageDetailsDiv.style.display = hasDamageCheckbox.checked ? "block" : "none";
+            }
+
+            hasDamageCheckbox.addEventListener("change", toggleDamageDetails);
+
+            // Inicializa com o estado atual do checkbox
+            toggleDamageDetails();
+
+            const hasEquipmentsCheckbox = document.getElementById("hasEquipments");
+            const equipmentDetailsDiv = document.getElementById("equipmentDetails");
+
+            function toggleEquipmentDetails() {
+                equipmentDetailsDiv.style.display = hasEquipmentsCheckbox.checked ? "block" : "none";
+            }
+
+            hasEquipmentsCheckbox.addEventListener("change", toggleEquipmentDetails);
+
+            // Inicializa com o estado atual do checkbox
+            toggleEquipmentDetails();
+        });
+    </script>
+}

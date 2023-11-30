@@ -284,13 +284,48 @@ namespace HabitAqui_Software.Controllers
                 return NotFound();
             }
 
+            // Verifica se o diretório para uploads de imagens existe, se não, cria
+            string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "img_upload");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            string uniqueFileName = null;
+            List<string> savedFiles = new List<string>();
+
+            // Processa o arquivo de imagem recebido
+            if (confirmRentalContracts.DamageImages != null && confirmRentalContracts.DamageImages.Count > 0)
+            {
+
+                foreach (var imageFile in confirmRentalContracts.DamageImages)
+                {
+                    uniqueFileName = Guid.NewGuid().ToString() + "_" + imageFile.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var image = Image.Load(imageFile.OpenReadStream()))
+                    {
+                        image.Mutate(x => x.Resize(100, 100));
+                        await image.SaveAsync(filePath); // Salva cada imagem redimensionada
+                    }
+
+                    savedFiles.Add(uniqueFileName); // Adiciona o nome do arquivo salvo à lista
+                }
+            }
+
+            string imagePaths = string.Join(";", savedFiles);
+
+            string equipmentList = string.Join(";", confirmRentalContracts.equipments);
 
             DeliveryStatus delivery = new DeliveryStatus
             {
                 hasDamage = confirmRentalContracts.hasDamage,
                 hasEquipments = confirmRentalContracts.hasEquipments,
                 observation = confirmRentalContracts.observation,
-                RentalContractId = id
+                RentalContractId = id,
+                ImagePaths = imagePaths,
+                damageDescription = confirmRentalContracts.damageDescription,
+                EquipmentList = equipmentList
             };
 
             _context.Add(delivery);
@@ -312,6 +347,10 @@ namespace HabitAqui_Software.Controllers
         [Authorize(Roles = "Employer, Manager")]
         public async Task<IActionResult> Receive(int? id)
         {
+            var rentalContract = await _context.rentalContracts
+                .Include(rc => rc.deliveryStatus) // Garante que o deliveryStatus seja carregado
+                .FirstOrDefaultAsync(rc => rc.Id == id);
+
             if (id == null || _context.rentalContracts == null)
             {
                 return NotFound();
@@ -339,63 +378,65 @@ namespace HabitAqui_Software.Controllers
                 return NotFound();
             }
 
-                // Verifica se o diretório para uploads de imagens existe, se não, cria
-                string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "img_upload");
-                if (!Directory.Exists(uploadsFolder))
+            // Verifica se o diretório para uploads de imagens existe, se não, cria
+            string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "img_upload");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            string uniqueFileName = null;
+            List<string> savedFiles = new List<string>();
+
+            // Processa o arquivo de imagem recebido
+            if (viewModel.DamageImages != null && viewModel.DamageImages.Count > 0)
+            {
+
+                foreach (var imageFile in viewModel.DamageImages)
                 {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
+                    uniqueFileName = Guid.NewGuid().ToString() + "_" + imageFile.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                string uniqueFileName = null;
-                List<string> savedFiles = new List<string>();
-
-                // Processa o arquivo de imagem recebido
-                if (viewModel.DamageImages != null && viewModel.DamageImages.Count > 0)
-                {
-
-                    foreach (var imageFile in viewModel.DamageImages)
+                    using (var image = Image.Load(imageFile.OpenReadStream()))
                     {
-                        uniqueFileName = Guid.NewGuid().ToString() + "_" + imageFile.FileName;
-                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                        using (var image = Image.Load(imageFile.OpenReadStream()))
-                        {
-                            image.Mutate(x => x.Resize(100, 100));
-                            await image.SaveAsync(filePath); // Salva cada imagem redimensionada
-                        }
-
-                        savedFiles.Add(uniqueFileName); // Adiciona o nome do arquivo salvo à lista
+                        image.Mutate(x => x.Resize(100, 100));
+                        await image.SaveAsync(filePath); // Salva cada imagem redimensionada
                     }
+
+                    savedFiles.Add(uniqueFileName); // Adiciona o nome do arquivo salvo à lista
                 }
+            }
 
-                string imagePaths = string.Join(";", savedFiles);
+            string imagePaths = string.Join(";", savedFiles);
+            string equipmentList = string.Join(";", viewModel.equipments);
 
-                ReceiveStatus receiveStatus = new ReceiveStatus
-                {
-                    hasDamage = viewModel.hasDamage,
-                    hasEquipments = viewModel.hasEquipments,
-                    damageDescription = viewModel.damageDescription,
-                    rentalContractId = viewModel.rentalContract.Id,
-                    // anexar fotos de danos, se aplicável
-                    observation = viewModel.observation,
-                    ImagePaths = imagePaths
-                };
+            ReceiveStatus receiveStatus = new ReceiveStatus
+            {
+                hasDamage = viewModel.hasDamage,
+                hasEquipments = viewModel.hasEquipments,
+                damageDescription = viewModel.damageDescription,
+                rentalContractId = viewModel.rentalContract.Id,
+                // anexar fotos de danos, se aplicável
+                observation = viewModel.observation,
+                ImagePaths = imagePaths,
+                EquipmentList = equipmentList
+            };
 
-                _context.Add(receiveStatus);
-                await _context.SaveChangesAsync();
+            _context.Add(receiveStatus);
+            await _context.SaveChangesAsync();
 
    
-                RentalContract rentalContract = await _context.rentalContracts
-                   .Include(h => h.habitacao)
-                   .FirstOrDefaultAsync(r => r.Id == id);
+            RentalContract rentalContract = await _context.rentalContracts
+                .Include(h => h.habitacao)
+                .FirstOrDefaultAsync(r => r.Id == id);
 
-                rentalContract.ReceiveStatusId = receiveStatus.Id;
-                rentalContract.habitacao.available = true;
+            rentalContract.ReceiveStatusId = receiveStatus.Id;
+            rentalContract.habitacao.available = true;
 
-                _context.Update(rentalContract);
-                await _context.SaveChangesAsync();
+            _context.Update(rentalContract);
+            await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index));
 
         }
 
@@ -492,57 +533,41 @@ namespace HabitAqui_Software.Controllers
                 return NotFound();
             }
 
-
-            if (ModelState.IsValid)
-            {
                 RentalContract rc = await _context.rentalContracts
             .Include(r => r.habitacao) // Inclui a habitação relacionada
             .FirstOrDefaultAsync(r => r.Id == id);
 
-                if (rc == null)
-                {
-                    return NotFound();
-                }
-
-                rc.avaliacao = rentalContract.avaliacao;
-                _context.Update(rc);
-                await _context.SaveChangesAsync();
-
-                // Calcular a média de avaliações para a habitação
-                var habitacaoId = rc.HabitacaoId;
-                if (habitacaoId.HasValue)
-                {
-                    var habitacao = await _context.habitacaos
-                        .Include(h => h.rentalContracts)
-                        .FirstOrDefaultAsync(h => h.Id == habitacaoId.Value);
-
-                    if (habitacao != null && habitacao.rentalContracts.Any())
-                    {
-                        // Calcula a média das avaliações
-                        double averageGrade = habitacao.rentalContracts
-                            .Where(c => c.avaliacao.HasValue)
-                            .Average(c => c.avaliacao.Value);
-
-                        habitacao.grade = (float)Math.Round(averageGrade, 2);
-                        _context.Update(habitacao);
-                        await _context.SaveChangesAsync();
-                    }
-                }
-
-                return RedirectToAction(nameof(History));
-            }
-            else
+            if (rc == null)
             {
-                // Coleta as mensagens de erro do ModelState
-                var erros = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                return NotFound();
+            }
 
-                // Exibe as mensagens de erro no console
-                foreach (var erro in erros)
+            rc.avaliacao = rentalContract.avaliacao;
+            _context.Update(rc);
+            await _context.SaveChangesAsync();
+
+            // Calcular a média de avaliações para a habitação
+            var habitacaoId = rc.HabitacaoId;
+            if (habitacaoId.HasValue)
+            {
+                var habitacao = await _context.habitacaos
+                    .Include(h => h.rentalContracts)
+                    .FirstOrDefaultAsync(h => h.Id == habitacaoId.Value);
+
+                if (habitacao != null && habitacao.rentalContracts.Any())
                 {
-                    Console.WriteLine("Erro de validação: " + erro);
+                    // Calcula a média das avaliações
+                    double averageGrade = habitacao.rentalContracts
+                        .Where(c => c.avaliacao.HasValue)
+                        .Average(c => c.avaliacao.Value);
+
+                    habitacao.grade = (float)Math.Round(averageGrade, 2);
+                    _context.Update(habitacao);
+                    await _context.SaveChangesAsync();
                 }
             }
-            return View();
+
+            return RedirectToAction(nameof(History));
         }
     }
 }
