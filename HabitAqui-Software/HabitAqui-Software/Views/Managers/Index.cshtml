@@ -51,7 +51,14 @@
                         <td>@Html.DisplayFor(modelItem => userWithRoles.User.firstName)</td>
                         <td>@Html.DisplayFor(modelItem => userWithRoles.User.lastName)</td>
                         <td>@Html.DisplayFor(modelItem => userWithRoles.User.nif)</td>
-                        <td>@(userWithRoles.User.available ? "Acesso Permitido" : "Acesso Bloqueado")</td>
+                        @if (userWithRoles.User.available)
+                        {
+                            <td>Acesso Permitido</td>
+                        }
+                        else
+                        {
+                            <td style="color:red">Acesso Bloqueado</td>
+                        }
                         <td>
                             @foreach (var role in userWithRoles.Roles)
                             {

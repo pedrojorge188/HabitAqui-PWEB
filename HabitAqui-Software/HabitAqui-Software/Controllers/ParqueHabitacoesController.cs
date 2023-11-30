@@ -208,31 +208,36 @@ namespace HabitAqui_Software.Controllers {
             ViewBag.cat = cat;
             ViewBag.Category = new SelectList(cat, "Id", "name");
 
-            if (User.IsInRole("Employer"))
-         
+            if (ModelState.IsValid)
             {
-                var appUserId = _userManager.GetUserId(User);
-                var employee = _context.employers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
-                var _locador = _context.locador.FirstOrDefault(l => l.Id == employee.LocadorId);
 
-                habitacao.locador = _locador;
-                habitacao.grade = 0;
+                if (User.IsInRole("Employer"))
+                {
+                    var appUserId = _userManager.GetUserId(User);
+                    var employee = _context.employers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                    var _locador = _context.locador.FirstOrDefault(l => l.Id == employee.LocadorId);
 
-            }else if (User.IsInRole("Manager"))
-            {
-                var appUserId = _userManager.GetUserId(User);
-                var manager = _context.managers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
-                var _locador = _context.locador.FirstOrDefault(l => l.Id == manager.LocadorId);
+                    habitacao.locador = _locador;
+                    habitacao.grade = 0;
 
-                habitacao.locador = _locador;
-                habitacao.grade = 0;
-            }
-         
+                }
+                else if (User.IsInRole("Manager"))
+                {
+                    var appUserId = _userManager.GetUserId(User);
+                    var manager = _context.managers.Where(uid => uid.user.Id == appUserId).FirstOrDefault();
+                    var _locador = _context.locador.FirstOrDefault(l => l.Id == manager.LocadorId);
+
+                    habitacao.locador = _locador;
+                    habitacao.grade = 0;
+                }
+            
        
-            _context.Add(habitacao);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
- 
+                _context.Add(habitacao);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(habitacao);
         }
 
         // GET: ParqueHabitacoes/Edit/5
@@ -290,27 +295,29 @@ namespace HabitAqui_Software.Controllers {
  
             }
 
-    
-
             if (ModelState.IsValid)
             {
-
-                _context.Update(habitacao);
-                await _context.SaveChangesAsync();
-                
-            }
-            else
-            {
-                // Coleta as mensagens de erro do ModelState
-                var erros = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-
-                // Exibe as mensagens de erro no console
-                foreach (var erro in erros)
+                try
                 {
-                    Console.WriteLine("Erro de validação: " + erro);
+                    _context.Update(habitacao);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!HabitacaoExists(habitacao.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
             }
-            return RedirectToAction(nameof(Index));
+
+            // Se o ModelState não for válido, retorna a view com o modelo atual para correção
+            return View(habitacao);
         }
 
         // GET: ParqueHabitacoes/Delete/5

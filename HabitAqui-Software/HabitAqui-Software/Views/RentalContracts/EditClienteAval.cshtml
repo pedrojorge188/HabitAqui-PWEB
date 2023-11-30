@@ -3,21 +3,27 @@
 @{
     ViewData["Title"] = "Editar Avaliação do Cliente";
 }
+<div class="container">
+    <div class="row justify-content-left">
+        <div class="col-md-8 p-2">
+            <h1>@ViewData["Title"]</h1>
+            <hr />
 
-<h1>@ViewData["Title"]</h1>
-<hr />
+            <form asp-action="EditClienteAval">
+                <div class="form-group">
+                    <label asp-for="avaliacao"></label>
+                    <input asp-for="avaliacao" class="form-control" />
+                    <span asp-validation-for="avaliacao" class="text-danger"></span>
+                </div>
 
-<form asp-action="EditClienteAval">
-    <div class="form-group">
-        <label asp-for="avaliacao"></label>
-        <input asp-for="avaliacao" class="form-control" />
-        <span asp-validation-for="avaliacao" class="text-danger"></span>
+
+                <br />
+                <a class="btn btn-outline-danger" asp-action="History">Voltar</a>
+                <button type="submit" class="btn btn-primary tb-btn">Salvar</button>
+            </form>
+        </div>
     </div>
+</div>
 
-
-    <br />
-    <a class="btn btn-outline-danger" asp-action="History">Voltar</a>
-    <button type="submit" class="btn btn-primary tb-btn">Salvar</button>
-</form>
 
 
