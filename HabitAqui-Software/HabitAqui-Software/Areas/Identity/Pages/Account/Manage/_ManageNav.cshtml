@@ -2,14 +2,29 @@
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }
-<ul class="nav nav-pills flex-column">
-    <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Email</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Password</a></li>
-    @if (hasExternalLogins)
-    {
-        <li id="external-logins" class="nav-item"><a id="external-login" class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">External logins</a></li>
+
+<style>
+    .btn-dark-custom:hover, .btn-dark-custom:focus {
+        background-color: #343a40; /* Cor de fundo desejada para o hover */
+        color: #ffffff; /* Cor do texto */
     }
-    <li class="nav-item"><a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">Two-factor authentication</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Personal data</a></li>
-</ul>
+</style>
+
+<div class="card border-0 btn btn-dark-custom tb-btn btn-sm mb-2 text-white">
+    <div class="card-body btn btn-dark-custom tb-btn btn-sm mb-2 text-white">
+        <h4 class="card-title text-white">Gerenciamento de Conta</h4>
+        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <a class="nav-link @ManageNavPages.IndexNavClass(ViewContext) btn btn-dark-custom tb-btn btn-sm mb-2 text-white" id="profile" asp-page="./Index">
+                <i class="fa fa-user me-2"></i>Perfil
+            </a>
+            <!--
+            <a class="nav-link  ManageNavPages.EmailNavClass(ViewContext) btn btn-dark-custom tb-btn btn-sm mb-2 text-white" id="email" asp-page="./Email">
+                <i class="fa fa-envelope me-2"></i>Email
+            </a>
+            <a class="nav-link  ManageNavPages.ChangePasswordNavClass(ViewContext) btn btn-dark-custom tb-btn btn-sm mb-2 text-white" id="change-password" asp-page="./ChangePassword">
+                <i class="fa fa-lock me-2"></i>Senha
+            </a>
+            -->
+        </div>
+    </div>
+</div>

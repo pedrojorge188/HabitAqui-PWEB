@@ -5,8 +5,8 @@ namespace HabitAqui_Software.Models.ViewModels
     public class CreateEmployeeViewModel
     {
         [Required]
-        [EmailAddress]
-        [Display(Name = "Email")]
+        [Display(Name = "Email" )]
+        [EmailAddress (ErrorMessage = "O Email está no formato errado")]
         public string Email { get; set; }
 
         [Required]
@@ -19,11 +19,12 @@ namespace HabitAqui_Software.Models.ViewModels
 
         [Required]
         [Display(Name = "NIF")]
+        [RegularExpression(@"^\d{9}$", ErrorMessage = "O NIF deve conter exatamente 9 dígitos numéricos.")]
         public int nif { get; set; }
 
         [Required]
-        [DataType(DataType.Password)]
         [Display(Name = "Password")]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]

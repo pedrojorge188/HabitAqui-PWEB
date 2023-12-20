@@ -12,35 +12,14 @@ namespace HabitAqui_Software.Models
         [Display(Name = "Último Nome", Prompt = "\"Insira o seu último nome...")]
         public string lastName  { get; set; }
 
-        [Display(Name = "NIF", Prompt = "Insira o se nif...")]
+        [Display(Name = "NIF", Prompt = "Insira o seu nif...")]
+        [RegularExpression(@"^\d{9}$", ErrorMessage = "O NIF deve conter exatamente 9 dígitos numéricos.")]
         public int nif {  get; set; }
 
         public DateTime? registerDate { get; set; }
 
         [Display(Name = "Disponibilidade")]
         public Boolean available { get; set; }
-
-        [Display(Name = "Data de Nascimento", Prompt = "Insira a sua data de nascimento...")]
-        [CustomValidation(typeof(ApplicationUser), nameof(ValidarMaioridade))]
-        public DateTime? bornDate { get; set; }
-
-        public static ValidationResult ValidarMaioridade(DateTime? bornDate, ValidationContext context)
-        {
-            if (!bornDate.HasValue)
-            {
-                return new ValidationResult("Data de nascimento é obrigatória.");
-            }
-
-            var idade = DateTime.Today.Year - bornDate.Value.Year;
-            if (bornDate.Value.Date > DateTime.Today.AddYears(-idade)) idade--;
-
-            if (idade < 18)
-            {
-                return new ValidationResult("Deve ter pelo menos 18 anos de idade.");
-            }
-
-            return ValidationResult.Success;
-        }
 
 
     }

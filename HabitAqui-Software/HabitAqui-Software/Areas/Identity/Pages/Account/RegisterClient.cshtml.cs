@@ -91,6 +91,7 @@ namespace HabitAqui_Software.Areas.Identity.Pages.Account
             public string lastName { set; get; }
 
             [Required]
+            [RegularExpression(@"^\d{9}$", ErrorMessage = "O NIF deve conter exatamente 9 dígitos numéricos.")]
             [Display(Name = "NIF")]
             public int nif { get; set; }
 

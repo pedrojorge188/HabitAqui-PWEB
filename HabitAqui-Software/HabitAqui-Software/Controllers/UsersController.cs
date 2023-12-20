@@ -103,7 +103,7 @@ namespace HabitAqui_Software.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,firstName,lastName,bornDate,nif")] ApplicationUser userToUpdate)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,firstName,lastName,nif")] ApplicationUser userToUpdate)
         {
             if (id != userToUpdate.Id)
                 return NotFound();
@@ -120,7 +120,7 @@ namespace HabitAqui_Software.Controllers
                     // Atualizar apenas os campos específicos
                     existingUser.firstName = userToUpdate.firstName;
                     existingUser.lastName = userToUpdate.lastName;
-                    existingUser.bornDate = userToUpdate.bornDate;
+                    //existingUser.bornDate = userToUpdate.bornDate;
                     existingUser.nif = userToUpdate.nif;
 
                     _context.Update(existingUser);

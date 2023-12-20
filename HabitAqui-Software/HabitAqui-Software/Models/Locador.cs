@@ -16,6 +16,7 @@ namespace HabitAqui_Software.Models
         public string address { get; set; }
 
         [Display(Name = "Email", Prompt = "Insira o email do locador")]
+        [EmailAddress(ErrorMessage = "O Email está no formato errado")]
         public string email { get; set; }
 
         public ICollection<Habitacao>? Habitacoes { get; set; }

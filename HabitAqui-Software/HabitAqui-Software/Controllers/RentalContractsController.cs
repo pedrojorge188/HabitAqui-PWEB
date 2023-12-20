@@ -315,7 +315,7 @@ namespace HabitAqui_Software.Controllers
 
             string imagePaths = string.Join(";", savedFiles);
 
-            string equipmentList = string.Join(";", confirmRentalContracts.equipments);
+            string equipmentList = confirmRentalContracts.equipments != null ? string.Join(";", confirmRentalContracts.equipments) : string.Empty;
 
             DeliveryStatus delivery = new DeliveryStatus
             {
@@ -408,7 +408,9 @@ namespace HabitAqui_Software.Controllers
             }
 
             string imagePaths = string.Join(";", savedFiles);
-            string equipmentList = string.Join(";", viewModel.equipments);
+
+            // Verifica se a lista de equipamentos não é nula antes de juntar
+            string equipmentList = viewModel.equipments != null ? string.Join(";", viewModel.equipments) : string.Empty;
 
             ReceiveStatus receiveStatus = new ReceiveStatus
             {
@@ -556,9 +558,9 @@ namespace HabitAqui_Software.Controllers
 
                 if (habitacao != null && habitacao.rentalContracts.Any())
                 {
-                    // Calcula a média das avaliações
+                    // Calcula a média das avaliações, excluindo zeros
                     double averageGrade = habitacao.rentalContracts
-                        .Where(c => c.avaliacao.HasValue)
+                        .Where(c => c.avaliacao.HasValue && c.avaliacao.Value >= 1 && c.avaliacao.Value <= 5)
                         .Average(c => c.avaliacao.Value);
 
                     habitacao.grade = (float)Math.Round(averageGrade, 2);
